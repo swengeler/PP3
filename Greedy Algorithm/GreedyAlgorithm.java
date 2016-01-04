@@ -53,15 +53,36 @@ public class GreedyAlgorithm {
         boolean done = false;
         int counter = 0;
         
-        while (nrPackages > 0 && !done) {
+        while (!done) {
             Package p = packages[counter];
             initialPosition(p);
             if (!overlap(p)) {
                 putPackage(p);
+                System.out.println("COUNTER: " + counter);
                 counter++;
             }
             else 
                 done = true;
+            
+            if (counter >= nrPackages) 
+                done = true;
+        }
+        
+        for (int i = 0; i < cargoSpace.length; i++) {
+            System.out.println("\nLayer " + (i + 1) + ":");
+            for (int j = 0; j < cargoSpace[0][0].length; j++) {
+                for (int k = 0; k < cargoSpace[0].length; k++) {
+                    if (cargoSpace[i][j][k] == PackageType.NoPackage)
+                        System.out.print("O ");
+                    else if (cargoSpace[i][k][j] == PackageType.APackage)
+                        System.out.print("A ");
+                    else if (cargoSpace[i][k][j] == PackageType.BPackage)
+                        System.out.print("B ");
+                    else if (cargoSpace[i][k][j] == PackageType.CPackage)
+                        System.out.print("C ");
+                }
+                System.out.println();
+            }
         }
         
     }
@@ -75,9 +96,12 @@ public class GreedyAlgorithm {
     */
     public static void initialPosition(Package p) {
         int[][] coords = p.getCoords();
-        curX = cargoSpace.length - coords[4][0];
-        curY = cargoSpace[0].length - coords[1][1];
-        curZ = cargoSpace[0][0].length - coords[3][2];
+        curX = cargoSpace.length - coords[4][0] - 1;
+        System.out.println(curX);
+        curY = cargoSpace[0].length - coords[1][1] - 1;
+        System.out.println(curY);
+        curZ = cargoSpace[0][0].length - coords[3][2] - 1;
+        System.out.println(curZ);
     }
     
     /**
@@ -90,9 +114,9 @@ public class GreedyAlgorithm {
     public static void putPackage(Package p) {
         // first move as far back as possible, then as far left as possible, then as far down as possible
         // maybe repeat recursively to avoid placing stuff in bad positions?
-        while (!overlap(p) && curY >= 0) {curY--;}
-        while (!overlap(p) && curX >= 0) {curX--;}
-        while (!overlap(p) && curZ >= 0) {curZ--;}
+        while (curY > 0 && !overlap(p)) {curY--;}
+        while (curX > 0 && !overlap(p)) {curX--;}
+        while (curZ > 0 && !overlap(p)) {curZ--;}
         place(p);
     }
     

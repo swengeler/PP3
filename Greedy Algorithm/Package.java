@@ -99,7 +99,7 @@ public class Package {
     * @param aPackage the desired type of package
     */
     public void setPackage(PackageType type) {
-        coordsTable = new int[][] {{0, 0, 0}, {0, width * 2, 0}, {0, width * 2, height * 2}, {0, 0, height * 2}, {length * 2, 0, 0},{length * 2, 0, height * 2},{length * 2, width * 2, height * 2},{length * 2, height * 2, 0}};
+        coordsTable = new int[][] {{0, 0, 0}, {0, width, 0}, {0, width, height}, {0, 0, height}, {length, 0, 0},{length, 0, height},{length, width, height},{length, height, 0}};
         
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 3; j++) {
