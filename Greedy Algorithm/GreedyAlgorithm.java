@@ -15,10 +15,6 @@ public class GreedyAlgorithm {
     */
     private static PackageType[][][] cargoSpace;
     
-    private static int initialX = 0;
-    private static int initialY = 0;
-    private static int initialZ = 0;
-    
     private static int curX = 0;
     private static int curY = 0;
     private static int curZ = 0;
@@ -45,18 +41,25 @@ public class GreedyAlgorithm {
         System.out.print("Please enter the number of C packages:");
         int nrC = in.nextInt();
         
-        double worthA = A.getWorth();
-        double worthB = B.getWorth();
-        double worthC = C.getWorth();
-        
         int nrPackages = nrA + nrB + nrC;
+        Package[] packages = new Package[nrPackages];
+        for (int i = 0; i < nrC; i++)
+            packages[i] = new Package("C");
+        for (int i = nrC; i < nrC + nrB; i++)
+            packages[i] = new Package("B");
+        for (int i = nrC + nrB; i < nrPackages; i++)
+            packages[i] = new Package("A");
+        
         boolean done = false;
+        int counter = 0;
         
         while (nrPackages > 0 && !done) {
-            p = choosePackage();
+            Package p = packages[counter];
             initialPosition(p);
-            if (!overlap(p)) 
+            if (!overlap(p)) {
                 putPackage(p);
+                counter++;
+            }
             else 
                 done = true;
         }
