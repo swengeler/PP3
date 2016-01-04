@@ -34,11 +34,11 @@ public class GreedyAlgorithm {
         cargoSpace = new PackageType[33][5][8];
         initialiseCS();
         
-        System.out.print("Please enter the number of A packages:");
+        System.out.print("Please enter the number of A packages: ");
         int nrA = in.nextInt();
-        System.out.print("Please enter the number of B packages:");
+        System.out.print("Please enter the number of B packages: ");
         int nrB = in.nextInt();
-        System.out.print("Please enter the number of C packages:");
+        System.out.print("Please enter the number of C packages: ");
         int nrC = in.nextInt();
         
         int nrPackages = nrA + nrB + nrC;
@@ -73,7 +73,8 @@ public class GreedyAlgorithm {
     * @param p The package whose dimensions determine the values of curX, curY and curZ (i.e. the next 
     *          package placed in the cargo area).
     */
-    public static void initialPosition(p) {
+    public static void initialPosition(Package p) {
+        int[][] coords = p.getCoords();
         curX = cargoSpace.length - coords[4][0];
         curY = cargoSpace[0].length - coords[1][1];
         curZ = cargoSpace[0][0].length - coords[3][2];
@@ -121,7 +122,7 @@ public class GreedyAlgorithm {
     public static void initialiseCS() {
         for (int i = 0; i < cargoSpace.length; i++) {
             for (int j = 0; j < cargoSpace[i].length; j++) {
-                for (int k = 0; k < cargoSpace[i][j].length) {
+                for (int k = 0; k < cargoSpace[i][j].length; k++) {
                     cargoSpace[i][j][k] = PackageType.NoPackage;
                 }
             }
@@ -136,10 +137,10 @@ public class GreedyAlgorithm {
     * @return boolean Returns true if there is no overlap anywhere and false if there is some overlap.
     */
     public static boolean overlap(Package p) {
-        int[][] coords = p.getCoords;
+        int[][] coords = p.getCoords();
         boolean noOverlap = true;
         for (int i = 0; i < p.getCoords().length && noOverlap; i++) {
-            if (cargoSpace[curX + coords[i][0]][cargoSpace[curY + coords[i][1]]][cargoSpace[curZ + coords[i][2]]] != PackageType.NoPackage)
+            if (cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] != PackageType.NoPackage)
                 noOverlap = false;                                                      
         }
         return !noOverlap;
