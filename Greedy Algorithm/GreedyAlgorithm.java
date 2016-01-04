@@ -54,6 +54,7 @@ public class GreedyAlgorithm {
         
         while (nrPackages > 0 && !done) {
             p = choosePackage();
+            initialPosition(p);
             if (!overlap(p)) 
                 putPackage(p);
             else 
@@ -63,17 +64,40 @@ public class GreedyAlgorithm {
     }
     
     /**
+    * Determines the initial position of the package currently being placed in the most upper, right and
+    * front corner of the cargo area.
+    *
+    * @param p The package whose dimensions determine the values of curX, curY and curZ (i.e. the next 
+    *          package placed in the cargo area).
+    */
+    public static void initialPosition(p) {
+        curX = cargoSpace.length - coords[4][0];
+        curY = cargoSpace[0].length - coords[1][1];
+        curZ = cargoSpace[0][0].length - coords[3][2];
+    }
+    
+    /**
     * Places the package p in the cargo space at the "best position" (assumed to be as "close" to the 
-    * origin of the cargo space coordinate system as possible);
+    * origin of the cargo space coordinate system as possible).
+    * 
+    * @param p The package for which a position is to be determined and which is to be placed in the 
+    *          cargo space.
     */
     public static void putPackage(Package p) {
         // first move as far back as possible, then as far left as possible, then as far down as possible
+        // maybe repeat recursively to avoid placing stuff in bad positions?
         while (!overlap(p) && curY >= 0) {curY--;}
         while (!overlap(p) && curX >= 0) {curX--;}
         while (!overlap(p) && curZ >= 0) {curZ--;}
         place(p);
     }
     
+    /**
+    * Changes the internal representation of the cargo space (the three-dimensional array) in order to 
+    * properly represent the package that was placed at a certain position and is now filling up space.
+    * 
+    * @param p The Package that is placed in the array/cargo space.
+    */
     public static void place(Package p) {
         int[][] coords = p.getCoords();
         // coords[4][0] should be the x-coordinate of all the corners of the package on the right side
