@@ -9,29 +9,36 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.border.*;
+import javax.swing.BorderFactory;
 
 public class DisplayFrame extends JPanel {
 	
 	public int[][][] x;
 	public int[][] y;
 	public int layer = 0;
+    
+    public static final int SQUARE_SIZE = 10;
 	
 	public DisplayFrame() {
+        setMinimumSize(new Dimension(1000, 1000));
 		setPreferredSize(new Dimension(1000, 1000));
-		addKeyListener(new KeyHandler());
-        setFocusable(true);
+        setMaximumSize(new Dimension(1000, 1000));
     
 		//[length][width][height]
 		x = new int[33][5][8];
 		
-		for(int i = x.length - 1; i >= 0 && i >= 6; i--){
-			for(int j = x[i].length - 1; j >=0  && j >= 6; j--){
-				for(int k = x[i][j].length - 1; k >=0  && k >= 6; k--){
-					x[i][j][k] = i;
-				}	
-			}		
-		}
+		for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < x[0].length; j++) {
+                for (int k = 0; k < x[0][0].length; k++) {
+                    x[i][j][k] = i;
+                }
+            }
+        }
 
+		addKeyListener(new KeyHandler());
+        setFocusable(true);
+        setBorder(BorderFactory.createMatteBorder(2, 0, 2, 0, Color.RED));
 	}
     
     class KeyHandler implements KeyListener {
@@ -54,7 +61,7 @@ public class DisplayFrame extends JPanel {
                     repaint();
 				}
 				if (e.getKeyCode() == KeyEvent.VK_PLUS){
-					if (layer <x.length - 1)
+					if (layer < x.length - 1)
 					layer++;
                     repaint();
 				}
@@ -75,27 +82,26 @@ public class DisplayFrame extends JPanel {
 	
     //------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    public void painComponent(Graphics g) {
-        System.out.println("painComponent called");
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         
         int abstand = 20;
-        int squareSize = 20;
         
         for (int i = 0; i < x[0].length; i++) {
             for (int j = 0; j < x[0][0].length; j++) {
-                if (x[layer][i][j] != 0)
-                    drawSquare(g2, abstand + squareSize * i, abstand + (x[0][0].length * squareSize - (j + 1) * squareSize), x[layer][i][j] - 1);
+                drawSquare(g2, abstand + SQUARE_SIZE * i, abstand + /*(x[0][0].length * SQUARE_SIZE - (j + 1)*/j * SQUARE_SIZE, x[layer][i][j]);
             }
         }
     }
+
 
     private void drawSquare(Graphics2D g2, int x, int y, int index) {
         
         Color[] colors = {new Color(169, 24, 24), new Color(0, 0, 102), new Color(0, 102, 0), new Color(36, 191, 175), new Color(255, 227, 40), new Color(170, 40, 255)};
 		
         g2.setColor(colors[index]);
-        g2.fill(new Rectangle(x, y, 20, 20)); // 20 = squareSize
+        g2.fill(new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE)); // 20 = SQUARE_SIZE
  		
 	}
 
