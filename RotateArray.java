@@ -30,11 +30,11 @@ public class RotateArray {
 				}
 				if(e.getKeyCode() == KeyEvent.VK_PLUS){
 					if(layer<x.length-1)
-					layer++;
+						layer++;
 				}
 				if(e.getKeyCode() == KeyEvent.VK_MINUS){
 					if(layer>0)
-					layer--;
+						layer--;
 				}
 				
 				if(e.getKeyCode() == KeyEvent.VK_ENTER){
@@ -143,6 +143,8 @@ public class RotateArray {
 	//------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	public static void print(){
+		if(layer>=x.length) layer = x.length-1;
+		
 		System.out.println(layer);
 			for(int j = x[layer].length-1; j>=0; j--){					
 				for(int k = x[layer][j].length-1; k>=0; k--){
@@ -151,5 +153,6 @@ public class RotateArray {
 				System.out.println();
 			}
 			System.out.println();
+		
 	}
 }
