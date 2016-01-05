@@ -100,18 +100,16 @@ public class Package {
     */
     public void setPackage(PackageType type) {
         coords = new int[height * width * length][3];
-        
-        for (int )
-        for (int i = 0; i < coords.length; i++) {
-            for (int j = 0; j < length; j++) {
-                for (int k = 0; k < width; k++) {
-                    for (int l = 0; l < height; l++) {
-                        
-                    }
+        int counter = 0;
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < width; j++) {
+                for (int k = 0; k < height; k++) {
+                    coords[counter][0] = i;
+                    coords[counter][1] = j;
+                    coords[counter][2] = k;
                 }
             }
         }
-        
         this.type = type;
     }
     
@@ -122,6 +120,33 @@ public class Package {
     */
     public int[][] getCoords() {
         return coords;
+    }
+    
+    /**
+    * A method giving information about the dimensions of the package (length).
+    *
+    * @return length The length of the package (int 0.5m).
+    */
+    public int getLength() {
+        return length;
+    }
+    
+    /**
+    * A method giving information about the dimensions of the package (width).
+    *
+    * @return width The width of the package (int 0.5m).
+    */
+    public int getWidth() {
+        return width;
+    }
+    
+    /**
+    * A method giving information about the dimensions of the package (height).
+    *
+    * @return height The height of the package (int 0.5m).
+    */
+    public int getHeight() {
+        return height;
     }
 
     /**

@@ -68,22 +68,7 @@ public class GreedyAlgorithm {
                 done = true;
         }
         
-        for (int i = 0; i < cargoSpace.length; i++) {
-            System.out.println("\nLayer " + (i + 1) + ":");
-            for (int j = 0; j < cargoSpace[0][0].length; j++) {
-                for (int k = 0; k < cargoSpace[0].length; k++) {
-                    if (cargoSpace[i][j][k] == PackageType.NoPackage)
-                        System.out.print("O ");
-                    else if (cargoSpace[i][k][j] == PackageType.APackage)
-                        System.out.print("A ");
-                    else if (cargoSpace[i][k][j] == PackageType.BPackage)
-                        System.out.print("B ");
-                    else if (cargoSpace[i][k][j] == PackageType.CPackage)
-                        System.out.print("C ");
-                }
-                System.out.println();
-            }
-        }
+        simplePrint();
         
     }
     
@@ -96,11 +81,11 @@ public class GreedyAlgorithm {
     */
     public static void initialPosition(Package p) {
         int[][] coords = p.getCoords();
-        curX = cargoSpace.length - coords[4][0] - 1;
+        curX = cargoSpace.length - p.getLength() - 1;
         System.out.println(curX);
-        curY = cargoSpace[0].length - coords[1][1] - 1;
+        curY = cargoSpace[0].length - p.getWidth() - 1;
         System.out.println(curY);
-        curZ = cargoSpace[0][0].length - coords[3][2] - 1;
+        curZ = cargoSpace[0][0].length - p.getHeight() - 1;
         System.out.println(curZ);
     }
     
@@ -115,8 +100,12 @@ public class GreedyAlgorithm {
         // first move as far back as possible, then as far left as possible, then as far down as possible
         // maybe repeat recursively to avoid placing stuff in bad positions?
         while (curY > 0 && !overlap(p)) {curY--;}
+        if (overlap(p)) {curY++;}
         while (curX > 0 && !overlap(p)) {curX--;}
+        if (overlap(p)) {curX++;}
         while (curZ > 0 && !overlap(p)) {curZ--;}
+        if (overlap(p)) {curZ++;}
+        System.out.println("After placing: curX = " + curX + " curY = " + curY + " curZ = " + curZ);
         place(p);
     }
     
@@ -129,11 +118,11 @@ public class GreedyAlgorithm {
     public static void place(Package p) {
         int[][] coords = p.getCoords();
         // coords[4][0] should be the x-coordinate of all the corners of the package on the right side
-        for (int x = 0; x < coords[4][0]; x++) {
+        for (int x = 0; x < p.getLength(); x++) {
             // coords[1][1] should be the y-coordinate of all the corners of the package on the front side
-            for (int y = 0; y < coords[1][1]; y++) {
+            for (int y = 0; y < p.getWidth(); y++) {
                 // coords[3][2] should be the z-coordinate of all the corners of the package on the upper side
-                for (int z = 0; z < coords[3][2]; z++)
+                for (int z = 0; z < p.getHeight(); z++)
                     cargoSpace[x + curX][y + curY][z + curZ] = p.getType();
             }
         }
@@ -168,6 +157,29 @@ public class GreedyAlgorithm {
                 noOverlap = false;                                                      
         }
         return !noOverlap;
+    }
+    
+    /**
+    * A method that produces a very simple printout of the cargo space to give an idea of how/whether the
+    * algorithm is working properly.
+    */
+    public static void simplePrint() {
+        for (int i = 0; i < cargoSpace.length; i++) {
+            System.out.println("\nLayer " + (i + 1) + ":");
+            for (int j = 0; j < cargoSpace[0][0].length; j++) {
+                for (int k = 0; k < cargoSpace[0].length; k++) {
+                    if (cargoSpace[i][k][j] == PackageType.NoPackage)
+                        System.out.print("O ");
+                    else if (cargoSpace[i][k][j] == PackageType.APackage)
+                        System.out.print("A ");
+                    else if (cargoSpace[i][k][j] == PackageType.BPackage)
+                        System.out.print("B ");
+                    else if (cargoSpace[i][k][j] == PackageType.CPackage)
+                        System.out.print("C ");
+                }
+                System.out.println();
+            }
+        }
     }
     
 }
