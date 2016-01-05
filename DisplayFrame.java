@@ -5,27 +5,28 @@ import java.awt.Rectangle;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class DisplayFrame extends JFrame {
+public class DisplayFrame extends JPanel {
 	
 	public int[][][] x;
 	public int[][] y;
 	public int layer = 0;
 	
 	public DisplayFrame() {
-		setSize(1000, 1000);
-		setVisible(true);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setPreferredSize(new Dimension(1000, 1000));
 		addKeyListener(new KeyHandler());
+        setFocusable(true);
     
 		//[length][width][height]
 		x = new int[33][5][8];
 		
-		for(int i = x.length-1; i>=0; i--){
-			for(int j = x[i].length-1; j>=0; j--){
-				for(int k = x[i][j].length-1; k>=0; k--){
+		for(int i = x.length - 1; i >= 0 && i >= 6; i--){
+			for(int j = x[i].length - 1; j >=0  && j >= 6; j--){
+				for(int k = x[i][j].length - 1; k >=0  && k >= 6; k--){
 					x[i][j][k] = i;
 				}	
 			}		
@@ -36,34 +37,34 @@ public class DisplayFrame extends JFrame {
     class KeyHandler implements KeyListener {
 			private boolean top, bottom, back, front, left, right;
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_UP){
+				if (e.getKeyCode() == KeyEvent.VK_UP){
 					x = rotateUp();
                     repaint();
 				}
-				if(e.getKeyCode() == KeyEvent.VK_DOWN){
+				if (e.getKeyCode() == KeyEvent.VK_DOWN){
 					x = rotateDown();
                     repaint();
 				}
-				if(e.getKeyCode() == KeyEvent.VK_LEFT){
+				if (e.getKeyCode() == KeyEvent.VK_LEFT){
 					x = rotateLeft();
                     repaint();
 				}
-				if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+				if (e.getKeyCode() == KeyEvent.VK_RIGHT){
 					x = rotateRight();
                     repaint();
 				}
-				if(e.getKeyCode() == KeyEvent.VK_PLUS){
-					if(layer<x.length-1)
+				if (e.getKeyCode() == KeyEvent.VK_PLUS){
+					if (layer <x.length - 1)
 					layer++;
                     repaint();
 				}
-				if(e.getKeyCode() == KeyEvent.VK_MINUS){
-					if(layer>0)
+				if (e.getKeyCode() == KeyEvent.VK_MINUS){
+					if (layer > 0)
 					layer--;
                     repaint();
 				}
 				
-				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+				if (e.getKeyCode() == KeyEvent.VK_ENTER){
 					print();
 				}
 			}
@@ -75,6 +76,7 @@ public class DisplayFrame extends JFrame {
     //------------------------------------------------------------------------------------------------------------------------------------------------------
 
     public void painComponent(Graphics g) {
+        System.out.println("painComponent called");
         Graphics2D g2 = (Graphics2D) g;
         
         int abstand = 20;
@@ -176,7 +178,7 @@ public class DisplayFrame extends JFrame {
 	//------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	public void print(){
-		if (layer>=x.length) {layer = x.length-1};
+		if (layer >= x.length) {layer = x.length - 1;}
 		
 		System.out.println(layer);
 			for(int j = x[layer].length-1; j>=0; j--){					
