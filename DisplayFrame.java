@@ -176,6 +176,8 @@ public class DisplayFrame extends JFrame {
 	//------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	public void print(){
+		if (layer>=x.length) {layer = x.length-1};
+		
 		System.out.println(layer);
 			for(int j = x[layer].length-1; j>=0; j--){					
 				for(int k = x[layer][j].length-1; k>=0; k--){
@@ -184,5 +186,6 @@ public class DisplayFrame extends JFrame {
 				System.out.println();
 			}
 			System.out.println();
+		
 	}
 }
