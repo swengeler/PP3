@@ -53,23 +53,29 @@ public class Package {
         setPackage(PackageType.NoPackage);
     }
     
-    public Package(String type) {
+    /**
+    * A constructor that constructs a package with certain values according to the definition of
+    * the three available pre-defined package types (APackage, BPackage, CPackage).
+    * 
+    * @param type The type of package that is supposed to be constructed.
+    */
+    public Package(PackageType type) {
         coords = new int[8][3];
-        if (type.equals("A")) {
+        if (type == PackageType.APackage) {
             length = 4;
             width = 2;
             height = 2;
             value = 3;
             setPackage(PackageType.APackage);
         }
-        else if (type.equals("B")) {
+        else if (type == PackageType.BPackage) {
             length = 4;
             width = 3;
             height = 2;
             value = 4;
             setPackage(PackageType.BPackage);
         }
-        else if (type.equals("C")) {
+        else if (type == PackageType.CPackage) {
             length = 3;
             width = 3;
             height = 3;
@@ -91,12 +97,12 @@ public class Package {
     
     // {X,Y,Z}, FROM LEFT TO RIGHT.
     /**
-    * This method sets the shape of a package.
-    * <p>
-    * The coordinates of all the packages are stored in a three-dimensional array. 
-    * The method looks up where the coordinates of the desired package are located in the array and sets the value of the type variable to the desired package.
-    * </p>
-    * @param aPackage the desired type of package
+    * This method sets the shape of a package (the coordinates it occupies in the cargo space). The number and
+    * values of the stored coordinates depend on the dimensions of the package. (In a previous versions the
+    * measurements for the pre-demined packages A, B and C were stored in a three-dimensional array that would
+    * be accessed in order to get the cooridates of the outer corners of the package.)
+    *
+    * @param type The desired type of package.
     */
     public void setPackage(PackageType type) {
         coords = new int[height * width * length][3];
@@ -120,6 +126,16 @@ public class Package {
     */
     public int[][] getCoords() {
         return coords;
+    }
+    
+    /**
+    * A method that changes the array holding the coordinates which the package occupies (mainly
+    * used for rotations).
+    * 
+    * @param newCoords The new coordinates occupied by the package.
+    */
+    public void setCoords(int[][] newCoords) {
+        this.coords = newCoords;
     }
     
     /**
@@ -183,6 +199,75 @@ public class Package {
     */
     public PackageType getType() {
         return type;
+    }
+    
+    /**
+    * A method that changes the coordinates of the package in such a manner that they now represent
+    * the package rotated around the x-axis (length-axis) of the imaginary coordinate system.
+    */
+    public void rotateX() {
+        int[][] newCoords = new int[coords.length][coords[0].length];
+        for (int i = 0; i < newCoords.length; i++) {
+            newCoords[i][0] = coords[i][0];
+            newCoords[i][1] = -coords[i][2];
+            newCoords[i][2] = coords[i][1];
+        }
+        for (int i = 0; i < newCoords.length; i++) {
+            for (int j = 0; j < newCoords[0].length; j++) {
+                if (newCoords[i][j] < 0)
+                    newCoords[i][j] = -newCoords[i][j];
+            }
+        }
+        int temp = width;
+        width = height;
+        height = temp;
+        this.coords = newCoords;
+    }
+    
+    /**
+    * A method that changes the coordinates of the package in such a manner that they now represent
+    * the package rotated around the y-axis (width-axis) of the imaginary coordinate system.
+    */
+    public void rotateY() {
+        int[][] newCoords = new int[coords.length][coords[0].length];
+        for (int i = 0; i < newCoords.length; i++) {
+            newCoords[i][0] = coords[i][2];
+            newCoords[i][1] = coords[i][1];
+            newCoords[i][2] = -coords[i][0];
+        }
+        for (int i = 0; i < newCoords.length; i++) {
+            for (int j = 0; j < newCoords[0].length; j++) {
+                if (newCoords[i][j] < 0)
+                    newCoords[i][j] = -newCoords[i][j];
+            }
+        }
+        int temp = length;
+        length = height;
+        height = temp;
+        this.coords = newCoords;
+    }
+    
+    /**
+    * A method that changes the coordinates of the package in such a manner that they now represent
+    * the package rotated around the z-axis (height-axis) of the imaginary coordinate system.
+    */
+    public void rotateZ() {
+        int[][] newCoords = new int[coords.length][coords[0].length];
+        for (int i = 0; i < newCoords.length; i++) {
+            newCoords[i][0] = -coords[i][1];
+            newCoords[i][1] = coords[i][0];
+            newCoords[i][2] = coords[i][2];
+        }
+        for (int i = 0; i < newCoords.length; i++) {
+            for (int j = 0; j < newCoords[0].length; j++) {
+                if (newCoords[i][j] < 0)
+                    newCoords[i][j] = -newCoords[i][j];
+            }
+        }
+        int temp = length;
+        length = width;
+        width = temp;
+        this.coords = newCoords;
     }
     
     /**

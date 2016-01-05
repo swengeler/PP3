@@ -44,17 +44,18 @@ public class GreedyAlgorithm {
         int nrPackages = nrA + nrB + nrC;
         Package[] packages = new Package[nrPackages];
         for (int i = 0; i < nrC; i++)
-            packages[i] = new Package("C");
+            packages[i] = new Package(PackageType.CPackage);
         for (int i = nrC; i < nrC + nrB; i++)
-            packages[i] = new Package("B");
+            packages[i] = new Package(PackageType.BPackage);
         for (int i = nrC + nrB; i < nrPackages; i++)
-            packages[i] = new Package("A");
+            packages[i] = new Package(PackageType.APackage);
         
         boolean done = false;
         int counter = 0;
         
         while (!done) {
             Package p = packages[counter];
+            p.rotateZ();
             initialPosition(p);
             if (!overlap(p)) {
                 putPackage(p);
@@ -111,6 +112,13 @@ public class GreedyAlgorithm {
         place(p);
     }
     
+    /**
+    * A method to check whether a package can still be moved. It is mostly used to ensure that a package
+    * actually does not have any more space to move, so that there are as few gaps between packages
+    * as possible.
+    * 
+    * return boolean Returns true if the package can be moved in some direction, otherwise returns false.
+    */
     public static boolean movable(Package p) {
         curY--;
         if (curY >= 0 && !overlap(p)) {
@@ -174,7 +182,7 @@ public class GreedyAlgorithm {
         int[][] coords = p.getCoords();
         boolean noOverlap = true;
         for (int i = 0; i < p.getCoords().length && noOverlap; i++) {
-            if (cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] != PackageType.NoPackage)
+            if (curX + coords[i][0] > cargoSpace.length || curY + coords[i][1] > cargoSpace[0].length || curZ + coords[i][2] > cargoSpace[0][0].length || cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] != PackageType.NoPackage)
                 noOverlap = false;                                                      
         }
         return !noOverlap;
