@@ -29,7 +29,7 @@ public class GreedyAlgorithm {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         
-        // The cargo space in an array representation [length][width][height]
+        // The cargo space in an array representation [length][width][height] ([33][5][8])
         // The origin of the coordinate system is in the lower left back corner
         cargoSpace = new PackageType[33][5][8];
         initialiseCS();
@@ -99,14 +99,35 @@ public class GreedyAlgorithm {
     public static void putPackage(Package p) {
         // first move as far back as possible, then as far left as possible, then as far down as possible
         // maybe repeat recursively to avoid placing stuff in bad positions?
-        while (curY > 0 && !overlap(p)) {curY--;}
-        if (overlap(p)) {curY++;}
-        while (curX > 0 && !overlap(p)) {curX--;}
-        if (overlap(p)) {curX++;}
-        while (curZ > 0 && !overlap(p)) {curZ--;}
-        if (overlap(p)) {curZ++;}
+        while (movable(p)) {
+            while (curY > 0 && !overlap(p)) {curY--;}
+            if (overlap(p)) {curY++;}
+            while (curX > 0 && !overlap(p)) {curX--;}
+            if (overlap(p)) {curX++;}
+            while (curZ > 0 && !overlap(p)) {curZ--;}
+            if (overlap(p)) {curZ++;}
+        }
         System.out.println("After placing: curX = " + curX + " curY = " + curY + " curZ = " + curZ);
         place(p);
+    }
+    
+    public static boolean movable(Package p) {
+        curY--;
+        if (curY >= 0 && !overlap(p)) {
+            curY++;
+            return true;
+        } else {curY++;}
+        curX--;
+        if (curX >= 0 && !overlap(p)) {
+            curX++;
+            return true;
+        } else {curX++;}
+        curZ--;
+        if (curZ >= 0 && !overlap(p)) {
+            curZ++;
+            return true;
+        } else {curZ++;}
+        return false;
     }
     
     /**
