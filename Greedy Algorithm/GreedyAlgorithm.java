@@ -76,6 +76,7 @@ public class GreedyAlgorithm {
         
         simplePrint();
         printDoc();
+        printTotalValue();
         
         JFrame f = new JFrame();
         f.setSize(1000, 1020);
@@ -266,6 +267,14 @@ public class GreedyAlgorithm {
         for (int i = 0; i < packageCoords.length; i++) {
             System.out.println(cargoSpaceFilled[i] + " at x = " + packageCoords[i][0] + ", y = " + packageCoords[i][1] + ", z = " + packageCoords[i][2]);
         }
+    }
+    
+    public static void printTotalValue() {
+        double totalValue = 0;
+        for (int i = 0; i < cargoSpaceFilled.length; i++) {
+            totalValue += (new Package(cargoSpaceFilled[i])).getValue();
+        }
+        System.out.println("\nTOTAL VALUE: " + totalValue);
     }
     
 }

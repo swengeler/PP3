@@ -165,6 +165,10 @@ public class Package {
     public int getHeight() {
         return height;
     }
+    
+    public double getValue() {
+        return value;
+    }
 
     /**
     *A method that gives the "worth" of a certain package .
