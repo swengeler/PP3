@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.border.*;
 import javax.swing.BorderFactory;
 
@@ -24,15 +25,15 @@ public class Display extends JPanel {
 
 	private JLabel layerLabel;
 
-    public static final int SQUARE_SIZE = 20;
+  public static final int SQUARE_SIZE = 20;
 
 	public Display(PackageType[][][] cargoSpace) {
         setMinimumSize(new Dimension(1000, 1000));
-		setPreferredSize(new Dimension(1000, 1000));
+		    setPreferredSize(new Dimension(1000, 1000));
         setMaximumSize(new Dimension(1000, 1000));
 
 				setLayout(new BorderLayout());
-		addControlPanel();
+				addControlPanel();
 
 		//[length][width][height]
 		x = new PackageType[cargoSpace.length][cargoSpace[0].length][cargoSpace[0][0].length];
@@ -59,11 +60,14 @@ public class Display extends JPanel {
         setFocusable(true);
 	}
 
+	/**
+	* Add a control panel
+	**/
 	private void addControlPanel() {
-
+		JPanel controlPane = new JPanel();
 		layerLabel = new JLabel("Current layer: " + layer);
-		add(layerLabel, BorderLayout.SOUTH);
-
+		controlPane.add(layerLabel);
+		add(controlPane, BorderLayout.SOUTH);
 	}
 
     class KeyHandler implements KeyListener {
@@ -147,10 +151,12 @@ public class Display extends JPanel {
         Color[] colors = {Color.LIGHT_GRAY, new Color(0, 0, 102), new Color(0, 102, 0), new Color(36, 191, 175), new Color(255, 227, 40), new Color(170, 40, 255)};
 
         if (type == null)
-            g2.setColor(Color.LIGHT_GRAY);
+        	g2.setColor(Color.LIGHT_GRAY);
         else
-            g2.setColor(colors[type.ordinal()]);
-        g2.fill(new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE));
+					g2.setColor(colors[type.ordinal()]);
+
+				g2.fill(new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE));
+
 
 	}
 
