@@ -113,6 +113,7 @@ public class Package {
                     coords[counter][0] = i;
                     coords[counter][1] = j;
                     coords[counter][2] = k;
+                    counter++;
                 }
             }
         }

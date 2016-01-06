@@ -58,11 +58,10 @@ public class GreedyAlgorithm {
         
         while (!done) {
             Package p = packages[counter];
-            p.rotateZ();
+            //p.rotateZ();
             initialPosition(p);
             if (!overlap(p)) {
                 putPackage(p);
-                System.out.println("COUNTER: " + counter);
                 counter++;
             }
             else 
@@ -73,6 +72,7 @@ public class GreedyAlgorithm {
         }
         
         simplePrint();
+        printDoc();
         
     }
     
@@ -85,11 +85,11 @@ public class GreedyAlgorithm {
     */
     public static void initialPosition(Package p) {
         int[][] coords = p.getCoords();
-        curX = cargoSpace.length - p.getLength() - 1;
+        curX = cargoSpace.length - p.getLength();
         System.out.println(curX);
-        curY = cargoSpace[0].length - p.getWidth() - 1;
+        curY = cargoSpace[0].length - p.getWidth();
         System.out.println(curY);
-        curZ = cargoSpace[0][0].length - p.getHeight() - 1;
+        curZ = cargoSpace[0][0].length - p.getHeight();
         System.out.println(curZ);
     }
     
@@ -123,18 +123,31 @@ public class GreedyAlgorithm {
     * @param p The latest package that was placed.
     */
     public static void addToDoc(Package p) {
-        PackageType[] newCSF = new PackageType[cargoSpaceFilled.length + 1];
-        System.arraycopy(cargoSpaceFilled, 0, newCSF, 0, cargoSpaceFilled.length);
-        newCSF[newCSF.length - 1] = p.getType();
-        cargoSpaceFilled = newCSF;
-        
-        int[][] newPC = new int[packageCoords.length][3];
-        for (int i = 0; i < packageCoords.length; i++) {
-            System.arraycopy(packageCoords[i], 0, newPC[i], 0, 3);
+        if (cargoSpaceFilled == null) {
+            cargoSpaceFilled = new PackageType[1];
+            cargoSpaceFilled[0] = p.getType();
+        } else {
+            PackageType[] newCSF = new PackageType[cargoSpaceFilled.length + 1];
+            System.arraycopy(cargoSpaceFilled, 0, newCSF, 0, cargoSpaceFilled.length);
+            newCSF[newCSF.length - 1] = p.getType();
+            cargoSpaceFilled = newCSF;
         }
-        newPC[newPC.length - 1][0] = curX;
-        newPC[newPC.length - 1][1] = curY;
-        newPC[newPC.length - 1][2] = curZ;
+        
+        if (packageCoords == null) {
+            packageCoords = new int[1][3];
+            packageCoords[0][0] = curX;
+            packageCoords[0][1] = curY;
+            packageCoords[0][2] = curZ;
+        } else {
+            int[][] newPC = new int[packageCoords.length + 1][3];
+            for (int i = 0; i < packageCoords.length; i++) {
+                System.arraycopy(packageCoords[i], 0, newPC[i], 0, 3);
+            }
+            newPC[newPC.length - 1][0] = curX;
+            newPC[newPC.length - 1][1] = curY;
+            newPC[newPC.length - 1][2] = curZ;
+            packageCoords = newPC;
+        }
     }
     
     /**
@@ -206,9 +219,11 @@ public class GreedyAlgorithm {
     public static boolean overlap(Package p) {
         int[][] coords = p.getCoords();
         boolean noOverlap = true;
-        for (int i = 0; i < p.getCoords().length && noOverlap; i++) {
-            if (curX + coords[i][0] > cargoSpace.length || curY + coords[i][1] > cargoSpace[0].length || curZ + coords[i][2] > cargoSpace[0][0].length || cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] != PackageType.NoPackage)
-                noOverlap = false;                                                      
+        for (int i = 0; i < coords.length && noOverlap; i++) {
+            if (/*curX + coords[i][0] > cargoSpace.length || curY + coords[i][1] > cargoSpace[0].length || curZ + coords[i][2] > cargoSpace[0][0].length || */cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] != PackageType.NoPackage) {
+                noOverlap = false;
+                System.out.println(p.getType() + " overlaps with " + cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] + " at x = " + (curX + coords[i][0]) + " y = " + (curY + coords[i][1]) + " z = " + (curZ + coords[i][2]));
+            }
         }
         return !noOverlap;
     }
@@ -220,7 +235,7 @@ public class GreedyAlgorithm {
     public static void simplePrint() {
         for (int i = 0; i < cargoSpace.length; i++) {
             System.out.println("\nLayer " + (i + 1) + ":");
-            for (int j = 0; j < cargoSpace[0][0].length; j++) {
+            for (int j = cargoSpace[0][0].length - 1; j >= 0; j--) {
                 for (int k = 0; k < cargoSpace[0].length; k++) {
                     if (cargoSpace[i][k][j] == PackageType.NoPackage)
                         System.out.print("O ");
@@ -233,6 +248,12 @@ public class GreedyAlgorithm {
                 }
                 System.out.println();
             }
+        }
+    }
+    
+    public static void printDoc() {
+        for (int i = 0; i < packageCoords.length; i++) {
+            System.out.println(cargoSpaceFilled[i] + " at x = " + packageCoords[i][0] + ", y = " + packageCoords[i][1] + ", z = " + packageCoords[i][2]);
         }
     }
     
