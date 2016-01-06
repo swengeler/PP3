@@ -1,4 +1,7 @@
 import java.util.Scanner;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
 
 /**
 * A class that uses a greedy algorithm to determine a possible (most likely not optimal) 
@@ -73,6 +76,14 @@ public class GreedyAlgorithm {
         
         simplePrint();
         printDoc();
+        
+        JFrame f = new JFrame();
+        f.setSize(1000, 1020);
+        
+        Display display = new Display(cargoSpace);
+        f.add(display, BorderLayout.CENTER);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setVisible(true);
         
     }
     
