@@ -52,10 +52,12 @@ public class GreedyAlgorithm {
             boolean done = false;
             int counter = 0;
             randomNumbers = new ArrayList<Integer>();
-            for (int j = 0; j < nrPackages - 1; j++)
-                randomNumbers.add(i);
+            for (int j = 0; j < nrPackages; j++) 
+                randomNumbers.add(new Integer(j));
+            Collections.shuffle(randomNumbers);
             while (!done) {
                 Package p = packages[randomNumbers.get(counter).intValue()];
+                p.rotateRandom();
                 cs.initialPosition(p);
                 if (!cs.overlap(p))
                     cs.putPackage(p);
