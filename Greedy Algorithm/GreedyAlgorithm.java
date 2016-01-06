@@ -61,14 +61,10 @@ public class GreedyAlgorithm {
         
         while (!done) {
             Package p = packages[counter];
-            //p.rotateZ();
             initialPosition(p);
-            if (!overlap(p)) {
+            if (!overlap(p))
                 putPackage(p);
-                counter++;
-            }
-            else 
-                done = true;
+            counter++;   
             
             if (counter >= nrPackages) 
                 done = true;
