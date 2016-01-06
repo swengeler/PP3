@@ -31,14 +31,19 @@ public class Display extends JPanel {
 		x = new PackageType[cargoSpace.length][cargoSpace[0].length][cargoSpace[0][0].length];
         for (int i = 0; i < x.length; i++) {
             for (int j = 0; j < x[0].length; j++) {
-                System.arraycopy(cargoSpace, 0, x, 0, x[0][0].length);
+                for (int k = 0; k < x[0][0].length; k++) {
+                    x[i][j][k] = cargoSpace[i][j][k];
+                }
             }
         }
 
 		addKeyListener(new KeyHandler());
         addMouseWheelListener(new MouseWheelListener() {
             public void mouseWheelMoved(MouseWheelEvent e) {
-                if ((e.getWheelRotation() > 0 && layer < x.length - 1) || (e.getWheelRotation() < 0 && layer > 0)) {
+                if (e.getWheelRotation() > 0 && layer < x.length - 1) {
+                    layer += e.getWheelRotation();
+                    repaint();
+                } else if (e.getWheelRotation() < 0 && layer > 0) {
                     layer += e.getWheelRotation();
                     repaint();
                 }
@@ -96,12 +101,12 @@ public class Display extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         
-        int abstand = 20;
+        int distance = 20;
         
         for (int i = 0; i < x[0].length; i++) {
             for (int j = 0; j < x[0][0].length; j++) {
                 //if (x[layer][i][j] != PackageType.NoPackage)
-                    drawSquare(g2, abstand + SQUARE_SIZE * i, abstand + x[0][0].length * SQUARE_SIZE - (j + 1) * SQUARE_SIZE, x[layer][i][j]);
+                    drawSquare(g2, distance + SQUARE_SIZE * i, distance + x[0][0].length * SQUARE_SIZE - (j + 1) * SQUARE_SIZE, x[layer][i][j]);
             }
         }
     }
