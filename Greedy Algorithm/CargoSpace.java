@@ -1,28 +1,60 @@
+/**
+* A class which represents the cargo space that should be filled with packages. It contains
+* multiple arrays storing information about where the individual packages are positioned as 
+* well as methods to place packages in the cargo space.
+*
+* @author Simon Wengeler
+*/
+
 public class CargoSpace {
     
     private static final boolean DEBUG = false;
     private static final boolean PRINT_CONSOLE = false;
     
+    /** The length of the cargo space (in 0.5m).*/
     private int length;
+    /** The width of the cargo space (in 0.5m).*/
     private int width;
+    /** The height of the cargo space (in 0.5m).*/
     private int height;
-    
+    /** The total value of all packages in the cargo space (calculated when the algorithm is finished).*/
     private double totalValue;
     
     /**
-    * A three-dimensional array of PackageType objects (denoting the space taken up by certain
-    * packages) used as an internal representation of the cargo space.
+    * A three-dimensional array of PackageType objects (denoting the space taken up by certain packages) 
+    * used as an internal representation of the cargo space. It does not contain any information about the
+    * placement of individual packages (which are indiscernible in it).
     */
     private PackageType[][][] cargoSpace;
-    private Package[] packages;
     
+    /**
+    * An array containing information about the placement of individual packages in the form of the types
+    * of packages filling certain positions in the cargo space denoted by the corresponding coordinates in 
+    * the packageCoords array.
+    */
     private PackageType[] cargoSpaceFilled;
+    /**
+    * An array containing information about the placement of individual packages in form of the coordinates
+    * of the lower left back-most corner of each package placed in the cargo space (corresponds to the package
+    * types listed in the cargoSpaceFilled array).
+    */
     private int[][] packageCoords;
     
+    /**The x-coordinate of the lower left back-most corner of the package being placed at the moment.*/
     private int curX = 0;
+    /**The y-coordinate of the lower left back-most corner of the package being placed at the moment.*/
     private int curY = 0;
+    /**The z-coordinate of the lower left back-most corner of the package being placed at the moment.*/
     private int curZ = 0;
     
+    /**
+    * The constructor for a CargoSpace object, assigning it its dimensions, initialising the cargoSpace array
+    * and filling it with NoPackage type "packages".
+    *
+    * @param length The length of the cargo space (in 0.5m).
+    * @param width  The width of the cargo space (in 0.5m).
+    * @param height The height of the cargo space (in 0.5m).
+    */
     public CargoSpace(int length, int width, int height) {
         this.length = length;
         this.width = width;
@@ -31,6 +63,12 @@ public class CargoSpace {
         initialiseCS();
     }
     
+    /**
+    * A method to retrieve the three-dimensional internal representation of the cargo space, the cargoSpace
+    * array.
+    * 
+    * @return cargoSpace The three-dimensional array representing the cargo space.
+    */
     public PackageType[][][] getArray() {return cargoSpace;}
     
     /**
@@ -209,12 +247,22 @@ public class CargoSpace {
         }
     }
     
+    /**
+    * A method used to print out the "documentation" created during the run of the algorithm. It provides
+    * information printed out in the command line about the location of each of the packages placed in the
+    * cargo space.
+    */
     public void printDoc() {
         for (int i = 0; i < packageCoords.length; i++) {
             System.out.println(cargoSpaceFilled[i] + " at x = " + packageCoords[i][0] + ", y = " + packageCoords[i][1] + ", z = " + packageCoords[i][2]);
         }
     }
     
+    /**
+    * A method returning the total value of all the packages that were placed in the cargo space.
+    * 
+    * @return totalValue The total value of all included packages.
+    */
     public double getTotalValue() {
         /*double totalValue = 0;
         for (int i = 0; i < cargoSpaceFilled.length; i++) {
