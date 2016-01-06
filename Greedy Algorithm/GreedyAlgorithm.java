@@ -15,6 +15,9 @@ public class GreedyAlgorithm {
     */
     private static PackageType[][][] cargoSpace;
     
+    private static PackageType[] cargoSpaceFilled;
+    private static int[][] packageCoords;
+    
     private static int curX = 0;
     private static int curY = 0;
     private static int curZ = 0;
@@ -109,7 +112,29 @@ public class GreedyAlgorithm {
             if (overlap(p)) {curZ++;}
         }
         System.out.println("After placing: curX = " + curX + " curY = " + curY + " curZ = " + curZ);
+        addToDoc(p);
         place(p);
+    }
+    
+    /**
+    * A method that adds both the package type and the coordinates of the last package placed to arrays 
+    * used for documentation that might be useful later on.
+    *
+    * @param p The latest package that was placed.
+    */
+    public static void addToDoc(Package p) {
+        PackageType[] newCSF = new PackageType[cargoSpaceFilled.length + 1];
+        System.arraycopy(cargoSpaceFilled, 0, newCSF, 0, cargoSpaceFilled.length);
+        newCSF[newCSF.length - 1] = p.getType();
+        cargoSpaceFilled = newCSF;
+        
+        int[][] newPC = new int[packageCoords.length][3];
+        for (int i = 0; i < packageCoords.length; i++) {
+            System.arraycopy(packageCoords[i], 0, newPC[i], 0, 3);
+        }
+        newPC[newPC.length - 1][0] = curX;
+        newPC[newPC.length - 1][1] = curY;
+        newPC[newPC.length - 1][2] = curZ;
     }
     
     /**

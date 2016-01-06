@@ -18,7 +18,7 @@ public class DisplayFrame extends JPanel {
 	public int[][] y;
 	public int layer = 0;
     
-    public static final int SQUARE_SIZE = 10;
+    public static final int SQUARE_SIZE = 20;
 	
 	public DisplayFrame() {
         setMinimumSize(new Dimension(1000, 1000));
