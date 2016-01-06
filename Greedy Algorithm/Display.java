@@ -1,21 +1,17 @@
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseWheelListener;
-import java.awt.event.MouseWheelEvent;
+import java.awt.event.*;
+import java.awt.*;
+import javax.swing.*;
 
-import java.awt.Rectangle;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.BorderLayout;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.border.*;
-import javax.swing.BorderFactory;
+/**
+* A class used to give a proper visual representation of the cargo space. It includes
+* methods to rotate the view of the cargo space as well as scroll through the layers
+* of the cargo space (with a thickness of 0.5 m) since it is the only way to give 
+* information about the third dimension right now.
+*
+* @author Nicola Gheza
+* @author Daniel Kaestner
+* @author Simon Wengeler
+*/
 
 public class Display extends JPanel {
 
@@ -27,13 +23,21 @@ public class Display extends JPanel {
 
   public static final int SQUARE_SIZE = 20;
 
+    /**
+    * A constructor to create a Display object (funtioning as an extension of a JPanel panel)
+    * that also acts as a listener for the key- and mousewheel events which can change the view
+    * of the cargo space.
+    * 
+    * @param cargoSpace The three-dimensional array representation of the cargo space that is
+    *                   supposed to be displayed graphically.
+    */
 	public Display(PackageType[][][] cargoSpace) {
         setMinimumSize(new Dimension(1000, 1000));
-		    setPreferredSize(new Dimension(1000, 1000));
+        setPreferredSize(new Dimension(1000, 1000));
         setMaximumSize(new Dimension(1000, 1000));
-
-				setLayout(new BorderLayout());
-				addControlPanel();
+        
+        setLayout(new BorderLayout());
+		addControlPanel();
 
 		//[length][width][height]
 		x = new PackageType[cargoSpace.length][cargoSpace[0].length][cargoSpace[0][0].length];
@@ -60,18 +64,20 @@ public class Display extends JPanel {
         setFocusable(true);
 	}
 
-	/**
-	* Add a control panel
-	**/
+
+    /**
+    * A method to add a label in the GUI that gives information about which layer is being viewed.
+    */
 	private void addControlPanel() {
-		JPanel controlPane = new JPanel();
 		layerLabel = new JLabel("Current layer: " + layer);
 		controlPane.add(layerLabel);
 		add(controlPane, BorderLayout.SOUTH);
 	}
 
+    /**
+    * A class that is used for processing user input (via the keyboard).
+    */
     class KeyHandler implements KeyListener {
-			private boolean top, bottom, back, front, left, right;
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_UP){
 					rotateZCounterClockwise();
@@ -128,6 +134,12 @@ public class Display extends JPanel {
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------
 
+    /**
+    * The overridden paintComponent method that is used to draw the visual representation of the 
+    * cargo space on the panel.
+    * 
+    * @param g The Graphics object used to do the drawing.
+    */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -144,8 +156,16 @@ public class Display extends JPanel {
             }
         }
     }
-
-
+    
+    /**
+    * A method that draws a square of a certain color (to distinguish between different) types of
+    * packages in each location of the cargo space that is filled with a package.
+    *
+    * @param g2 The Graphics2D object passed down from the paintComponent method.
+    * @param x The x-coordinate (in pixels) of the upper left corner of the square that is drawn.
+    * @param y The y-coordinate (in pixels) of the upper left corner of the square that is drawn.
+    * @param type The type of package that is represented by the square (to decide the color).
+    */
     private void drawSquare(Graphics2D g2, int x, int y, PackageType type) {
 
         Color[] colors = {Color.LIGHT_GRAY, new Color(0, 0, 102), new Color(0, 102, 0), new Color(36, 191, 175), new Color(255, 227, 40), new Color(170, 40, 255)};
@@ -162,11 +182,10 @@ public class Display extends JPanel {
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  	/*
-  	 * A Method to rotate the "Truck-Array" up
-  	 * @return int[][][] The new rotated Array
-  	 */
-  	public void rotateYClockwise(){
+  	/**
+    * A Method to "rotate" the cargo space array clockwise around the y-axis (front side: bottom).
+    */
+  	public void rotateYClockwise() {
   		PackageType[][][] temp = new PackageType[x[0][0].length][x[0].length][x.length];
 
   		for(int i = 0; i<temp.length;i++){
@@ -176,16 +195,15 @@ public class Display extends JPanel {
 				}
 			}
 		}
-		System.out.println("Rotate Y (counterclockwise)");
+		System.out.println("Rotate Y (clockwise)");
         x = temp;
   	}
   	//------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  	/*
-  	 * A Method to rotate the "Truck-Array" down
-  	 * @return int[][][] The new rotated Array
-  	 */
-  	public void rotateYCounterClockwise(){
+  	/**
+    * A Method to "rotate" the cargo space array counter-clockwise around the y-axis (front side: top).
+    */
+  	public void rotateYCounterClockwise() {
   		PackageType[][][] temp = new PackageType[x[0][0].length][x[0].length][x.length];
 
   		for(int i = 0; i<temp.length;i++){
@@ -195,17 +213,16 @@ public class Display extends JPanel {
 				}
 			}
 		}
-		System.out.println("Rotate Y (clockwise)");
+		System.out.println("Rotate Y (counter-clockwise)");
         x = temp;
   	}
 
 	//------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	/*
-	 * A Method to rotate the "Truck-Array" up
-	 * @return int[][][] The new rotated Array
-	 */
-	public void rotateZCounterClockwise(){
+	/**
+    * A Method to "rotate" the cargo space array counter-clockwise around the z-axis (front side: left).
+    */
+	public void rotateZCounterClockwise() {
 		PackageType[][][] temp = new PackageType[x[0].length][x.length][x[0][0].length];
 		for(int i = 0; i<temp.length;i++){
 			for(int j = 0; j<temp[i].length;j++){
@@ -221,11 +238,10 @@ public class Display extends JPanel {
 
 	//------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	/*
-	 * A Method to rotate the "Truck-Array" down
-	 * @return int[][][] The new rotated Array
-	 */
-	public void rotateZClockwise(){
+	/**
+    * A Method to "rotate" the cargo space array clockwise around the z-axis (front side: right).
+    */
+	public void rotateZClockwise() {
 		PackageType[][][] temp = new PackageType[x[0].length][x.length][x[0][0].length];
 		for(int i = 0; i<temp.length;i++){
 			for(int j = 0; j<temp[i].length;j++){
@@ -240,11 +256,10 @@ public class Display extends JPanel {
 
 	//------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	/*
-	 * A Method to rotate the "Truck-Array" to the left
-	 * @return int[][][] The new rotated Array
-	 */
-	public void rotateXCounterClockwise(){
+	/**
+    * A Method to "rotate" the cargo space array counter-clockwise around the x-axis (upper side: right).
+    */
+	public void rotateXCounterClockwise() {
 		PackageType[][][] temp = new PackageType[x.length][x[0][0].length][x[0].length];
 		for(int i = 0; i<temp.length;i++){
 			for(int j = 0; j<temp[i].length;j++){
@@ -253,17 +268,16 @@ public class Display extends JPanel {
 				}
 			}
 		}
-		System.out.println("Rotate X (left)");
+		System.out.println("Rotate X (counter-clockwise)");
         x = temp;
 	}
 
 	//------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	/*
-	 * A Method to rotate the "Truck-Array" to the right
-	 * @return int[][][] The new rotated Array
-	 */
-	public void rotateXClockwise(){
+	/**
+    * A Method to "rotate" the cargo space array clockwise around the x-axis (upper side: left).
+    */
+	public void rotateXClockwise() {
 		PackageType[][][] temp = new PackageType[x.length][x[0][0].length][x[0].length];
 		for(int i = 0; i<temp.length;i++){
 			for(int j = 0; j<temp[i].length;j++){
@@ -272,13 +286,17 @@ public class Display extends JPanel {
 				}
 			}
 		}
-		System.out.println("Rotate X (right)");
+		System.out.println("Rotate X (clockwise)");
         x = temp;
 	}
 
 	//------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	public void print(){
+    /**
+    * A method that gives a simple printout of the cargo space array in the command line (using letters
+    * instead of graphical representations of the single units/packages).
+    */
+	public void print() {
 		if (layer >= x.length) {layer = x.length - 1;}
 
 		System.out.println(layer);
@@ -289,6 +307,5 @@ public class Display extends JPanel {
 				System.out.println();
 			}
 			System.out.println();
-
 	}
 }
