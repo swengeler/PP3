@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -12,7 +13,7 @@ import java.awt.BorderLayout;
 */
 public class GreedyAlgorithm {
     
-    private static final int NR_RUNS = 10000;
+    private static final int NR_RUNS = 1000;
     
     private static Package[] packages;
     
@@ -44,13 +45,17 @@ public class GreedyAlgorithm {
         for (int i = nrC + nrB; i < nrPackages; i++)
             packages[i] = new Package(PackageType.APackage);
         
+        ArrayList<Integer> randomNumbers;
+        
         for (int i = 0; i < NR_RUNS; i++) {
             CargoSpace cs = new CargoSpace(33, 5, 8);
             boolean done = false;
             int counter = 0;
+            randomNumbers = new ArrayList<Integer>();
+            for (int j = 0; j < nrPackages - 1; j++)
+                randomNumbers.add(i);
             while (!done) {
-                int rand = (int) Math.round((Math.random() * (packages.length - 1)));
-                Package p = packages[rand];
+                Package p = packages[randomNumbers.get(counter).intValue()];
                 cs.initialPosition(p);
                 if (!cs.overlap(p))
                     cs.putPackage(p);
