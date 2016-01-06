@@ -139,7 +139,7 @@ public class Display extends JPanel {
 
         for (int i = 0; i < x[0].length; i++) {
             for (int j = 0; j < x[0][0].length; j++) {
-                //if (x[layer][i][j] != PackageType.NoPackage)
+                if (layer >= 0 && layer < x.length)
                     drawSquare(g2, distance + SQUARE_SIZE * i, distance + x[0][0].length * SQUARE_SIZE - (j + 1) * SQUARE_SIZE, x[layer][i][j]);
             }
         }
