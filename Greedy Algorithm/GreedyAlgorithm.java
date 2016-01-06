@@ -26,6 +26,8 @@ public class GreedyAlgorithm {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         
+        // The cargo space in an array representation [length][width][height] ([33][5][8])
+        // The origin of the coordinate system is in the lower left back corner
         CargoSpace[] allCS = new CargoSpace[NR_RUNS];
         
         System.out.print("Please enter the number of A packages: ");
