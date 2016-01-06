@@ -275,6 +275,19 @@ public class Package {
         this.coords = newCoords;
     }
     
+    public void rotateRandom() {
+        int randomX = (int) (Math.random() * 4);
+        int randomY = (int) (Math.random() * 4);
+        int randomZ = (int) (Math.random() * 4);
+        
+        for (int i = 0; i < randomX; i++)
+            this.rotateX();
+        for (int i = 0; i < randomY; i++)
+            this.rotateY();
+        for (int i = 0; i < randomZ; i++)
+            this.rotateZ();
+    }
+    
     /**
     *Returns the minimum value of the x-coordinate of package
     *@return minimum value of the x-coordinate of a package
