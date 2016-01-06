@@ -12,6 +12,9 @@ import java.awt.BorderLayout;
 */
 public class GreedyAlgorithm {
     
+    private static final boolean DEBUG = false;
+    private static final boolean PRINT_CONSOLE = false;
+    
     /**
     * A three-dimensional array of PackageType objects (denoting the space taken up by certain
     * packages) used as an internal representation of the cargo space.
@@ -70,8 +73,8 @@ public class GreedyAlgorithm {
                 done = true;
         }
         
-        simplePrint();
-        printDoc();
+        if (PRINT_CONSOLE) {simplePrint();}
+        if (PRINT_CONSOLE) {printDoc();}
         printTotalValue();
         
         JFrame f = new JFrame();
@@ -94,11 +97,11 @@ public class GreedyAlgorithm {
     public static void initialPosition(Package p) {
         int[][] coords = p.getCoords();
         curX = cargoSpace.length - p.getLength();
-        System.out.println(curX);
+        if (DEBUG) {System.out.println(curX);}
         curY = cargoSpace[0].length - p.getWidth();
-        System.out.println(curY);
+        if (DEBUG) {System.out.println(curY);}
         curZ = cargoSpace[0][0].length - p.getHeight();
-        System.out.println(curZ);
+        if (DEBUG) {System.out.println(curZ);}
     }
     
     /**
@@ -119,7 +122,7 @@ public class GreedyAlgorithm {
             while (curZ > 0 && !overlap(p)) {curZ--;}
             if (overlap(p)) {curZ++;}
         }
-        System.out.println("After placing: curX = " + curX + " curY = " + curY + " curZ = " + curZ);
+        if (DEBUG) {System.out.println("After placing: curX = " + curX + " curY = " + curY + " curZ = " + curZ);}
         addToDoc(p);
         place(p);
     }
@@ -230,7 +233,7 @@ public class GreedyAlgorithm {
         for (int i = 0; i < coords.length && noOverlap; i++) {
             if (/*curX + coords[i][0] > cargoSpace.length || curY + coords[i][1] > cargoSpace[0].length || curZ + coords[i][2] > cargoSpace[0][0].length || */cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] != PackageType.NoPackage) {
                 noOverlap = false;
-                System.out.println(p.getType() + " overlaps with " + cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] + " at x = " + (curX + coords[i][0]) + " y = " + (curY + coords[i][1]) + " z = " + (curZ + coords[i][2]));
+                if (DEBUG) {System.out.println(p.getType() + " overlaps with " + cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] + " at x = " + (curX + coords[i][0]) + " y = " + (curY + coords[i][1]) + " z = " + (curZ + coords[i][2]));}
             }
         }
         return !noOverlap;
