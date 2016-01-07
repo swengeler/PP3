@@ -35,9 +35,6 @@ public class Display extends JPanel {
 		setPreferredSize(new Dimension(1000, 1000));
         setMaximumSize(new Dimension(1000, 1000));
 
-        setLayout(new BorderLayout());
-		addControlPanel();
-
 		//[length][width][height]
 		x = new PackageType[cargoSpace.length][cargoSpace[0].length][cargoSpace[0][0].length];
         for (int i = 0; i < x.length; i++) {
@@ -47,7 +44,9 @@ public class Display extends JPanel {
                 }
             }
         }
-
+        
+        setLayout(new BorderLayout());
+		addControlPanel();
 		addKeyListener(new KeyHandler());
         addMouseWheelListener(new MouseWheelListener() {
             public void mouseWheelMoved(MouseWheelEvent e) {
@@ -67,9 +66,8 @@ public class Display extends JPanel {
     * A method to add a label in the GUI that gives information about which layer is being viewed.
     */
 	private void addControlPanel() {
-		layerLabel = new JLabel("Current layer: " + layer);
+		layerLabel = new JLabel("Current layer: " + layer + "/" + x.length);
 		add(layerLabel, BorderLayout.SOUTH);
-
 	}
 
     /**
