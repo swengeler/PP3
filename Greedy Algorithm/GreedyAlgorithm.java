@@ -17,7 +17,7 @@ public class GreedyAlgorithm {
     * The number of times the algorithm is used to calculate a solution in order to find the best one
     * out of those.
     */
-    private static final int NR_RUNS = 1;
+    private static final int NR_RUNS = 1000;
 
     /**
     * A list (in array form) of the packages which are supposed to be placed in the cargo space.

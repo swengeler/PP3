@@ -207,6 +207,9 @@ public class CargoSpace {
         }
     }
 
+    /**
+    * A method that try to "fills" the cargo gaps with the packages that haven't been placed yet.
+    */
     public void fillGaps(ArrayList<Package> packagesLeft) {
       int counter = 0;
       for (int i = 0; i < cargoSpace.length; i++) {
