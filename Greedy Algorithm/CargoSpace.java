@@ -216,7 +216,7 @@ public class CargoSpace {
         int[][] coords = p.getCoords();
         boolean noOverlap = true;
         for (int i = 0; i < coords.length && noOverlap; i++) {
-            if (curX + coords[i][0] > cargoSpace.length || curY + coords[i][1] > cargoSpace[0].length || curZ + coords[i][2] > cargoSpace[0][0].length || cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] != PackageType.NoPackage) {
+            if (curX + coords[i][0] >= cargoSpace.length || curY + coords[i][1] >= cargoSpace[0].length || curZ + coords[i][2] >= cargoSpace[0][0].length || cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] != PackageType.NoPackage) {
                 noOverlap = false;
                 if (DEBUG) {System.out.println(p.getType() + " overlaps with " + cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] + " at x = " + (curX + coords[i][0]) + " y = " + (curY + coords[i][1]) + " z = " + (curZ + coords[i][2]));}
             }
