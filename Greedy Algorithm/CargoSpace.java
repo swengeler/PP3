@@ -219,11 +219,13 @@ public class CargoSpace {
                     curX = i;
                     curY = j;
                     curZ = k;
-                    boolean placed = false;
-                    for (Package p : packagesLeft) {
+                    for (int z = 0; z < packagesLeft.size(); z++) {
+                      Package p = packagesLeft.get(z);
                       p.rotateRandom();
                       if (!this.overlap(p)) {
                         this.putPackage(p);
+                        packagesLeft.remove(z);
+                        z = packagesLeft.size();
                         counter++;
                       }
                     }

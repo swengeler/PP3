@@ -17,7 +17,7 @@ public class GreedyAlgorithm {
     * The number of times the algorithm is used to calculate a solution in order to find the best one
     * out of those.
     */
-    private static final int NR_RUNS = 1000;
+    private static final int NR_RUNS = 100;
 
     /**
     * A list (in array form) of the packages which are supposed to be placed in the cargo space.
@@ -79,7 +79,11 @@ public class GreedyAlgorithm {
                     done = true;
             }
             System.out.println("There are " + packagesLeft.size() + " packages left");
+            long startTime = System.currentTimeMillis();
             cs.fillGaps(packagesLeft);
+            long endTime = System.currentTimeMillis();
+            long totalTime = endTime - startTime;
+        		System.out.println("Runtime: " + totalTime + "ms");
             allCS[i] = cs;
         }
 
