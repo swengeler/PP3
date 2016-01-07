@@ -1,16 +1,18 @@
+import java.util.ArrayList;
+
 /**
 * A class which represents the cargo space that should be filled with packages. It contains
-* multiple arrays storing information about where the individual packages are positioned as 
+* multiple arrays storing information about where the individual packages are positioned as
 * well as methods to place packages in the cargo space.
 *
 * @author Simon Wengeler
 */
 
 public class CargoSpace {
-    
+
     private static final boolean DEBUG = false;
     private static final boolean PRINT_CONSOLE = false;
-    
+
     /** The length of the cargo space (in 0.5m).*/
     private int length;
     /** The width of the cargo space (in 0.5m).*/
@@ -19,17 +21,17 @@ public class CargoSpace {
     private int height;
     /** The total value of all packages in the cargo space (calculated when the algorithm is finished).*/
     private double totalValue;
-    
+
     /**
-    * A three-dimensional array of PackageType objects (denoting the space taken up by certain packages) 
+    * A three-dimensional array of PackageType objects (denoting the space taken up by certain packages)
     * used as an internal representation of the cargo space. It does not contain any information about the
     * placement of individual packages (which are indiscernible in it).
     */
     private PackageType[][][] cargoSpace;
-    
+
     /**
     * An array containing information about the placement of individual packages in the form of the types
-    * of packages filling certain positions in the cargo space denoted by the corresponding coordinates in 
+    * of packages filling certain positions in the cargo space denoted by the corresponding coordinates in
     * the packageCoords array.
     */
     private PackageType[] cargoSpaceFilled;
@@ -39,14 +41,14 @@ public class CargoSpace {
     * types listed in the cargoSpaceFilled array).
     */
     private int[][] packageCoords;
-    
+
     /**The x-coordinate of the lower left back-most corner of the package being placed at the moment.*/
     private int curX = 0;
     /**The y-coordinate of the lower left back-most corner of the package being placed at the moment.*/
     private int curY = 0;
     /**The z-coordinate of the lower left back-most corner of the package being placed at the moment.*/
     private int curZ = 0;
-    
+
     /**
     * The constructor for a CargoSpace object, assigning it its dimensions, initialising the cargoSpace array
     * and filling it with NoPackage type "packages".
@@ -62,20 +64,20 @@ public class CargoSpace {
         cargoSpace = new PackageType[length][width][height];
         initialiseCS();
     }
-    
+
     /**
     * A method to retrieve the three-dimensional internal representation of the cargo space, the cargoSpace
     * array.
-    * 
+    *
     * @return cargoSpace The three-dimensional array representing the cargo space.
     */
     public PackageType[][][] getArray() {return cargoSpace;}
-    
+
     /**
     * Determines the initial position of the package currently being placed in the most upper, right and
     * front corner of the cargo area.
     *
-    * @param p The package whose dimensions determine the values of curX, curY and curZ (i.e. the next 
+    * @param p The package whose dimensions determine the values of curX, curY and curZ (i.e. the next
     *          package placed in the cargo area).
     */
     public void initialPosition(Package p) {
@@ -87,12 +89,12 @@ public class CargoSpace {
         curZ = cargoSpace[0][0].length - p.getHeight();
         if (DEBUG) {System.out.println(curZ);}
     }
-    
+
     /**
-    * Places the package p in the cargo space at the "best position" (assumed to be as "close" to the 
+    * Places the package p in the cargo space at the "best position" (assumed to be as "close" to the
     * origin of the cargo space coordinate system as possible).
-    * 
-    * @param p The package for which a position is to be determined and which is to be placed in the 
+    *
+    * @param p The package for which a position is to be determined and which is to be placed in the
     *          cargo space.
     */
     public void putPackage(Package p) {
@@ -111,9 +113,9 @@ public class CargoSpace {
         place(p);
         totalValue += p.getValue();
     }
-    
+
     /**
-    * A method that adds both the package type and the coordinates of the last package placed to arrays 
+    * A method that adds both the package type and the coordinates of the last package placed to arrays
     * used for documentation that might be useful later on.
     *
     * @param p The latest package that was placed.
@@ -128,7 +130,7 @@ public class CargoSpace {
             newCSF[newCSF.length - 1] = p.getType();
             cargoSpaceFilled = newCSF;
         }
-        
+
         if (packageCoords == null) {
             packageCoords = new int[1][3];
             packageCoords[0][0] = curX;
@@ -145,12 +147,12 @@ public class CargoSpace {
             packageCoords = newPC;
         }
     }
-    
+
     /**
     * A method to check whether a package can still be moved. It is mostly used to ensure that a package
     * actually does not have any more space to move, so that there are as few gaps between packages
     * as possible.
-    * 
+    *
     * return boolean Returns true if the package can be moved in some direction, otherwise returns false.
     */
     public boolean movable(Package p) {
@@ -171,11 +173,11 @@ public class CargoSpace {
         } else {curZ++;}
         return false;
     }
-    
+
     /**
-    * Changes the internal representation of the cargo space (the three-dimensional array) in order to 
+    * Changes the internal representation of the cargo space (the three-dimensional array) in order to
     * properly represent the package that was placed at a certain position and is now filling up space.
-    * 
+    *
     * @param p The Package that is placed in the array/cargo space.
     */
     public void place(Package p) {
@@ -190,7 +192,7 @@ public class CargoSpace {
             }
         }
     }
-    
+
     /**
     * A method that "fills" the cargo space with "no packages", i.e. empties it, either to reset it or
     * in order to have a proper graphical representation in the GUI.
@@ -204,7 +206,34 @@ public class CargoSpace {
             }
         }
     }
-    
+
+    /**
+    * A method that try to "fills" the cargo gaps with the packages that haven't been placed yet.
+    */
+    public void fillGaps(ArrayList<Package> packagesLeft) {
+      int counter = 0;
+      for (int i = 0; i < cargoSpace.length; i++) {
+          for (int j = 0; j < cargoSpace[i].length; j++) {
+              for (int k = 0; k < cargoSpace[i][j].length; k++) {
+                  if (cargoSpace[i][j][k] == PackageType.NoPackage) {
+                    curX = i;
+                    curY = j;
+                    curZ = k;
+                    boolean placed = false;
+                    for (Package p : packagesLeft) {
+                      p.rotateRandom();
+                      if (!this.overlap(p)) {
+                        this.putPackage(p);
+                        counter++;
+                      }
+                    }
+                  }
+              }
+          }
+      }
+      System.out.println("Packages added by fillGaps() : " + counter);
+    }
+
     /**
     * A method that checks whether there is any overlap between packages already put in the cargo space
     * and the package to be put there at its current position.
@@ -223,7 +252,7 @@ public class CargoSpace {
         }
         return !noOverlap;
     }
-    
+
     /**
     * A method that produces a very simple printout of the cargo space to give an idea of how/whether the
     * algorithm is working properly.
@@ -246,7 +275,7 @@ public class CargoSpace {
             }
         }
     }
-    
+
     /**
     * A method used to print out the "documentation" created during the run of the algorithm. It provides
     * information printed out in the command line about the location of each of the packages placed in the
@@ -257,10 +286,10 @@ public class CargoSpace {
             System.out.println(cargoSpaceFilled[i] + " at x = " + packageCoords[i][0] + ", y = " + packageCoords[i][1] + ", z = " + packageCoords[i][2]);
         }
     }
-    
+
     /**
     * A method returning the total value of all the packages that were placed in the cargo space.
-    * 
+    *
     * @return totalValue The total value of all included packages.
     */
     public double getTotalValue() {
