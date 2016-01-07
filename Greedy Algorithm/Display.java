@@ -21,7 +21,7 @@ public class Display extends JPanel {
 
 	private JLabel layerLabel;
 
-  public static final int SQUARE_SIZE = 20;
+    public static final int SQUARE_SIZE = 20;
 
     /**
     * A constructor to create a Display object (funtioning as an extension of a JPanel panel)
@@ -71,8 +71,7 @@ public class Display extends JPanel {
     */
 	private void addControlPanel() {
 		layerLabel = new JLabel("Current layer: " + layer);
-		controlPane.add(layerLabel);
-		add(controlPane, BorderLayout.SOUTH);
+		add(layerLabel, BorderLayout.SOUTH);
 	}
 
     /**

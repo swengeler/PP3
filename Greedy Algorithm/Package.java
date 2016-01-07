@@ -61,7 +61,7 @@ public class Package {
         coords = new int[8][3];
         if (type == PackageType.APackage) {
             length = 4;
-            width = 2;
+            width = 4;
             height = 2;
             value = 3;
             setPackage(PackageType.APackage);
