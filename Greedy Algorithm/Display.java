@@ -12,6 +12,7 @@ import javax.swing.*;
 * @author Daniel Kaestner
 * @author Simon Wengeler
 */
+
 public class Display extends JPanel {
 
 	public PackageType[][][] x;
@@ -20,7 +21,7 @@ public class Display extends JPanel {
 
 	private JLabel layerLabel;
 
-    public static final int SQUARE_SIZE = 20;
+  public static final int SQUARE_SIZE = 20;
 
     /**
     * A constructor to create a Display object (funtioning as an extension of a JPanel panel)
@@ -32,7 +33,7 @@ public class Display extends JPanel {
     */
 	public Display(PackageType[][][] cargoSpace) {
         setMinimumSize(new Dimension(1000, 1000));
-		setPreferredSize(new Dimension(1000, 1000));
+        setPreferredSize(new Dimension(1000, 1000));
         setMaximumSize(new Dimension(1000, 1000));
 
         setLayout(new BorderLayout());
@@ -68,8 +69,8 @@ public class Display extends JPanel {
     */
 	private void addControlPanel() {
 		layerLabel = new JLabel("Current layer: " + layer);
-		add(layerLabel, BorderLayout.SOUTH);
-
+		controlPane.add(layerLabel);
+		add(controlPane, BorderLayout.SOUTH);
 	}
 
     /**
@@ -169,10 +170,12 @@ public class Display extends JPanel {
         Color[] colors = {Color.LIGHT_GRAY, new Color(0, 0, 102), new Color(0, 102, 0), new Color(36, 191, 175), new Color(255, 227, 40), new Color(170, 40, 255)};
 
         if (type == null)
-            g2.setColor(Color.LIGHT_GRAY);
+        	g2.setColor(Color.LIGHT_GRAY);
         else
-            g2.setColor(colors[type.ordinal()]);
-        g2.fill(new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE));
+					g2.setColor(colors[type.ordinal()]);
+
+				g2.fill(new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE));
+
 
 	}
 
