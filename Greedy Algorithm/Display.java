@@ -35,9 +35,12 @@ public class Display extends JPanel {
         setMinimumSize(new Dimension(1000, 1000));
         setPreferredSize(new Dimension(1000, 1000));
         setMaximumSize(new Dimension(1000, 1000));
+<<<<<<< a3219920bad4914dbb28a74451365c6df3df4402
         
         setLayout(new BorderLayout());
 		addControlPanel();
+=======
+>>>>>>> Small change to the counter of the greedy algorithm
 
 		//[length][width][height]
 		x = new PackageType[cargoSpace.length][cargoSpace[0].length][cargoSpace[0][0].length];
@@ -48,7 +51,9 @@ public class Display extends JPanel {
                 }
             }
         }
-
+        
+        setLayout(new BorderLayout());
+		addControlPanel();
 		addKeyListener(new KeyHandler());
         addMouseWheelListener(new MouseWheelListener() {
             public void mouseWheelMoved(MouseWheelEvent e) {
