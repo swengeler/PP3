@@ -5,5 +5,5 @@
 */
 
 public enum PackageType {
-    NoPackage, APackage, BPackage, CPackage, Other
+    NoPackage, APackage, BPackage, CPackage, LPackage, PPackage, TPackage, Other
 }
