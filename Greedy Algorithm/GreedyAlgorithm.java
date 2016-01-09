@@ -12,17 +12,21 @@ import java.awt.BorderLayout;
 * @author Simon Wengeler
 */
 public class GreedyAlgorithm {
+    
+    private static final boolean DEBUG = false;
 
     /**
     * The number of times the algorithm is used to calculate a solution in order to find the best one
     * out of those.
     */
-    private static final int NR_RUNS = 100;
+    private static final int NR_RUNS = 10000;
 
     /**
     * A list (in array form) of the packages which are supposed to be placed in the cargo space.
     */
     private static Package[] packages;
+    
+    public static CargoSpace bestCS;
 
     /**
     * The main method of the class, initialising the array used for the internal representation
@@ -63,7 +67,7 @@ public class GreedyAlgorithm {
             packagesLeft = new ArrayList<Package>();
             for (int j = 0; j < nrPackages; j++)
                 randomNumbers.add(new Integer(j));
-            //Collections.shuffle(randomNumbers);
+            Collections.shuffle(randomNumbers);
             while (!done) {
                 Package p = packages[randomNumbers.get(counter).intValue()];
                 p.rotateRandom();
@@ -78,17 +82,17 @@ public class GreedyAlgorithm {
                 if (counter >= nrPackages)
                     done = true;
             }
-            System.out.println("There are " + packagesLeft.size() + " packages left");
+            if (DEBUG) {System.out.println("There are " + packagesLeft.size() + " packages left");}
             long startTime = System.currentTimeMillis();
             cs.fillGaps(packagesLeft);
             long endTime = System.currentTimeMillis();
             long totalTime = endTime - startTime;
-        		System.out.println("Runtime: " + totalTime + "ms");
+            if (DEBUG) {System.out.println("Runtime: " + totalTime + "ms");}
             allCS[i] = cs;
         }
 
         double best = 0;
-        CargoSpace bestCS = new CargoSpace(0, 0, 0);
+        bestCS = new CargoSpace(33, 5, 8);
         for (int i = 0; i < allCS.length; i++) {
             //System.out.println(allCS[i].getTotalValue());
             if (allCS[i].getTotalValue() > best) {

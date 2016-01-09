@@ -32,9 +32,9 @@ public class Display extends JPanel {
     *                   supposed to be displayed graphically.
     */
 	public Display(PackageType[][][] cargoSpace) {
-        setMinimumSize(new Dimension(1000, 1000));
-        setPreferredSize(new Dimension(1000, 1000));
-        setMaximumSize(new Dimension(1000, 1000));
+        setMinimumSize(new Dimension(750, 750));
+        setPreferredSize(new Dimension(750, 750));
+        setMaximumSize(new Dimension(750, 750));
         
         setLayout(new BorderLayout());
 		addControlPanel();

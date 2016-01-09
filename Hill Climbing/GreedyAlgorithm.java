@@ -22,7 +22,9 @@ public class GreedyAlgorithm {
     /**
     * A list (in array form) of the packages which are supposed to be placed in the cargo space.
     */
-    private static Package[] packages;
+    public static Package[] packages;
+    
+    public static CargoSpace bestCS;
 
     /**
     * The main method of the class, initialising the array used for the internal representation
@@ -32,6 +34,11 @@ public class GreedyAlgorithm {
     * @param args Not used.
     */
     public static void main(String[] args) {
+        GreedyAlgorithm cargo = new GreedyAlgorithm();
+        cargo.run();
+    }
+    
+    public void run() {
         Scanner in = new Scanner(System.in);
 
         CargoSpace[] allCS = new CargoSpace[NR_RUNS];
@@ -90,7 +97,7 @@ public class GreedyAlgorithm {
         }
 
         double best = 0;
-        CargoSpace bestCS = new CargoSpace(0, 0, 0);
+        bestCS = new CargoSpace(0, 0, 0);
         for (int i = 0; i < allCS.length; i++) {
             //System.out.println(allCS[i].getTotalValue());
             if (allCS[i].getTotalValue() > best) {
@@ -108,7 +115,6 @@ public class GreedyAlgorithm {
         f.add(display, BorderLayout.CENTER);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
-
     }
 
 }

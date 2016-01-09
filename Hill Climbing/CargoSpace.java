@@ -34,13 +34,15 @@ public class CargoSpace {
     * of packages filling certain positions in the cargo space denoted by the corresponding coordinates in
     * the packageCoords array.
     */
-    private PackageType[] cargoSpaceFilled;
+    public PackageType[] cargoSpaceFilled;
     /**
     * An array containing information about the placement of individual packages in form of the coordinates
     * of the lower left back-most corner of each package placed in the cargo space (corresponds to the package
     * types listed in the cargoSpaceFilled array).
     */
-    private int[][] packageCoords;
+    public int[][] packageCoords;
+    
+    public int[][] packageRotations;
 
     /**The x-coordinate of the lower left back-most corner of the package being placed at the moment.*/
     public int curX = 0;
@@ -316,5 +318,10 @@ public class CargoSpace {
         }*/
         if (DEBUG) {System.out.println("\nTOTAL VALUE: " + totalValue);}
         return totalValue;
+    }
+    
+    public double getFitness() {
+        double fitness = totalValue - 0.25 * ((cargoSpace.length * cargoSpace[0].length * cargoSpace[0][0].length) - this.getTotalGaps());
+        return fitness;
     }
 }
