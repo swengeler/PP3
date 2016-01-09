@@ -42,12 +42,7 @@ public class CargoSpace {
     */
     public int[][] packageCoords;
 
-    /**The x-coordinate of the lower left back-most corner of the package being placed at the moment.*/
-    public int curX = 0;
-    /**The y-coordinate of the lower left back-most corner of the package being placed at the moment.*/
-    public int curY = 0;
-    /**The z-coordinate of the lower left back-most corner of the package being placed at the moment.*/
-    public int curZ = 0;
+    private int nrPlaced;
 
     /**
     * The constructor for a CargoSpace object, assigning it its dimensions, initialising the cargoSpace array
@@ -82,12 +77,9 @@ public class CargoSpace {
     */
     public void initialPosition(Package p) {
         int[][] coords = p.getCoords();
-        curX = cargoSpace.length - p.getLength();
-        if (DEBUG) {System.out.println(curX);}
-        curY = cargoSpace[0].length - p.getWidth();
-        if (DEBUG) {System.out.println(curY);}
-        curZ = cargoSpace[0][0].length - p.getHeight();
-        if (DEBUG) {System.out.println(curZ);}
+        p.setBaseX(cargoSpace.length - p.getLength());
+        p.setBaseY(cargoSpace[0].length - p.getWidth());
+        p.setBaseZ(cargoSpace[0][0].length - p.getHeight());
     }
 
     /**
@@ -101,14 +93,14 @@ public class CargoSpace {
         // first move as far back as possible, then as far left as possible, then as far down as possible
         // maybe repeat recursively to avoid placing stuff in bad positions?
         while (movable(p)) {
-            while (curY > 0 && !overlap(p)) {curY--;}
-            if (overlap(p)) {curY++;}
-            while (curX > 0 && !overlap(p)) {curX--;}
-            if (overlap(p)) {curX++;}
-            while (curZ > 0 && !overlap(p)) {curZ--;}
-            if (overlap(p)) {curZ++;}
+            while (p.getBaseCoords()[1] > 0 && !overlap(p)) {p.setBaseY(p.getBaseCoords()[1] - 1);}
+            if (overlap(p)) {p.setBaseY(p.getBaseCoords()[1] + 1);}
+            while (p.getBaseCoords()[0] > 0 && !overlap(p)) {p.setBaseX(p.getBaseCoords()[0] - 1);}
+            if (overlap(p)) {p.setBaseX(p.getBaseCoords()[0] + 1);}
+            while (p.getBaseCoords()[2] > 0 && !overlap(p)) {p.setBaseZ(p.getBaseCoords()[2] - 1);}
+            if (overlap(p)) {p.setBaseZ(p.getBaseCoords()[2] + 1);}
         }
-        if (DEBUG) {System.out.println("After placing: curX = " + curX + " curY = " + curY + " curZ = " + curZ);}
+        if (DEBUG) {System.out.println("After placing: curX = " + p.getBaseCoords()[0] + " curY = " + p.getBaseCoords()[1] + " curZ = " + p.getBaseCoords()[2]);}
         place(p);
     }
 
@@ -128,22 +120,6 @@ public class CargoSpace {
             newCSF[newCSF.length - 1] = p;
             cargoSpaceFilled = newCSF;
         }
-
-        if (packageCoords == null) {
-            packageCoords = new int[1][3];
-            packageCoords[0][0] = curX;
-            packageCoords[0][1] = curY;
-            packageCoords[0][2] = curZ;
-        } else {
-            int[][] newPC = new int[packageCoords.length + 1][3];
-            for (int i = 0; i < packageCoords.length; i++) {
-                System.arraycopy(packageCoords[i], 0, newPC[i], 0, 3);
-            }
-            newPC[newPC.length - 1][0] = curX;
-            newPC[newPC.length - 1][1] = curY;
-            newPC[newPC.length - 1][2] = curZ;
-            packageCoords = newPC;
-        }
     }
 
     /**
@@ -154,21 +130,21 @@ public class CargoSpace {
     * return boolean Returns true if the package can be moved in some direction, otherwise returns false.
     */
     public boolean movable(Package p) {
-        curY--;
-        if (curY >= 0 && !overlap(p)) {
-            curY++;
+        p.setBaseY(p.getBaseCoords()[1] - 1);
+        if (p.getBaseCoords()[1] >= 0 && !overlap(p)) {
+            p.setBaseY(p.getBaseCoords()[1] + 1);
             return true;
-        } else {curY++;}
-        curX--;
-        if (curX >= 0 && !overlap(p)) {
-            curX++;
+        } else {p.setBaseY(p.getBaseCoords()[1] + 1);}
+        p.setBaseX(p.getBaseCoords()[0] - 1);
+        if (p.getBaseCoords()[0] >= 0 && !overlap(p)) {
+            p.setBaseX(p.getBaseCoords()[0] + 1);
             return true;
-        } else {curX++;}
-        curZ--;
-        if (curZ >= 0 && !overlap(p)) {
-            curZ++;
+        } else {p.setBaseX(p.getBaseCoords()[0] + 1);}
+        p.setBaseZ(p.getBaseCoords()[2] - 1);
+        if (p.getBaseCoords()[2] >= 0 && !overlap(p)) {
+            p.setBaseZ(p.getBaseCoords()[2] + 1);
             return true;
-        } else {curZ++;}
+        } else {p.setBaseZ(p.getBaseCoords()[2] + 1);}
         return false;
     }
 
@@ -186,13 +162,12 @@ public class CargoSpace {
             for (int y = 0; y < p.getWidth(); y++) {
                 // coords[3][2] should be the z-coordinate of all the corners of the package on the upper side
                 for (int z = 0; z < p.getHeight(); z++) {
-                    cargoSpace[x + curX][y + curY][z + curZ] = p.getType();
-                    p.setBaseCoords(x, y, z);
+                    cargoSpace[x + p.getBaseCoords()[0]][y + p.getBaseCoords()[1]][z + p.getBaseCoords()[2]] = p.getType();
                 }
             }
         }
         totalValue += p.getValue();
-
+        nrPlaced++;
         addToDoc(p);
     }
 
@@ -233,11 +208,9 @@ public class CargoSpace {
           for (int j = 0; j < cargoSpace[i].length; j++) {
               for (int k = 0; k < cargoSpace[i][j].length; k++) {
                   if (cargoSpace[i][j][k].equals("Empty")) {
-                    curX = i;
-                    curY = j;
-                    curZ = k;
                     for (int z = 0; z < packagesLeft.size(); z++) {
                       Package p = packagesLeft.get(z);
+                      p.setBaseCoords(i, j, k);
                       p.rotateRandom();
                       if (!this.overlap(p)) {
                         this.putPackage(p);
@@ -264,9 +237,9 @@ public class CargoSpace {
         int[][] coords = p.getCoords();
         boolean noOverlap = true;
         for (int i = 0; i < coords.length && noOverlap; i++) {
-            if (curX + coords[i][0] >= cargoSpace.length || curY + coords[i][1] >= cargoSpace[0].length || curZ + coords[i][2] >= cargoSpace[0][0].length || !cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]].equals("Empty")) {
+            if (p.getBaseCoords()[0] + coords[i][0] >= cargoSpace.length || p.getBaseCoords()[1] + coords[i][1] >= cargoSpace[0].length || p.getBaseCoords()[2] + coords[i][2] >= cargoSpace[0][0].length || !cargoSpace[p.getBaseCoords()[0] + coords[i][0]][p.getBaseCoords()[1] + coords[i][1]][p.getBaseCoords()[2] + coords[i][2]].equals("Empty")) {
                 noOverlap = false;
-                if (true) {System.out.println(p.getType() + " overlaps with " + cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] + " at x = " + (curX + coords[i][0]) + " y = " + (curY + coords[i][1]) + " z = " + (curZ + coords[i][2]));}
+                if (DEBUG) {System.out.println(p.getType() + " overlaps with " + cargoSpace[p.getBaseCoords()[0] + coords[i][0]][p.getBaseCoords()[1] + coords[i][1]][p.getBaseCoords()[2] + coords[i][2]] + " at x = " + (p.getBaseCoords()[0] + coords[i][0]) + " y = " + (p.getBaseCoords()[1] + coords[i][1]) + " z = " + (p.getBaseCoords()[2] + coords[i][2]));}
             }
         }
         return !noOverlap;
@@ -330,15 +303,16 @@ public class CargoSpace {
                     overlapping++;
             }
         }
-        double fitness = totalValue - 0.5 * overlapping/*- 0.25 * ((cargoSpace.length * cargoSpace[0].length * cargoSpace[0][0].length) - this.getTotalGaps())*/;
+        //System.out.println("Overlapping: " + overlapping);
+        double fitness = totalValue - (nrPlaced - overlapping);
         return fitness;
     }
 
     public void fillCargoSpace(Package[] cargo) {
-        System.out.println("cargo array length: " + cargo.length);
+        if (DEBUG) {System.out.println("cargo array length: " + cargo.length);}
         for (int i = 0; i < cargo.length; i++) {
             if (!overlap(cargo[i])) {
-                System.out.println("Package " + (i + 1) + " placed.");
+                if (DEBUG) {System.out.println("Package " + (i + 1) + " placed.");}
                 place(cargo[i]);
             }
         }

@@ -8,12 +8,15 @@ import java.util.ArrayList;
  */
 public class HillClimbing {
 
+    private final boolean SHOW_BESTC_VALUE = false;
+    private final boolean DEBUG = false;
+
     private CargoSpace currentSolution;
     private Package[] packages;
 
-    final int PACKAGE_CHANGE = 1;
+    final int PACKAGE_CHANGE = 50;
     final int RANGE = 10;
-    final int NEIGHBOURHOOD_SIZE = 1;
+    final int NEIGHBOURHOOD_SIZE = 100;
 
     /**
     * The initialSolution method creates a partial solution for the Hill Climbing Algorithm
@@ -44,7 +47,7 @@ public class HillClimbing {
 
         currentSolution = new CargoSpace(33,5,8);
         for (int i = 0; i < packages.length; i++) {
-            System.out.println("Package " + (i + 1) + ": x = " + packages[i].getBaseCoords()[0] + ", y = " + packages[i].getBaseCoords()[1] + ", z = " + packages[i].getBaseCoords()[2]);
+            if (DEBUG) {System.out.println("Package " + (i + 1) + ": x = " + packages[i].getBaseCoords()[0] + ", y = " + packages[i].getBaseCoords()[1] + ", z = " + packages[i].getBaseCoords()[2]);}
         }
         currentSolution.fillCargoSpace(packages);
 
@@ -54,9 +57,9 @@ public class HillClimbing {
         Package currentPackage;
         for (int i=0; i<packages.length; i++) {
             currentPackage = packages[i];
-            cargoSpace.curX = coordinates[i][0];
-            cargoSpace.curY = coordinates[i][1];
-            cargoSpace.curZ = coordinates[i][2];
+            //cargoSpace.curX = coordinates[i][0];
+            //cargoSpace.curY = coordinates[i][1];
+            //cargoSpace.curZ = coordinates[i][2];
             for (int j=0; j<rotations[i][0]; j++) {
                 currentPackage.rotateX();
             }
@@ -129,7 +132,7 @@ public class HillClimbing {
                 this.evaluate(newSolution);
             }
 
-            System.out.println("Current best total value: " + currentSolution.getTotalValue());
+            if (SHOW_BESTC_VALUE) {System.out.println("Current best total value: " + currentSolution.getTotalValue());}
         }
     }
 
