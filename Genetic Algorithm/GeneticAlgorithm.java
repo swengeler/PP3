@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class GeneticAlgorithm {
 
@@ -14,13 +15,20 @@ public class GeneticAlgorithm {
     private Package[] packageTypes;
     private CargoSpace cargoSpace;
 
+    private int gene;
+
+    /*public GeneticAlgorithm(int gene) {
+        this.gene = gene;
+    }*/
     public void initialPopulation(Package[] types) {
         population = new Individual[POPULATION_SIZE];
         cargoSpace = new CargoSpace(33, 5, 8);
         int chrLength = 0;
         //packageTypes = types;
-        Package[] packageTypes = new Package[1];
+        Package[] packageTypes = new Package[2];
         packageTypes[0] = new Package("A");
+        packageTypes[1] = new Package("B");
+        packageTypes[2] = new Package("C");
         //packageTypes[0] = new Package("A");
         //packageTypes[1] = new Package("B");
         //packageTypes[2] = new Package("C");
@@ -28,6 +36,7 @@ public class GeneticAlgorithm {
         for (int i = 0; i < packageTypes.length; i++) {
             chrLength += packageTypes[i].getNrStates(cargoSpace.getLength(), cargoSpace.getWidth(), cargoSpace.getHeight())[0];
         }
+        System.out.println(chrLength);
 
         int[] chromosome = new int[chrLength];
         /*for (int i = 0; i < POPULATION_SIZE; i++) {
@@ -39,9 +48,17 @@ public class GeneticAlgorithm {
             }
             population[i] = new Individual(chromosome);
         }*/
-        chromosome[6] = 1;
+        for (int j = 0; j < chromosome.length; j++) {
+            if (Math.random() < 0.5) {
+                chromosome[j] = 0;
+                System.out.println("chromosome[" + j + "] = " + chromosome[j]);
+            } else {
+                chromosome[j] = 1;
+                System.out.println("chromosome[" + j + "] = " + chromosome[j]);
+            }
+        }
+        //chromosome[gene] = 1;
         cargoSpace = Converter.chromosomeToCargoSpace(chromosome, packageTypes, cargoSpace);
-        System.out.println(chrLength);
 
         /*
         * Order in which the chromosome is "interpreted":
@@ -74,6 +91,9 @@ public class GeneticAlgorithm {
     * @param args Not used.
     */
     public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        //System.out.print("nr = ");
+        //int gene = in.nextInt();
         GeneticAlgorithm gA = new GeneticAlgorithm();
         gA.initialPopulation(null);
         gA.displaySolution();
