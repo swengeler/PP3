@@ -12,7 +12,6 @@ public class Package {
     private int width;
     private int length;
     private double value;
-    private int nrStates;
 
     private int[] baseCoords = new int[3]; // where [X][Y][Z]
     private int[] rotations = new int[3]; // where [X][Y][Z]
@@ -46,7 +45,6 @@ public class Package {
             value = 5;
             setPackage("C");
         }
-        setNrStates();
     }
 
     /**
@@ -200,7 +198,6 @@ public class Package {
         width = height;
         height = temp;
         this.coords = newCoords;
-        setNrStates();
     }
 
     /**
@@ -228,7 +225,6 @@ public class Package {
         length = height;
         height = temp;
         this.coords = newCoords;
-        setNrStates();
     }
 
     /**
@@ -256,7 +252,6 @@ public class Package {
         length = width;
         width = temp;
         this.coords = newCoords;
-        setNrStates();
     }
 
     public void rotateRandom() {
@@ -330,41 +325,40 @@ public class Package {
         return false;
     }
 
-    public void setNrStates() {
-        nrStates = 0;
-        // THE PACKAGE SHOULD NOT BE ROTATED!
+    public int[] getNrStates(int csLength, int csWidth, int csHeight) {
+        int[] nrStates; // where nrStates[0] is the total number of states and the subsequent numbers are those for each state of rotation
         if (this.length == this.width && this.length == this.height) {
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
+            nrStates = new int[2];
+            nrStates[1] = (csLength - (this.length - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.height - 1));
+            nrStates[0] = nrStates[1];
         } else if (this.length == this.width) {
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
-            p.rotateY();
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
-            p.rotateZ();
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
+            nrStates = new int[4];
+            nrStates[1] = (csLength - (this.length - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.height - 1));
+            nrStates[2] = (csLength - (this.height - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.length - 1));
+            nrStates[3] = (csLength - (this.width - 1)) * (csWidth - (this.length - 1)) * (csHeight - (this.height - 1));
+            nrStates[0] = nrStates[1] + nrStates[2] + nrStates[3];
         } else if (this.length == this.height) {
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
-            p.rotateX();
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
-            p.rotateY();
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
+            nrStates = new int[4];
+            nrStates[1] = (csLength - (this.length - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.height - 1));
+            nrStates[2] = (csLength - (this.length - 1)) * (csWidth - (this.height - 1)) * (csHeight - (this.width - 1));
+            nrStates[3] = (csLength - (this.height - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.length - 1));
+            nrStates[0] = nrStates[1] + nrStates[2] + nrStates[3];
         } else if (this.width == this.height) {
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
-            p.rotateY();
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
-            p.rotateX();
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
+            nrStates = new int[4];
+            nrStates[1] = (csLength - (this.length - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.height - 1));
+            nrStates[2] = (csLength - (this.height - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.length - 1));
+            nrStates[3] = (csLength - (this.length - 1)) * (csWidth - (this.height - 1)) * (csHeight - (this.width - 1));
+            nrStates[0] = nrStates[1] + nrStates[2] + nrStates[3];
         } else {
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
-            p.rotateX();
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
-            p.rotateY();
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
-            p.rotateZ();
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
-            p.rotateX();
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
-            p.rotateY();
-            nrStates += (cargoSpace.getLength() - (this.length - 1)) * (cargoSpace.getWidth() - (this.width - 1)) * (cargoSpace.getHeight() - (this.height - 1));
+            nrStates = new int[7];
+            nrStates[1] = (csLength - (this.length - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.height - 1));
+            nrStates[2] = (csLength - (this.length - 1)) * (csWidth - (this.height - 1)) * (csHeight - (this.width - 1));
+            nrStates[3] = (csLength - (this.height - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.length - 1));
+            nrStates[4] = (csLength - (this.width - 1)) * (csWidth - (this.length - 1)) * (csHeight - (this.height - 1));
+            nrStates[5] = (csLength - (this.length - 1)) * (csWidth - (this.height - 1)) * (csHeight - (this.width - 1));
+            nrStates[6] = (csLength - (this.height - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.length - 1));
+            nrStates[0] = nrStates[1] + nrStates[2] + nrStates[3] + nrStates[4] + nrStates[5] + nrStates[6];
         }
+        return nrStates;
     }
 }

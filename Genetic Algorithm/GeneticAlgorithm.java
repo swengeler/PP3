@@ -11,13 +11,14 @@ public class GeneticAlgorithm {
     private final String SELECTION_MODE = "ELITIST";
 
     private Individual[] population;
+    private Package[] packageTypes;
 
-    public void initialPopulation() {
+    public void initialPopulation(Package[] types) {
         population = new Individual[POPULATION_SIZE];
         CargoSpace cargoSpace = new CargoSpace(33, 5, 8);
         Package p = new Package("C");
         int chrLength = 0;
-        Package[] packageTypes = new Package[3];
+        packageTypes = types;
         packageTypes[0] = new Package("A");
         packageTypes[1] = new Package("B");
         packageTypes[2] = new Package("C");
@@ -85,8 +86,8 @@ public class GeneticAlgorithm {
         *   - rotated around x, y, z and x
         *   - rotated around x, y, z, x and y
         *     - go through entire length
-        *       - go through entire height
-        *         - go through entire width
+        *       - go through entire width
+        *         - go through entire height
         */
 
     }
