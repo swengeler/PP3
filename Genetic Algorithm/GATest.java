@@ -1,7 +1,7 @@
 public class GATest {
 
     public static void main(String[] args) {
-      
+
         int[][] chromosomes = new int[500][15000];
         for (int i = 0; i < chromosomes.length; i++) {
             for (int j = 0; j < chromosomes[i].length; j++) {
@@ -18,6 +18,8 @@ public class GATest {
                 nextGeneration[nextGeneration.length - 1 - i][nextGeneration[i].length - 1 - j] = chromosomes[i][j];
             }
         }
+
+
 
     }
 

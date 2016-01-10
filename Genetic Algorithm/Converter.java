@@ -10,17 +10,49 @@ public class Converter {
                 for (int k = nrDone; k < nrStates[j] + nrDone; k++) {
                     if (chr[k] == 1) {
                         p = new Package(types[i].getType());
-                        if (nrStates.length == 2) {
-                            newX = (int) (k / csToFill.getLength());
-                            rX = k % csToFill.getLength();
-                            newY = (int) (rX / csToFill.getWidth())
-                            newZ = rX % csToFill.getLength();
+                        int newX = (int) ((k - nrDone) / csToFill.getLength());
+                        int restX = (k - nrDone) % csToFill.getLength();
+                        int newY = (int) (restX / csToFill.getWidth());
+                        int restY = restX % csToFill.getWidth();
+                        int newZ = restY % csToFill.getHeight();
+                        System.out.println("x = " + newX + ", y = " + newY + ", z = " + newZ);
+                        p.setBaseCoords(newX, newY, newZ);
+                        if (nrStates.length == 4 && p.getLength() == p.getWidth()) {
+                            if (j >= 2)
+                                p.rotateY();
+                            if (j == 3)
+                                p.rotateZ();
+                        } else if (nrStates.length == 4 && p.getLength() == p.getHeight()) {
+                            if (j >= 2)
+                                p.rotateX();
+                            if (j == 3)
+                                p.rotateY();
+                        } else if (nrStates.length == 4 && p.getWidth() == p.getHeight()) {
+                            if (j >= 2)
+                                p.rotateY();
+                            if (j == 3)
+                                p.rotateX();
+                        } else if (nrStates.length == 7) {
+                            if (j >= 2)
+                                p.rotateX();
+                            if (j >= 3)
+                                p.rotateY();
+                            if (j >= 4)
+                                p.rotateZ();
+                            if (j >= 5)
+                                p.rotateX();
+                            if (j == 6)
+                                p.rotateY();
                         }
+                        if (!csToFill.overlap(p))
+                            csToFill.place(p);
                     }
                 }
+                nrDone += nrStates[j];
             }
             nrDone += nrStates[0];
         }
+        return csToFill;
     }
 
 }

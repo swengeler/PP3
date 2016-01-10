@@ -5,67 +5,32 @@ import java.util.ArrayList;
 
 public class GeneticAlgorithm {
 
-    private final int POPULATION_SIZE = 100;
+    private final int POPULATION_SIZE = 1;
     private final int MUTATION_FREQ = 1000;
     private final int CROSSOVER_FREQ = 10;
     private final String SELECTION_MODE = "ELITIST";
 
     private Individual[] population;
     private Package[] packageTypes;
+    private CargoSpace cargoSpace;
 
     public void initialPopulation(Package[] types) {
         population = new Individual[POPULATION_SIZE];
-        CargoSpace cargoSpace = new CargoSpace(33, 5, 8);
-        Package p = new Package("C");
+        cargoSpace = new CargoSpace(33, 5, 8);
         int chrLength = 0;
-        packageTypes = types;
+        //packageTypes = types;
+        Package[] packageTypes = new Package[1];
         packageTypes[0] = new Package("A");
-        packageTypes[1] = new Package("B");
-        packageTypes[2] = new Package("C");
+        //packageTypes[0] = new Package("A");
+        //packageTypes[1] = new Package("B");
+        //packageTypes[2] = new Package("C");
 
-        // THERE HAS TO BE AN EASIER WAY
         for (int i = 0; i < packageTypes.length; i++) {
-            p = packageTypes[i];
-            if (p.getLength() == p.getWidth() && p.getLength() == p.getHeight()) {
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-                //System.out.println("CS height = " + cargoSpace.getHeight());
-                //System.out.println("PK height = " + p.getHeight());
-                //System.out.println((cargoSpace.getLength() - p.getLength() + 1) + " " + (cargoSpace.getWidth() - (p.getWidth() - 1)) + " " + (cargoSpace.getHeight() - (p.getHeight() - 1)));
-            } else if (p.getLength() == p.getWidth()) {
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-                p.rotateY();
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-                p.rotateZ();
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-            } else if (p.getLength() == p.getHeight()) {
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-                p.rotateX();
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-                p.rotateY();
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-            } else if (p.getWidth() == p.getHeight()) {
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-                p.rotateY();
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-                p.rotateX();
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-            } else {
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-                p.rotateX();
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-                p.rotateY();
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-                p.rotateZ();
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-                p.rotateX();
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-                p.rotateY();
-                chrLength += (cargoSpace.getLength() - (p.getLength() - 1)) * (cargoSpace.getWidth() - (p.getWidth() - 1)) * (cargoSpace.getHeight() - (p.getHeight() - 1));
-            }
+            chrLength += packageTypes[i].getNrStates(cargoSpace.getLength(), cargoSpace.getWidth(), cargoSpace.getHeight())[0];
         }
 
         int[] chromosome = new int[chrLength];
-        for (int i = 0; i < POPULATION_SIZE; i++) {
+        /*for (int i = 0; i < POPULATION_SIZE; i++) {
             for (int j = 0; j < chromosome.length; j++) {
                 if (Math.random() < 0.5)
                     chromosome[j] = 0;
@@ -73,7 +38,9 @@ public class GeneticAlgorithm {
                     chromosome[j] = 1;
             }
             population[i] = new Individual(chromosome);
-        }
+        }*/
+        chromosome[6] = 1;
+        cargoSpace = Converter.chromosomeToCargoSpace(chromosome, packageTypes, cargoSpace);
         System.out.println(chrLength);
 
         /*
@@ -95,7 +62,7 @@ public class GeneticAlgorithm {
     public void displaySolution() {
         JFrame f = new JFrame();
         f.setSize(750, 770);
-        Display display = new Display(null);
+        Display display = new Display(cargoSpace.getArray());
         f.add(display, BorderLayout.CENTER);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
@@ -108,7 +75,8 @@ public class GeneticAlgorithm {
     */
     public static void main(String[] args) {
         GeneticAlgorithm gA = new GeneticAlgorithm();
-        gA.initialPopulation();
+        gA.initialPopulation(null);
+        gA.displaySolution();
     }
 
 }
