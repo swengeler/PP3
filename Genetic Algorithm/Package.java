@@ -178,6 +178,18 @@ public class Package {
         return height;
     }
 
+    public int getOrLength() {
+        return orHeight;
+    }
+
+    public int getOrWidth() {
+        return orWidth;
+    }
+
+    public int getOrHeight() {
+        return orHeight;
+    }
+
     /**
     *
     */

@@ -118,23 +118,108 @@ public class Converter {
     }
 
     public static int[] packingToChromosome(Package[] packing, Package[] order, CargoSpace cs) {
-        int index;
+        int chrLength = 0;
+        for (int i = 0; i < order.length; i++) {
+            chrLength += order[i].getNrStates(cs.getLength(), cs.getWidth(), cs.getHeight())[0];
+        }
+        int[] chromosome = new int[chrLength];
+        int index = 0;
+        Package p;
         for (int i = 0; i < packing.length; i++) {
-            int packageTypeIndex;
+            p = packing[i];
+            int packageTypeIndex = 0;
+            int[] curNrStates = p.getNrStates(cs.getLength(), cs.getWidth(), cs.getHeight());
             for (int j = 0; j < order.length; j++) {
-                if (packing[i].equalType(order[j])
+                if (p.equalType(order[j]))
                     packageTypeIndex = j;
             }
             for (int j = 0; j < packageTypeIndex; j++) {
-                index += order[j].getNrStates()[0];
+                index += order[j].getNrStates(cs.getLength(), cs.getWidth(), cs.getHeight())[0];
             }
-            if (packing[i].getOrLength() == packing[i].getOrWidth) {
-                if (packing[i].getLength() == packing[i].getWidth() && packing[i].getWidth() == packing[i].getOrWidth() && packing[i].getHeight() == packing[i].getOrLength()))
-                    index += packing[i].getNrStates()[1];
-                else if (packing[i])
+            if (p.getOrLength() == p.getOrWidth()) {
+                if (p.getLength() == p.getOrHeight() && p.getWidth() == p.getOrWidth() && p.getHeight() == p.getOrLength())
+                    index += curNrStates[1];
+                else if (p.getLength() == p.getOrWidth() && p.getWidth() == p.getOrHeight() && p.getHeight() == p.getOrLength())
+                    index += curNrStates[1] + curNrStates[2];
+            } else if (p.getOrLength() == p.getOrHeight()) {
+                if (p.getLength() == p.getOrLength() && p.getWidth() == p.getOrHeight() && p.getHeight() == p.getOrWidth())
+                    index += curNrStates[1];
+                else if (p.getLength() == p.getOrWidth() && p.getWidth() == p.getOrHeight() && p.getHeight() == p.getOrLength())
+                    index += curNrStates[1] + curNrStates[2];
+            } else if (p.getOrWidth() == p.getOrHeight()) {
+                if (p.getLength() == p.getOrHeight() && p.getWidth() == p.getOrWidth() && p.getHeight() == p.getOrLength())
+                    index += curNrStates[1];
+                else if (p.getLength() == p.getOrHeight() && p.getWidth() == p.getOrLength() && p.getHeight() == p.getOrWidth())
+                    index += curNrStates[1] + curNrStates[2];
+            } else {
+                if (p.getLength() == p.getOrLength() && p.getWidth() == p.getOrHeight() && p.getHeight() == p.getOrWidth())
+                    index += curNrStates[1];
+                else if (p.getLength() == p.getOrWidth() && p.getWidth() == p.getOrHeight() && p.getHeight() == p.getOrLength())
+                    index += curNrStates[1] + curNrStates[2];
+                else if (p.getLength() == p.getOrHeight() && p.getWidth() == p.getOrWidth() && p.getHeight() == p.getOrLength())
+                    index += curNrStates[1] + curNrStates[2] + curNrStates[3];
+                else if (p.getLength() == p.getOrHeight() && p.getWidth() == p.getOrLength() && p.getHeight() == p.getOrWidth())
+                    index += curNrStates[1] + curNrStates[2] + curNrStates[3] + curNrStates[4];
+                else if (p.getLength() == p.getOrWidth() && p.getWidth() == p.getOrLength() && p.getHeight() == p.getOrHeight())
+                    index += curNrStates[1] + curNrStates[2] + curNrStates[3] + curNrStates[4] + curNrStates[5];
             }
+            index += p.getBaseCoords()[0] + p.getBaseCoords()[1] + p.getBaseCoords()[2];
+            chromosome[index] = 1;
         }
-        return null;
+        return chromosome;
+    }
+
+    public static int[] cargoSpaceToChromosome(CargoSpace cs, Package[] order) {
+        Package[] packing = cs.getPacking();
+        int chrLength = 0;
+        for (int i = 0; i < order.length; i++) {
+            chrLength += order[i].getNrStates(cs.getLength(), cs.getWidth(), cs.getHeight())[0];
+        }
+        int[] chromosome = new int[chrLength];
+        int index = 0;
+        Package p;
+        for (int i = 0; i < packing.length; i++) {
+            p = packing[i];
+            int packageTypeIndex = 0;
+            int[] curNrStates = p.getNrStates(cs.getLength(), cs.getWidth(), cs.getHeight());
+            for (int j = 0; j < order.length; j++) {
+                if (p.equalType(order[j]))
+                    packageTypeIndex = j;
+            }
+            for (int j = 0; j < packageTypeIndex; j++) {
+                index += order[j].getNrStates(cs.getLength(), cs.getWidth(), cs.getHeight())[0];
+            }
+            if (p.getOrLength() == p.getOrWidth()) {
+                if (p.getLength() == p.getOrHeight() && p.getWidth() == p.getOrWidth() && p.getHeight() == p.getOrLength())
+                    index += curNrStates[1];
+                else if (p.getLength() == p.getOrWidth() && p.getWidth() == p.getOrHeight() && p.getHeight() == p.getOrLength())
+                    index += curNrStates[1] + curNrStates[2];
+            } else if (p.getOrLength() == p.getOrHeight()) {
+                if (p.getLength() == p.getOrLength() && p.getWidth() == p.getOrHeight() && p.getHeight() == p.getOrWidth())
+                    index += curNrStates[1];
+                else if (p.getLength() == p.getOrWidth() && p.getWidth() == p.getOrHeight() && p.getHeight() == p.getOrLength())
+                    index += curNrStates[1] + curNrStates[2];
+            } else if (p.getOrWidth() == p.getOrHeight()) {
+                if (p.getLength() == p.getOrHeight() && p.getWidth() == p.getOrWidth() && p.getHeight() == p.getOrLength())
+                    index += curNrStates[1];
+                else if (p.getLength() == p.getOrHeight() && p.getWidth() == p.getOrLength() && p.getHeight() == p.getOrWidth())
+                    index += curNrStates[1] + curNrStates[2];
+            } else {
+                if (p.getLength() == p.getOrLength() && p.getWidth() == p.getOrHeight() && p.getHeight() == p.getOrWidth())
+                    index += curNrStates[1];
+                else if (p.getLength() == p.getOrWidth() && p.getWidth() == p.getOrHeight() && p.getHeight() == p.getOrLength())
+                    index += curNrStates[1] + curNrStates[2];
+                else if (p.getLength() == p.getOrHeight() && p.getWidth() == p.getOrWidth() && p.getHeight() == p.getOrLength())
+                    index += curNrStates[1] + curNrStates[2] + curNrStates[3];
+                else if (p.getLength() == p.getOrHeight() && p.getWidth() == p.getOrLength() && p.getHeight() == p.getOrWidth())
+                    index += curNrStates[1] + curNrStates[2] + curNrStates[3] + curNrStates[4];
+                else if (p.getLength() == p.getOrWidth() && p.getWidth() == p.getOrLength() && p.getHeight() == p.getOrHeight())
+                    index += curNrStates[1] + curNrStates[2] + curNrStates[3] + curNrStates[4] + curNrStates[5];
+            }
+            index += p.getBaseCoords()[0] + p.getBaseCoords()[1] + p.getBaseCoords()[2];
+            chromosome[index] = 1;
+        }
+        return chromosome;
     }
 
 }

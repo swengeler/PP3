@@ -50,10 +50,17 @@ public class GeneticAlgorithm {
             }
         } else
             chromosome[gene] = 1;
+
         cargoSpace = Converter.chromosomeToCargoSpace(chromosome, packageTypes, cargoSpace);
 
-        Package[] packing = Converter.chromosomeToPacking(chromosome, packageTypes, cargoSpace);
-        cargoSpace.packRandom(packing);
+        int[] chr2 = Converter.cargoSpaceToChromosome(cargoSpace, packageTypes);
+
+        for (int i = 0; i < 10; i++) {
+            System.out.println("chr2[" + i + "] = " + chr2[i]);
+        }
+
+        //Package[] packing = Converter.chromosomeToPacking(chromosome, packageTypes, cargoSpace);
+        //cargoSpace.packRandom(packing);
 
         /*
         * Order in which the chromosome is "interpreted":

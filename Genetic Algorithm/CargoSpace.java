@@ -338,4 +338,8 @@ public class CargoSpace {
         }
     }
 
+    public Package[] getPacking() {
+        return cargoSpaceFilled;
+    }
+
 }
