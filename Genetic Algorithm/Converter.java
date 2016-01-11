@@ -1,6 +1,6 @@
 public class Converter {
 
-    private static final boolean DEBUG_CTCS = false;
+    private static final boolean DEBUG_CTCS = true;
 
     public static CargoSpace chromosomeToCargoSpace(int[] chr, Package[] types, CargoSpace csToFill) {
         int[] nrStates;

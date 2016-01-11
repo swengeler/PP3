@@ -32,10 +32,10 @@ public class GeneticAlgorithm {
         cargoSpace = new CargoSpace(33, 5, 8);
         int chrLength = 0;
         //packageTypes = types;
-        Package[] packageTypes = new Package[3];
-        packageTypes[0] = new Package("A");
-        packageTypes[1] = new Package("B");
-        packageTypes[2] = new Package("C");
+        Package[] packageTypes = new Package[1];
+        //packageTypes[0] = new Package("A");
+        packageTypes[0] = new Package("B");
+        //packageTypes[2] = new Package("C");
 
         for (int i = 0; i < packageTypes.length; i++) {
             chrLength += packageTypes[i].getNrStates(cargoSpace.getLength(), cargoSpace.getWidth(), cargoSpace.getHeight())[0];
@@ -53,11 +53,11 @@ public class GeneticAlgorithm {
 
         cargoSpace = Converter.chromosomeToCargoSpace(chromosome, packageTypes, cargoSpace);
 
-        int[] chr2 = Converter.cargoSpaceToChromosome(cargoSpace, packageTypes);
+        /*int[] chr2 = Converter.cargoSpaceToChromosome(cargoSpace, packageTypes);
 
         for (int i = 0; i < 10; i++) {
             System.out.println("chr2[" + i + "] = " + chr2[i]);
-        }
+        }*/
 
         //Package[] packing = Converter.chromosomeToPacking(chromosome, packageTypes, cargoSpace);
         //cargoSpace.packRandom(packing);
