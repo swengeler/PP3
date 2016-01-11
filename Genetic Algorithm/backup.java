@@ -1,4 +1,4 @@
-public int getNrStates(int csLength, int csWidth, int csHeight) {
+/*public int getNrStates(int csLength, int csWidth, int csHeight) {
     int[] nrStates;
     int totalNr = 0;
     if (this.length == this.width && this.length == this.height) {
@@ -30,3 +30,4 @@ public int getNrStates(int csLength, int csWidth, int csHeight) {
     }
     return nrStates;
 }
+*/

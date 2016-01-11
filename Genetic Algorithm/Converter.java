@@ -5,6 +5,7 @@ public class Converter {
     public static CargoSpace chromosomeToCargoSpace(int[] chr, Package[] types, CargoSpace csToFill) {
         int[] nrStates;
         int nrDone = 0;
+        int nrPlaced = 0;
         Package p;
         for (int i = 0; i < types.length; i++) {
             nrStates = types[i].getNrStates(csToFill.getLength(), csToFill.getWidth(), csToFill.getHeight());
@@ -49,13 +50,16 @@ public class Converter {
                         int newZ = restX % (csToFill.getHeight() - p.getHeight() + 1);
                         if (DEBUG_CTCS) System.out.println("x = " + newX + ", y = " + newY + ", z = " + newZ);
                         p.setBaseCoords(newX, newY, newZ);
-                        if (!csToFill.overlap(p))
+                        if (!csToFill.overlap(p)) {
                             csToFill.place(p);
+                            nrPlaced++;
+                        }
                     }
                 }
                 nrDone += nrStates[j];
             }
         }
+        if (DEBUG_CTCS) System.out.println("Package placed: " + nrPlaced);
         return csToFill;
     }
 

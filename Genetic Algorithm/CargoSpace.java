@@ -331,11 +331,15 @@ public class CargoSpace {
     }
 
     public void packRandom(Package[] packing) {
+        int countPacked = 0;
         for (int i = 0; i < packing.length; i++) {
             int index = (int) (Math.random() * packing.length);
-            if (!overlap(packing[index]))
-                place(packing[index]);
+            if (!overlap(packing[index])) {
+              place(packing[index]);
+              countPacked++;
+            }
         }
+        System.out.println("Package placed: " + countPacked);
     }
 
     public Package[] getPacking() {

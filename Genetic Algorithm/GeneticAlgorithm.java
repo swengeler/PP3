@@ -94,9 +94,9 @@ public class GeneticAlgorithm {
     */
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        System.out.print("nr = ");
-        int gene = in.nextInt();
-        GeneticAlgorithm gA = new GeneticAlgorithm(gene);
+        //System.out.print("nr = ");
+        //int gene = in.nextInt();
+        GeneticAlgorithm gA = new GeneticAlgorithm();
         gA.initialPopulation(null);
         gA.displaySolution();
     }
