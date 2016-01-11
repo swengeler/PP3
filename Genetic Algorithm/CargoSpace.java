@@ -329,4 +329,13 @@ public class CargoSpace {
     public int getHeight() {
         return cargoSpace[0][0].length;
     }
+
+    public void packRandom(Package[] packing) {
+        for (int i = 0; i < packing.length; i++) {
+            int index = (int) (Math.random() * packing.length);
+            if (!overlap(packing[index]))
+                place(packing[index]);
+        }
+    }
+
 }

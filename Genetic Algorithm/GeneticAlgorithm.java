@@ -25,10 +25,10 @@ public class GeneticAlgorithm {
         cargoSpace = new CargoSpace(33, 5, 8);
         int chrLength = 0;
         //packageTypes = types;
-        Package[] packageTypes = new Package[2];
-        packageTypes[0] = new Package("A");
+        Package[] packageTypes = new Package[3];
+        packageTypes[0] = new Package("C");
         packageTypes[1] = new Package("B");
-        packageTypes[2] = new Package("C");
+        packageTypes[2] = new Package("A");
         //packageTypes[0] = new Package("A");
         //packageTypes[1] = new Package("B");
         //packageTypes[2] = new Package("C");
@@ -39,6 +39,10 @@ public class GeneticAlgorithm {
         System.out.println(chrLength);
 
         int[] chromosome = new int[chrLength];
+        int[] ones = Random.randomListWithRange(0, chrLength - 1, chrLength);
+        for (int i = 0; i < ones.length; i++) {
+            chromosome[ones[i]] = 1;
+        }
         /*for (int i = 0; i < POPULATION_SIZE; i++) {
             for (int j = 0; j < chromosome.length; j++) {
                 if (Math.random() < 0.5)
@@ -48,7 +52,7 @@ public class GeneticAlgorithm {
             }
             population[i] = new Individual(chromosome);
         }*/
-        for (int j = 0; j < chromosome.length; j++) {
+        /*for (int j = 0; j < chromosome.length; j++) {
             if (Math.random() < 0.5) {
                 chromosome[j] = 0;
                 System.out.println("chromosome[" + j + "] = " + chromosome[j]);
@@ -56,9 +60,12 @@ public class GeneticAlgorithm {
                 chromosome[j] = 1;
                 System.out.println("chromosome[" + j + "] = " + chromosome[j]);
             }
-        }
+        }*/
         //chromosome[gene] = 1;
         cargoSpace = Converter.chromosomeToCargoSpace(chromosome, packageTypes, cargoSpace);
+
+        Package[] packing = Converter.chromosomeToPacking(chromosome, packageTypes, cargoSpace);
+        cargoSpace.packRandom(packing);
 
         /*
         * Order in which the chromosome is "interpreted":
