@@ -16,22 +16,26 @@ public class GeneticAlgorithm {
     private CargoSpace cargoSpace;
 
     private int gene;
+    private boolean test;
 
-    /*public GeneticAlgorithm(int gene) {
+    public GeneticAlgorithm() {
+        this.test = false;
+    }
+
+    public GeneticAlgorithm(int gene) {
         this.gene = gene;
-    }*/
+        this.test = true;
+    }
+
     public void initialPopulation(Package[] types) {
         population = new Individual[POPULATION_SIZE];
         cargoSpace = new CargoSpace(33, 5, 8);
         int chrLength = 0;
         //packageTypes = types;
         Package[] packageTypes = new Package[3];
-        packageTypes[0] = new Package("C");
+        packageTypes[0] = new Package("A");
         packageTypes[1] = new Package("B");
-        packageTypes[2] = new Package("A");
-        //packageTypes[0] = new Package("A");
-        //packageTypes[1] = new Package("B");
-        //packageTypes[2] = new Package("C");
+        packageTypes[2] = new Package("C");
 
         for (int i = 0; i < packageTypes.length; i++) {
             chrLength += packageTypes[i].getNrStates(cargoSpace.getLength(), cargoSpace.getWidth(), cargoSpace.getHeight())[0];
@@ -39,29 +43,13 @@ public class GeneticAlgorithm {
         System.out.println(chrLength);
 
         int[] chromosome = new int[chrLength];
-        int[] ones = Random.randomListWithRange(0, chrLength - 1, chrLength);
-        for (int i = 0; i < ones.length; i++) {
-            chromosome[ones[i]] = 1;
-        }
-        /*for (int i = 0; i < POPULATION_SIZE; i++) {
-            for (int j = 0; j < chromosome.length; j++) {
-                if (Math.random() < 0.5)
-                    chromosome[j] = 0;
-                else
-                    chromosome[j] = 1;
+        if (!test) {
+            int[] ones = Random.randomListWithRange(0, chrLength - 1, chrLength);
+            for (int i = 0; i < ones.length; i++) {
+                chromosome[ones[i]] = 1;
             }
-            population[i] = new Individual(chromosome);
-        }*/
-        /*for (int j = 0; j < chromosome.length; j++) {
-            if (Math.random() < 0.5) {
-                chromosome[j] = 0;
-                System.out.println("chromosome[" + j + "] = " + chromosome[j]);
-            } else {
-                chromosome[j] = 1;
-                System.out.println("chromosome[" + j + "] = " + chromosome[j]);
-            }
-        }*/
-        //chromosome[gene] = 1;
+        } else
+            chromosome[gene] = 1;
         cargoSpace = Converter.chromosomeToCargoSpace(chromosome, packageTypes, cargoSpace);
 
         Package[] packing = Converter.chromosomeToPacking(chromosome, packageTypes, cargoSpace);
@@ -99,9 +87,9 @@ public class GeneticAlgorithm {
     */
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        //System.out.print("nr = ");
-        //int gene = in.nextInt();
-        GeneticAlgorithm gA = new GeneticAlgorithm();
+        System.out.print("nr = ");
+        int gene = in.nextInt();
+        GeneticAlgorithm gA = new GeneticAlgorithm(gene);
         gA.initialPopulation(null);
         gA.displaySolution();
     }

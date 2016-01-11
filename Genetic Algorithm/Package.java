@@ -8,10 +8,16 @@
 public class Package {
 
     private String type;
+    private double value;
+
     private int height;
     private int width;
     private int length;
-    private double value;
+
+    // the original dimensions of the package (to enable the packingToChromosome method to know which state of rotation the package is in)
+    private int orHeight;
+    private int orWidth;
+    private int orLength;
 
     private int[] baseCoords = new int[3]; // where [X][Y][Z]
     private int[] rotations = new int[3]; // where [X][Y][Z]
@@ -28,6 +34,9 @@ public class Package {
             length = 4;
             width = 2;
             height = 2;
+            orLength = 4;
+            orWidth = 2;
+            orHeight = 2;
             value = 3;
             setPackage("A");
         }
@@ -35,6 +44,9 @@ public class Package {
             length = 4;
             width = 3;
             height = 2;
+            orLength = 4;
+            orWidth = 3;
+            orHeight = 2;
             value = 4;
             setPackage("B");
         }
@@ -42,6 +54,9 @@ public class Package {
             length = 3;
             width = 3;
             height = 3;
+            orLength = 3;
+            orWidth = 3;
+            orHeight = 3;
             value = 5;
             setPackage("C");
         }
@@ -52,8 +67,11 @@ public class Package {
     */
     public Package(String type, int height, int width, int length, double value) {
         this.height = height;
+        this.orHeight = height;
         this.width = width;
+        this.orWidth = width;
         this.length = length;
+        this.orLength = length;
         this.value = value;
         setPackage(type);
     }
@@ -160,6 +178,9 @@ public class Package {
         return height;
     }
 
+    /**
+    *
+    */
     public double getValue() {
         return value;
     }
@@ -361,5 +382,9 @@ public class Package {
             nrStates[0] = nrStates[1] + nrStates[2] + nrStates[3] + nrStates[4] + nrStates[5] + nrStates[6];
         }
         return nrStates;
+    }
+
+    public boolean equalType(Package p) {
+        return this.type.equalsIgnoreCase(p.getType());
     }
 }
