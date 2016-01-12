@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class GeneticAlgorithmDiv {
 
-    private final int POPULATION_SIZE = 100;
+    private final int POPULATION_SIZE = 10;
     private final int NR_TO_PLACE = 1000;
     private final int MUTATION_FREQ = 1000;
     private final int CROSSOVER_FREQ = 2;
@@ -31,8 +31,12 @@ public class GeneticAlgorithmDiv {
 
     public void initialPopulation(Package[] types, int[] amountOfType) {
         cargoSpace = new CargoSpace(33, 5, 8);
-        int chrLength = 0;
         //packageTypes = types;
+        amountOfType = new int[3];
+        amountOfType[0] = 10;
+        amountOfType[1] = 10;
+        amountOfType[2] = 10;
+
         packageTypes = new Package[3];
         packageTypes[0] = new Package("C");
         packageTypes[1] = new Package("B");
@@ -48,7 +52,7 @@ public class GeneticAlgorithmDiv {
         population = new Individual[POPULATION_SIZE];
         for (int i = 0; i < population.length; i++) {
             for (int j = 0; j < chromosomes.length; j++) {
-                int[] ones = Random.randomListWithRange(0, chrLength - 1, amountOfType[j]);
+                int[] ones = Random.randomListWithRange(0, chromosomes[j].length, amountOfType[j]);
                 for (int k = 0; k < ones.length; k++) {
                     chromosomes[j][ones[k]] = 1;
                 }
@@ -58,6 +62,9 @@ public class GeneticAlgorithmDiv {
         }
 
         HeapSort.sortDownInd(population);
+
+        cargoSpace = Converter.chromosomesToCargoSpace(chromosomes, packageTypes, cargoSpace);
+
         /*
         int counter = 1000;
 
