@@ -67,7 +67,7 @@ public class GreedyAlgorithm {
             packagesLeft = new ArrayList<Package>();
             for (int j = 0; j < nrPackages; j++)
                 randomNumbers.add(new Integer(j));
-            Collections.shuffle(randomNumbers);
+            //Collections.shuffle(randomNumbers);
             while (!done) {
                 Package p = packages[randomNumbers.get(counter).intValue()];
                 p.rotateRandom();
