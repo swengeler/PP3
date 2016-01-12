@@ -383,7 +383,6 @@ public class Package {
             nrStates[3] = (csLength - (this.height - 1)) * (csWidth - (this.length - 1)) * (csHeight - (this.width - 1));
             nrStates[0] = nrStates[1] + nrStates[2] + nrStates[3];
         } else {
-            // SOMETHING STILL WRONG HERE, THE NUMBER CALCULATED SEEMS TO BE TOO SMALL
             nrStates = new int[7];
             nrStates[1] = (csLength - (this.length - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.height - 1));
             nrStates[2] = (csLength - (this.length - 1)) * (csHeight - (this.height - 1)) * (csWidth - (this.width - 1));

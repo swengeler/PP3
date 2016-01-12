@@ -1,6 +1,20 @@
 public class Converter {
 
-    private static final boolean DEBUG_CTCS = true;
+    private static final boolean DEBUG_CTCS = false;
+
+    /*
+    * Order in which the chromosome is "interpreted":
+    * - order of package types in packageTypes[]
+    *   - unrotated
+    *   - rotated around x
+    *   - rotated around x and y
+    *   - rotated around x, y and z
+    *   - rotated around x, y, z and x
+    *   - rotated around x, y, z, x and y
+    *     - go through entire length
+    *       - go through entire width
+    *         - go through entire height
+    */
 
     public static CargoSpace chromosomeToCargoSpace(int[] chr, Package[] types, CargoSpace csToFill) {
         int[] nrStates;
