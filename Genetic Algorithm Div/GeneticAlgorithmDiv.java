@@ -84,7 +84,7 @@ public class GeneticAlgorithmDiv {
         */
 
     }
-    /*
+
     private Individual[] fitnessAndSort(Individual[] population) {
         for (int i = 0; i < population.length; i++) {
             population[i].setFitness(Converter.chromosomesToCargoSpace(population[i].getChromosomes(), packageTypes, cargoSpace).getTotalValue());
@@ -108,35 +108,39 @@ public class GeneticAlgorithmDiv {
     }
 
     public Individual crossOver(Individual parent1, Individual parent2) {
-        int[][] childChr = new int[parent1.getChromosomes().length];
+        int[][] childChr = new int[parent1.getChromosomes().length][0];
         int[][] curParentChr;
-        int[] crossOverPoints = Random.randomListWithRange(0, parent1.getChromosomes().length - 1, CROSSOVER_FREQ);
-        HeapSort.sortUpInt(crossOverPoints);
-        int lastCrPoint = 0;
-        for (int i = 0; i < crossOverPoints.length; i++) {
-            if (i % 2 == 0)
-                curParentChr = parent1.getChromosomes();
-            else
-                curParentChr = parent2.getChromosomes();
-            for (int j = lastCrPoint; j < crossOverPoints[i]; j++) {
-                childChr[j] = curParentChr[j];
+        for (int k = 0; k < childChr.length; k++) {
+            int[] crossOverPoints = Random.randomListWithRange(0, parent1.getChromosomes()[k].length - 1, CROSSOVER_FREQ);
+            HeapSort.sortUpInt(crossOverPoints);
+            int lastCrPoint = 0;
+            for (int i = 0; i < crossOverPoints.length; i++) {
+                if (i % 2 == 0)
+                    curParentChr = parent1.getChromosomes();
+                else
+                    curParentChr = parent2.getChromosomes();
+                for (int j = lastCrPoint; j < crossOverPoints[i]; j++) {
+                    childChr[k][j] = curParentChr[k][j];
+                }
+                lastCrPoint = crossOverPoints[i];
             }
-            lastCrPoint = crossOverPoints[i];
         }
         Individual child = new Individual(childChr);
         return mutate(child);
     }
 
     private Individual mutate(Individual ind) {
-        int[] chromosome = ind.getChromosomes();
-        int[] randomGenes = Random.randomListWithRange(0, chromosome.length - 1, MUTATION_FREQ);
-        for (int i = 0; i < randomGenes.length; i++) {
-            if (chromosome[randomGenes[i]] == 0)
-                chromosome[randomGenes[i]] = 1;
-            else
-                chromosome[randomGenes[i]] = 0;
+        int[][] chromosomes = ind.getChromosomes();
+        for (int j = 0; j < chromosomes.length; j++) {
+            int[] randomGenes = Random.randomListWithRange(0, chromosomes[j].length - 1, MUTATION_FREQ);
+            for (int i = 0; i < randomGenes.length; i++) {
+                if (chromosomes[j][randomGenes[i]] == 0)
+                    chromosomes[j][randomGenes[i]] = 1;
+                else
+                    chromosomes[j][randomGenes[i]] = 0;
+            }
         }
-        ind.setChromosome(chromosome);
+        ind.setChromosomes(chromosomes);
         return ind;
     }
 
@@ -152,7 +156,7 @@ public class GeneticAlgorithmDiv {
     // ********************* //
     // END SELECTION METHODS //
     // ********************* //
-    */
+
     public void displaySolution() {
         JFrame f = new JFrame();
         f.setSize(750, 770);
