@@ -12,20 +12,20 @@ import java.awt.BorderLayout;
 * @author Simon Wengeler
 */
 public class GreedyAlgorithm {
-    
+
     private static final boolean DEBUG = false;
 
     /**
     * The number of times the algorithm is used to calculate a solution in order to find the best one
     * out of those.
     */
-    private static final int NR_RUNS = 10000;
+    private static final int NR_RUNS = 1;
 
     /**
     * A list (in array form) of the packages which are supposed to be placed in the cargo space.
     */
     private static Package[] packages;
-    
+
     public static CargoSpace bestCS;
 
     /**
@@ -107,7 +107,7 @@ public class GreedyAlgorithm {
 
         Display display = new Display(bestCS.getArray());
         f.add(display, BorderLayout.CENTER);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
 
     }
