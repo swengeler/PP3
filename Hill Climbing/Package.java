@@ -1,4 +1,4 @@
-/** 
+/**
 * A new enumerated type that contains a default value and three types of packages.
 *
 * @author Henri Viigimäe
@@ -7,92 +7,75 @@
 
 public class Package {
 
-    private PackageType type;
-    /**
-    * The height that is needed to create a desired package.
-    */
-    private int height;
-    /**
-    * The width that is needed to create a desired package.
-    */
-    private int width;
-    /**
-    * The length that is needed to create a desired package.
-    */
-    private int length;
-    /**
-    * The value of a package.
-    */
+    private String type;
     private double value;
-    /**
-    * The volume of a package.
-    */
-    private double packageVolume;
 
-    /**
-    * The package is defined by 8 coordinates.
-    */
+    private int height;
+    private int width;
+    private int length;
+
+    // the original dimensions of the package (to enable the packingToChromosome method to know which state of rotation the package is in)
+    private int orHeight;
+    private int orWidth;
+    private int orLength;
+
+    private int[] baseCoords = new int[3]; // where [X][Y][Z]
+    private int[] rotations = new int[3]; // where [X][Y][Z]
     private int[][] coords;
-    /**
-    *The individual coordinates for the different packages are stored in a three-dimensionl array
-    */
-    
-    private int[][] coordsTable/*= new int[][][] {
-        {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}, {0,0,0},{0,0,0}, {0,0,0}, {0,0,0}}, // L package
-        {{0,0,0}, {0,2,0}, {0,2,2}, {0,0,2},{4,0,0},{4,2,0},{4,2,2},{4,0,2}}, // P package
-        {{0,0,0}, {0,2,0}, {0,2,3}, {0,0,3}, {4,0,0},{4,2,0},{4,2,2.5},{4,0,3}}, // T package
-    }*/;
-    
-    /**
-    *A constructor that creates the "empty package".
-    */
-    public Package() {
-        coords = new int[8][3];
-        setPackage(PackageType.NoPackage);
-    }
-    
+
     /**
     * A constructor that constructs a package with certain values according to the definition of
     * the three available pre-defined package types (APackage, BPackage, CPackage).
-    * 
+    *
     * @param type The type of package that is supposed to be constructed.
     */
-    public Package(PackageType type) {
-        coords = new int[8][3];
-        if (type == PackageType.APackage) {
+    public Package(String type) {
+        if (type.equals("A")) {
             length = 4;
-            width = 4;
+            width = 2;
             height = 2;
+            orLength = 4;
+            orWidth = 2;
+            orHeight = 2;
             value = 3;
-            setPackage(PackageType.APackage);
+            setPackage("A");
         }
-        else if (type == PackageType.BPackage) {
+        else if (type.equals("B")) {
             length = 4;
             width = 3;
             height = 2;
+            orLength = 4;
+            orWidth = 3;
+            orHeight = 2;
             value = 4;
-            setPackage(PackageType.BPackage);
+            setPackage("B");
         }
-        else if (type == PackageType.CPackage) {
+        else if (type.equals("C")) {
             length = 3;
             width = 3;
             height = 3;
+            orLength = 3;
+            orWidth = 3;
+            orHeight = 3;
             value = 5;
-            setPackage(PackageType.CPackage);
+            setPackage("C");
         }
     }
-    
+
     /**
     * A constructor that creates a package with a given height, length and width(to create the "Other" package).
     */
-    public Package(int height, int width, int length, double value) {
+    public Package(String type, int height, int width, int length, double value) {
         this.height = height;
+        this.orHeight = height;
         this.width = width;
+        this.orWidth = width;
         this.length = length;
+        this.orLength = length;
         this.value = value;
-        setPackage(PackageType.Other);
+        setPackage(type);
     }
-    
+
     // {X,Y,Z}, FROM LEFT TO RIGHT.
     /**
     * This method sets the shape of a package (the coordinates it occupies in the cargo space). The number and
@@ -102,7 +85,7 @@ public class Package {
     *
     * @param type The desired type of package.
     */
-    public void setPackage(PackageType type) {
+    public void setPackage(String type) {
         coords = new int[height * width * length][3];
         int counter = 0;
         for (int i = 0; i < length; i++) {
@@ -117,26 +100,57 @@ public class Package {
         }
         this.type = type;
     }
-    
+
+    public void setBaseCoords(int x, int y, int z) {
+        baseCoords[0] = x;
+        baseCoords[1] = y;
+        baseCoords[2] = z;
+    }
+
+    public void setBaseX(int x) {
+        baseCoords[0] = x;
+    }
+
+    public void setBaseY(int y) {
+        baseCoords[1] = y;
+    }
+
+    public void setBaseZ(int z) {
+        baseCoords[2] = z;
+    }
+
+    public int[] getBaseCoords() {
+        return baseCoords;
+    }
+
+    public void setRotations(int x, int y, int z) {
+        for (int i = 0; i < x; i++)
+            this.rotateX();
+        for (int i = 0; i < y; i++)
+            this.rotateY();
+        for (int i = 0; i < z; i++)
+            this.rotateZ();
+    }
+
     /**
     * A method that returns the coordinates occupied by the package.
-    * 
+    *
     * @return coords The array holding the coordinates of the 8 outer corners of the package.
     */
     public int[][] getCoords() {
         return coords;
     }
-    
+
     /**
     * A method that changes the array holding the coordinates which the package occupies (mainly
     * used for rotations).
-    * 
+    *
     * @param newCoords The new coordinates occupied by the package.
     */
     public void setCoords(int[][] newCoords) {
         this.coords = newCoords;
     }
-    
+
     /**
     * A method giving information about the dimensions of the package (length).
     *
@@ -145,7 +159,7 @@ public class Package {
     public int getLength() {
         return length;
     }
-    
+
     /**
     * A method giving information about the dimensions of the package (width).
     *
@@ -154,7 +168,7 @@ public class Package {
     public int getWidth() {
         return width;
     }
-    
+
     /**
     * A method giving information about the dimensions of the package (height).
     *
@@ -163,47 +177,35 @@ public class Package {
     public int getHeight() {
         return height;
     }
-    
+
+    public int getOrLength() {
+        return orHeight;
+    }
+
+    public int getOrWidth() {
+        return orWidth;
+    }
+
+    public int getOrHeight() {
+        return orHeight;
+    }
+
+    /**
+    *
+    */
     public double getValue() {
         return value;
     }
 
     /**
-    *A method that gives the "worth" of a certain package .
-    */
-    public double getWorth() {   
-        if(type == PackageType.APackage)
-            {
-            packageVolume = 2;
-            value = 1;
-            }
-        else if(type == PackageType.BPackage)
-            {
-            packageVolume = 3;
-            value = 2;
-            }
-        else if(type == PackageType.CPackage)
-            {
-            packageVolume = 3.375;
-            value = 2.5;
-            }
-        else if(type == PackageType.Other)
-            {
-            packageVolume = height*length*width;
-            value = 1.25;
-            }
-        return value/packageVolume;
-    }
-    
-    /**
     * A method giving information about the type of package that it is called on.
     *
     * @return type The type of package (APackage, BPackage, CPackage or Other).
     */
-    public PackageType getType() {
+    public String getType() {
         return type;
     }
-    
+
     /**
     * A method that changes the coordinates of the package in such a manner that they now represent
     * the package rotated around the x-axis (length-axis) of the imaginary coordinate system.
@@ -221,12 +223,16 @@ public class Package {
                     newCoords[i][j] = -newCoords[i][j];
             }
         }
+        if (rotations[0] == 3)
+            rotations[0] = 0;
+        else
+            rotations[0]++;
         int temp = width;
         width = height;
         height = temp;
         this.coords = newCoords;
     }
-    
+
     /**
     * A method that changes the coordinates of the package in such a manner that they now represent
     * the package rotated around the y-axis (width-axis) of the imaginary coordinate system.
@@ -244,12 +250,16 @@ public class Package {
                     newCoords[i][j] = -newCoords[i][j];
             }
         }
+        if (rotations[1] == 3)
+            rotations[1] = 0;
+        else
+            rotations[1]++;
         int temp = length;
         length = height;
         height = temp;
         this.coords = newCoords;
     }
-    
+
     /**
     * A method that changes the coordinates of the package in such a manner that they now represent
     * the package rotated around the z-axis (height-axis) of the imaginary coordinate system.
@@ -267,17 +277,21 @@ public class Package {
                     newCoords[i][j] = -newCoords[i][j];
             }
         }
+        if (rotations[2] == 3)
+            rotations[2] = 0;
+        else
+            rotations[2]++;
         int temp = length;
         length = width;
         width = temp;
         this.coords = newCoords;
     }
-    
+
     public void rotateRandom() {
         int randomX = (int) (Math.random() * 4);
         int randomY = (int) (Math.random() * 4);
         int randomZ = (int) (Math.random() * 4);
-        
+
         for (int i = 0; i < randomX; i++)
             this.rotateX();
         for (int i = 0; i < randomY; i++)
@@ -285,7 +299,7 @@ public class Package {
         for (int i = 0; i < randomZ; i++)
             this.rotateZ();
     }
-    
+
     /**
     *Returns the minimum value of the x-coordinate of package
     *@return minimum value of the x-coordinate of a package
@@ -324,11 +338,64 @@ public class Package {
     public Package random() {
         int random = Random.randomWithRange(1,3);
         if (random == 1) {
-            return new Package(PackageType.APackage);
+            return new Package("A");
         } else if (random == 2) {
-            return new Package(PackageType.BPackage);
+            return new Package("B");
         } else {
-            return new Package(PackageType.CPackage);
+            return new Package("C");
         }
+    }
+
+    public boolean overlaps(Package other) {
+        int[][] otherCoords = other.getCoords();
+        int[] otherBCoords = other.getBaseCoords();
+        for (int i = 0; i < otherCoords.length; i++) {
+            for (int j = 0; j < coords.length; j++) {
+                if (otherCoords[i][0] + otherBCoords[0] == coords[j][0] + baseCoords[0] && otherCoords[i][1] + otherBCoords[1] == coords[j][1] + baseCoords[1] && otherCoords[i][2] + otherBCoords[2] == coords[j][2] + baseCoords[2])
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public int[] getNrStates(int csLength, int csWidth, int csHeight) {
+        int[] nrStates; // where nrStates[0] is the total number of states and the subsequent numbers are those for each state of rotation
+        if (this.length == this.width && this.length == this.height) {
+            nrStates = new int[2];
+            nrStates[1] = (csLength - (this.length - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.height - 1));
+            nrStates[0] = nrStates[1];
+        } else if (this.length == this.width) {
+            nrStates = new int[4];
+            nrStates[1] = (csLength - (this.length - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.height - 1));
+            nrStates[2] = (csLength - (this.height - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.length - 1));
+            nrStates[3] = (csLength - (this.width - 1)) * (csWidth - (this.length - 1)) * (csHeight - (this.height - 1));
+            nrStates[0] = nrStates[1] + nrStates[2] + nrStates[3];
+        } else if (this.length == this.height) {
+            nrStates = new int[4];
+            nrStates[1] = (csLength - (this.length - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.height - 1));
+            nrStates[2] = (csLength - (this.length - 1)) * (csWidth - (this.height - 1)) * (csHeight - (this.width - 1));
+            nrStates[3] = (csLength - (this.height - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.length - 1));
+            nrStates[0] = nrStates[1] + nrStates[2] + nrStates[3];
+        } else if (this.width == this.height) {
+            nrStates = new int[4];
+            nrStates[1] = (csLength - (this.length - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.height - 1));
+            nrStates[2] = (csLength - (this.height - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.length - 1));
+            nrStates[3] = (csLength - (this.height - 1)) * (csWidth - (this.length - 1)) * (csHeight - (this.width - 1));
+            nrStates[0] = nrStates[1] + nrStates[2] + nrStates[3];
+        } else {
+            nrStates = new int[7];
+            nrStates[1] = (csLength - (this.length - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.height - 1));
+            nrStates[2] = (csLength - (this.length - 1)) * (csHeight - (this.height - 1)) * (csWidth - (this.width - 1));
+            nrStates[3] = (csLength - (this.width - 1)) * (csWidth - (this.height - 1)) * (csHeight - (this.length - 1));
+            nrStates[4] = (csLength - (this.height - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.length - 1));
+            nrStates[5] = (csLength - (this.height - 1)) * (csWidth - (this.length - 1)) * (csHeight - (this.width - 1));
+            nrStates[6] = (csLength - (this.width - 1)) * (csWidth - (this.length - 1)) * (csHeight - (this.height - 1));
+            nrStates[0] = nrStates[1] + nrStates[2] + nrStates[3] + nrStates[4] + nrStates[5] + nrStates[6];
+        }
+        return nrStates;
+    }
+
+    public boolean equalType(Package p) {
+        return this.type.equalsIgnoreCase(p.getType());
     }
 }
