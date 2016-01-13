@@ -17,7 +17,7 @@ public class GreedyAlgorithm {
     * The number of times the algorithm is used to calculate a solution in order to find the best one
     * out of those.
     */
-    private static final int NR_RUNS = 1;
+    private static final int NR_RUNS = 10;
 
     /**
     * A list (in array form) of the packages which are supposed to be placed in the cargo space.
@@ -52,12 +52,12 @@ public class GreedyAlgorithm {
 
         int nrPackages = nrA + nrB + nrC + nrL + nrP + nrT;
         packages = new Package[nrPackages];
-        for (int i = 0; i < nrC; i++)
-            packages[i] = new Package("C");
-        for (int i = nrC; i < nrC + nrB; i++)
-            packages[i] = new Package("B");
-        for (int i = nrC + nrB; i < nrC + nrB + nrA; i++)
+        for (int i = 0; i < nrA; i++)
             packages[i] = new Package("A");
+        for (int i = nrA; i < nrA + nrB; i++)
+            packages[i] = new Package("B");
+        for (int i = nrA + nrB; i < nrA + nrB + nrC; i++)
+            packages[i] = new Package("C");
         for (int i = nrC + nrB + nrA; i < nrC + nrB + nrA + nrL; i++)
             packages[i] = new Package("L");
         for (int i = nrC + nrB + nrA + nrL; i < nrC + nrB + nrA + nrL + nrP; i++)
@@ -68,6 +68,7 @@ public class GreedyAlgorithm {
         ArrayList<Integer> randomNumbers;
         ArrayList<Package> packagesLeft;
 
+        int forAverage = 0;
         for (int i  = 0; i < NR_RUNS; i++) {
             CargoSpace cs = new CargoSpace(33, 5, 8);
             boolean done = false;
@@ -76,10 +77,10 @@ public class GreedyAlgorithm {
             packagesLeft = new ArrayList<Package>();
             for (int j = 0; j < nrPackages; j++)
                 randomNumbers.add(new Integer(j));
-            Collections.shuffle(randomNumbers);
+            //Collections.shuffle(randomNumbers);
             while (!done) {
                 Package p = packages[randomNumbers.get(counter).intValue()];
-                p.rotateRandom();
+                //p.rotateRandom();
                 cs.initialPosition(p);
                 if (!cs.overlap(p))
                     cs.putPackage(p);
@@ -91,25 +92,34 @@ public class GreedyAlgorithm {
                 if (counter >= nrPackages){done = true;}
 
             }
-            System.out.println("There are " + packagesLeft.size() + " packages left");
+            //System.out.println("There are " + packagesLeft.size() + " packages left");
             long startTime = System.currentTimeMillis();
             cs.fillGaps(packagesLeft);
             long endTime = System.currentTimeMillis();
             long totalTime = endTime - startTime;
-        		System.out.println("Runtime: " + totalTime + "ms");
+        		//System.out.println("Runtime: " + totalTime + "ms");
             allCS[i] = cs;
+            forAverage += allCS[i].getTotalValue();
         }
 
         double best = 0;
+        double worst = Double.MAX_VALUE;
         CargoSpace bestCS = new CargoSpace(0, 0, 0);
+        CargoSpace worstCS = new CargoSpace(0, 0, 0);
         for (int i = 0; i < allCS.length; i++) {
             //System.out.println(allCS[i].getTotalValue());
             if (allCS[i].getTotalValue() > best) {
                 bestCS = allCS[i];
                 best = bestCS.getTotalValue();
             }
+            if (allCS[i].getTotalValue() < worst) {
+                worstCS = allCS[i];
+                worst = worstCS.getTotalValue();
+            }
         }
         System.out.println("BEST VALUE: " + bestCS.getTotalValue());
+        System.out.println("WORST VALUE: " + worstCS.getTotalValue());
+        System.out.println("AVERAGE VALUE: " + ((double)forAverage/(double)NR_RUNS));
 
         JFrame f = new JFrame();
         f.setSize(1000, 1020);
