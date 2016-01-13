@@ -33,7 +33,7 @@ import java.awt.Polygon;
 public class Cube {
 	
 	private Package type;
-	private int  Scale = 10, x, y, z;
+	private int  Scale = 10, x, y, z, xpos, ypos, zpos;
 	private Point3D[] allPoints;
 	double[] fx = new double[8], fy = new double[8], fz = new double[8];
 	
@@ -47,6 +47,9 @@ public class Cube {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		xpos = x;
+		ypos = y;
+		zpos = z;
 		allPoints = createPoints(type.getBaseCoords());
 		for(int i = 0; i<fx.length; i++){
 			fx[i] = allPoints[i].getX();
@@ -64,7 +67,7 @@ public class Cube {
 	 * 
 	 * @return returns the 3 Polygons visible on the surface
 	 */
-	public Polygon[] createPolygons(int xpos, int ypos, int zpos){
+	public Polygon[] createPolygons(){
 		Polygon[] polygon = new Polygon[6], surface = new Polygon[3];
 		int[][] places=new int[6][4];
 		int[] surfacePolygons = new int[3];
@@ -182,6 +185,31 @@ public class Cube {
 	   }
    }
 
+   public static Cube[] sort(Cube[] cubes){
+	   int[] zCoords = new int[cubes.length];
+	   
+	   for (int i = zCoords.length; i >= 0; i--) {
+           for (int j = 0; j < (zCoords.length - 1); j++) {
+               if (zCoords[j] < zCoords[(j+1)]) {
+                   int temp;
+                   Cube tempCube; 
+                   
+                   temp = zCoords[j];
+                   tempCube = cubes[i];
+                   
+                   zCoords[j] = zCoords[(j+1)];
+                   zCoords[(j+1)] = temp;
+                   
+                   cubes[j] = cubes[(j+1)];
+                   cubes[(j+1)] = tempCube;
+                   
+              }
+           }
+       }
+
+	   return cubes;
+   }
+   
    /**
     * A method to set the points of the corner of the cube
     * 
@@ -221,15 +249,34 @@ public class Cube {
 		allPoints[7] = new Point3D( (baseCoords[0]  + type.getWidth()) * Scale, -(baseCoords[1]) * Scale				     , -(baseCoords[2]  + type.getLength())* Scale);
 		
 		for(int i = 0; i<allPoints.length; i++){
-			allPoints[i].setX(allPoints[i].getX() + 20*x);
-			allPoints[i].setY(allPoints[i].getY() + 20*y);
-			allPoints[i].setZ(allPoints[i].getZ() + 20*z);
+			allPoints[i].setX(allPoints[i].getX());
+			allPoints[i].setY(allPoints[i].getY());
+			allPoints[i].setZ(allPoints[i].getZ());
 		}
-		
-	/*	System.out.println(type.getType());
-		for(int i = 0; i<allPoints.length; i++){
-			System.out.println(allPoints[i].toString());
-		}*/
 		return allPoints;
 	}
+  
+   public int getMaxZ(){
+	   Point3D[] sortedPoints = new Point3D[8];
+	   sortedPoints = createPoints(type.getBaseCoords());
+	   
+	   for (int i = sortedPoints.length; i >= 0; i--) {
+           for (int j = 0; j < (sortedPoints.length - 1); j++) {
+               if (sortedPoints[j].getZ() < sortedPoints[(j+1)].getZ()) {
+                   int temp;
+                   
+                   temp = sortedPoints[j].getZ();
+                   
+                   sortedPoints[j] = sortedPoints[(j+1)];
+                   sortedPoints[(j+1)].setZ(temp);
+              }
+           }
+       }
+	   
+	   return sortedPoints[0].getZ();
+   }
+   
+   public String getPackage(){
+	   return type.getType();
+   }
 }

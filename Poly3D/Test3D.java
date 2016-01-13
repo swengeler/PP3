@@ -14,7 +14,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import Solution.PackageType;
 
 
 public class Test3D extends JPanel{
@@ -62,9 +61,10 @@ public class Test3D extends JPanel{
 			for(int i = 0; i<cubes.length; i++){
 				for(int j = 0; j<cubes[i].length; j++){
 					for(int k = 0; k<cubes[i][j].length; k++){
-						cubes[i][j][k].RotateZ(1);
-						cubes[i][j][k].RotateY(1);
+						cubes[i][j][k].RotateZ(10);
+						cubes[i][j][k].RotateY(10);
 						cubes[i][j][k].RotateX(1);
+						
 					}
 				}
 			}

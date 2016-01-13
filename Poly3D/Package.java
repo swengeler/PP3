@@ -10,14 +10,26 @@ package Poly3D;
 public class Package {
 
     private String type;
+    private double value;
+
     private int height;
     private int width;
     private int length;
-    private double value;
+
+    // the original dimensions of the package (to enable the packingToChromosome method to know which state of rotation the package is in)
+    private int orHeight;
+    private int orWidth;
+    private int orLength;
 
     private int[] baseCoords = new int[3]; // where [X][Y][Z]
     private int[] rotations = new int[3]; // where [X][Y][Z]
     private int[][] coords;
+
+    private int[][][] coordsTable = new int[][][] {
+        {{0,0,0}, {0,1,0}, {1,0,0}, {2,0,0}, {3,0,0}}, // L package
+        {{0,0,0}, {0,1,0}, {1,0,0}, {1,1,0}, {2,0,0}}, // P package
+        {{0,0,0}, {0,1,0}, {0,2,0}, {1,1,0}, {2,1,0}} // T package
+    };
 
     /**
     * A constructor that constructs a package with certain values according to the definition of
@@ -30,6 +42,9 @@ public class Package {
             length = 4;
             width = 2;
             height = 2;
+            orLength = 4;
+            orWidth = 2;
+            orHeight = 2;
             value = 3;
             setPackage("A");
         }
@@ -37,6 +52,9 @@ public class Package {
             length = 4;
             width = 3;
             height = 2;
+            orLength = 4;
+            orWidth = 3;
+            orHeight = 2;
             value = 4;
             setPackage("B");
         }
@@ -44,23 +62,45 @@ public class Package {
             length = 3;
             width = 3;
             height = 3;
+            orLength = 3;
+            orWidth = 3;
+            orHeight = 3;
             value = 5;
             setPackage("C");
         }
-        else if (type.equals("Truck")){
-        	length =  33;
-        	height = 5;
-        	width = 8;
-        	value = 20;
-        	setPackage("Truck");
+        else if (type.equals("L")) {
+            length = 4;
+            height = 1;
+            width = 2;
+            orLength = 4;
+            orWidth = 1;
+            orHeight = 2;
+            value = 3;
+            setPackage("L");
+
         }
-        else{
-        	length = 0;
-        	height = 0;
-        	width = 0;
-        	value = 0;
-        	setPackage("No Package");
+        else if (type.equals("P")) {
+            length = 3;
+            height = 1;
+            width = 2;
+            orLength = 3;
+            orWidth = 1;
+            orHeight = 2;
+            value = 4;
+            setPackage("P");
+
         }
+        else if (type.equals("T")) {
+            length = 3;
+            height = 1;
+            width = 3;
+            orLength = 3;
+            orWidth = 1;
+            orHeight = 3;
+            value = 5;
+            setPackage("T");
+        }
+
     }
 
     /**
@@ -68,8 +108,11 @@ public class Package {
     */
     public Package(String type, int height, int width, int length, double value) {
         this.height = height;
+        this.orHeight = height;
         this.width = width;
+        this.orWidth = width;
         this.length = length;
+        this.orLength = length;
         this.value = value;
         setPackage(type);
     }
@@ -84,15 +127,38 @@ public class Package {
     * @param type The desired type of package.
     */
     public void setPackage(String type) {
-        coords = new int[height * width * length][3];
-        int counter = 0;
-        for (int i = 0; i < length; i++) {
-            for (int j = 0; j < width; j++) {
-                for (int k = 0; k < height; k++) {
-                    coords[counter][0] = i;
-                    coords[counter][1] = j;
-                    coords[counter][2] = k;
-                    counter++;
+        if (type.equalsIgnoreCase("L")) {
+            coords = new int[5][3];
+            for (int i = 0; i < coords.length; i++) {
+                for (int j = 0; j < coords[0].length; j++) {
+                    coords[i][j] = coordsTable[0][i][j];
+                }
+            }
+        } else if (type.equalsIgnoreCase("P")) {
+            coords = new int[5][3];
+            for (int i = 0; i < coords.length; i++) {
+                for (int j = 0; j < coords[0].length; j++) {
+                    coords[i][j] = coordsTable[1][i][j];
+                }
+            }
+        } else if (type.equalsIgnoreCase("T")){
+            coords = new int[5][3];
+            for (int i = 0; i < coords.length; i++) {
+                for (int j = 0; j < coords[0].length; j++) {
+                    coords[i][j] = coordsTable[2][i][j];
+                }
+            }
+        } else {
+            coords = new int[height * width * length][3];
+            int counter = 0;
+            for (int i = 0; i < length; i++) {
+                for (int j = 0; j < width; j++) {
+                    for (int k = 0; k < height; k++) {
+                        coords[counter][0] = i;
+                        coords[counter][1] = j;
+                        coords[counter][2] = k;
+                        counter++;
+                    }
                 }
             }
         }
@@ -176,6 +242,21 @@ public class Package {
         return height;
     }
 
+    public int getOrLength() {
+        return orHeight;
+    }
+
+    public int getOrWidth() {
+        return orWidth;
+    }
+
+    public int getOrHeight() {
+        return orHeight;
+    }
+
+    /**
+    *
+    */
     public double getValue() {
         return value;
     }
@@ -366,16 +447,19 @@ public class Package {
             nrStates[3] = (csLength - (this.height - 1)) * (csWidth - (this.length - 1)) * (csHeight - (this.width - 1));
             nrStates[0] = nrStates[1] + nrStates[2] + nrStates[3];
         } else {
-            // SOMETHING STILL WRONG HERE, THE NUMBER CALCULATED SEEMS TO BE TOO SMALL
             nrStates = new int[7];
             nrStates[1] = (csLength - (this.length - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.height - 1));
-            nrStates[2] = (csLength - (this.length - 1)) * (csWidth - (this.height - 1)) * (csHeight - (this.width - 1));
-            nrStates[3] = (csLength - (this.height - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.length - 1));
-            nrStates[4] = (csLength - (this.width - 1)) * (csWidth - (this.length - 1)) * (csHeight - (this.height - 1));
-            nrStates[5] = (csLength - (this.length - 1)) * (csWidth - (this.height - 1)) * (csHeight - (this.width - 1));
-            nrStates[6] = (csLength - (this.height - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.length - 1));
+            nrStates[2] = (csLength - (this.length - 1)) * (csHeight - (this.height - 1)) * (csWidth - (this.width - 1));
+            nrStates[3] = (csLength - (this.width - 1)) * (csWidth - (this.height - 1)) * (csHeight - (this.length - 1));
+            nrStates[4] = (csLength - (this.height - 1)) * (csWidth - (this.width - 1)) * (csHeight - (this.length - 1));
+            nrStates[5] = (csLength - (this.height - 1)) * (csWidth - (this.length - 1)) * (csHeight - (this.width - 1));
+            nrStates[6] = (csLength - (this.width - 1)) * (csWidth - (this.length - 1)) * (csHeight - (this.height - 1));
             nrStates[0] = nrStates[1] + nrStates[2] + nrStates[3] + nrStates[4] + nrStates[5] + nrStates[6];
         }
         return nrStates;
+    }
+
+    public boolean equalType(Package p) {
+        return this.type.equalsIgnoreCase(p.getType());
     }
 }

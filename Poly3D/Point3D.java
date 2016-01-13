@@ -8,7 +8,7 @@ package Poly3D;
  */
 public class Point3D {
 	
-	private int x, y, z;
+	private int x = 0, y = 0, z = 0;
 	
 	/**
 	 * A Constructor to create new Points in the 3rd dimension
