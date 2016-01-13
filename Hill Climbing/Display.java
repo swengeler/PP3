@@ -15,7 +15,7 @@ import javax.swing.*;
 
 public class Display extends JPanel {
 
-	public PackageType[][][] x;
+	public String[][][] x;
 	public int[][] y;
 	public int layer = 0;
 
@@ -31,7 +31,7 @@ public class Display extends JPanel {
     * @param cargoSpace The three-dimensional array representation of the cargo space that is
     *                   supposed to be displayed graphically.
     */
-	public Display(PackageType[][][] cargoSpace) {
+	public Display(String[][][] cargoSpace) {
         setMinimumSize(new Dimension(750, 750));
         setPreferredSize(new Dimension(750, 750));
         setMaximumSize(new Dimension(750, 750));
@@ -40,7 +40,7 @@ public class Display extends JPanel {
 		addControlPanel();
 
 		//[length][width][height]
-		x = new PackageType[cargoSpace.length][cargoSpace[0].length][cargoSpace[0][0].length];
+		x = new String[cargoSpace.length][cargoSpace[0].length][cargoSpace[0][0].length];
         for (int i = 0; i < x.length; i++) {
             for (int j = 0; j < x[0].length; j++) {
                 for (int k = 0; k < x[0][0].length; k++) {
@@ -166,16 +166,28 @@ public class Display extends JPanel {
     * @param y The y-coordinate (in pixels) of the upper left corner of the square that is drawn.
     * @param type The type of package that is represented by the square (to decide the color).
     */
-    private void drawSquare(Graphics2D g2, int x, int y, PackageType type) {
+    private void drawSquare(Graphics2D g2, int x, int y, String type) {
 
-        Color[] colors = {Color.LIGHT_GRAY, new Color(0, 0, 102), new Color(0, 102, 0), new Color(36, 191, 175), new Color(255, 227, 40), new Color(170, 40, 255)};
+        Color[] colors = {new Color(0, 0, 102), new Color(0, 102, 0), new Color(36, 191, 175), new Color(255, 227, 40), new Color(170, 40, 255), new Color(238, 247, 59)};
 
-        if (type == null)
+        if (type == null || type.equals("Empty"))
         	g2.setColor(Color.LIGHT_GRAY);
+        else if (type.equals("A"))
+            g2.setColor(colors[0]);
+        else if (type.equals("B"))
+            g2.setColor(colors[1]);
+        else if (type.equals("C"))
+            g2.setColor(colors[2]);
+        else if (type.equals("L"))
+            g2.setColor(colors[3]);
+        else if (type.equals("P"))
+            g2.setColor(colors[4]);
+        else if (type.equals("T"))
+            g2.setColor(colors[5]);
         else
-					g2.setColor(colors[type.ordinal()]);
-
-				g2.fill(new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE));
+            g2.setColor(new Color((int) (Math.random() * 256), (int) (Math.random() * 256), (int) (Math.random() * 256)));
+        
+        g2.fill(new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE));
 
 
 	}
@@ -186,7 +198,7 @@ public class Display extends JPanel {
     * A Method to "rotate" the cargo space array clockwise around the y-axis (front side: bottom).
     */
   	public void rotateYClockwise() {
-  		PackageType[][][] temp = new PackageType[x[0][0].length][x[0].length][x.length];
+  		String[][][] temp = new String[x[0][0].length][x[0].length][x.length];
 
   		for(int i = 0; i<temp.length;i++){
 			for(int j = 0; j<temp[i].length;j++){
@@ -204,7 +216,7 @@ public class Display extends JPanel {
     * A Method to "rotate" the cargo space array counter-clockwise around the y-axis (front side: top).
     */
   	public void rotateYCounterClockwise() {
-  		PackageType[][][] temp = new PackageType[x[0][0].length][x[0].length][x.length];
+  		String[][][] temp = new String[x[0][0].length][x[0].length][x.length];
 
   		for(int i = 0; i<temp.length;i++){
 			for(int j = 0; j<temp[i].length;j++){
@@ -223,7 +235,7 @@ public class Display extends JPanel {
     * A Method to "rotate" the cargo space array counter-clockwise around the z-axis (front side: left).
     */
 	public void rotateZCounterClockwise() {
-		PackageType[][][] temp = new PackageType[x[0].length][x.length][x[0][0].length];
+		String[][][] temp = new String[x[0].length][x.length][x[0][0].length];
 		for(int i = 0; i<temp.length;i++){
 			for(int j = 0; j<temp[i].length;j++){
 				for(int k = 0; k<temp[i][j].length;k++){
@@ -242,7 +254,7 @@ public class Display extends JPanel {
     * A Method to "rotate" the cargo space array clockwise around the z-axis (front side: right).
     */
 	public void rotateZClockwise() {
-		PackageType[][][] temp = new PackageType[x[0].length][x.length][x[0][0].length];
+		String[][][] temp = new String[x[0].length][x.length][x[0][0].length];
 		for(int i = 0; i<temp.length;i++){
 			for(int j = 0; j<temp[i].length;j++){
 				for(int k = 0; k<temp[i][j].length;k++){
@@ -260,7 +272,7 @@ public class Display extends JPanel {
     * A Method to "rotate" the cargo space array counter-clockwise around the x-axis (upper side: right).
     */
 	public void rotateXCounterClockwise() {
-		PackageType[][][] temp = new PackageType[x.length][x[0][0].length][x[0].length];
+		String[][][] temp = new String[x.length][x[0][0].length][x[0].length];
 		for(int i = 0; i<temp.length;i++){
 			for(int j = 0; j<temp[i].length;j++){
 				for(int k = 0; k<temp[i][j].length;k++){
@@ -278,7 +290,7 @@ public class Display extends JPanel {
     * A Method to "rotate" the cargo space array clockwise around the x-axis (upper side: left).
     */
 	public void rotateXClockwise() {
-		PackageType[][][] temp = new PackageType[x.length][x[0][0].length][x[0].length];
+		String[][][] temp = new String[x.length][x[0][0].length][x[0].length];
 		for(int i = 0; i<temp.length;i++){
 			for(int j = 0; j<temp[i].length;j++){
 				for(int k = 0; k<temp[i][j].length;k++){

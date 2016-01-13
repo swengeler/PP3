@@ -23,33 +23,26 @@ public class CargoSpace {
     private double totalValue;
 
     /**
-    * A three-dimensional array of PackageType objects (denoting the space taken up by certain packages)
+    * A three-dimensional array of String objects (denoting the space taken up by certain packages)
     * used as an internal representation of the cargo space. It does not contain any information about the
     * placement of individual packages (which are indiscernible in it).
     */
-    private PackageType[][][] cargoSpace;
+    private String[][][] cargoSpace;
 
     /**
     * An array containing information about the placement of individual packages in the form of the types
     * of packages filling certain positions in the cargo space denoted by the corresponding coordinates in
     * the packageCoords array.
     */
-    public PackageType[] cargoSpaceFilled;
-    /**
+    public Package[] cargoSpaceFilled;
+    /** REDUNDANT
     * An array containing information about the placement of individual packages in form of the coordinates
     * of the lower left back-most corner of each package placed in the cargo space (corresponds to the package
     * types listed in the cargoSpaceFilled array).
     */
     public int[][] packageCoords;
-    
-    public int[][] packageRotations;
 
-    /**The x-coordinate of the lower left back-most corner of the package being placed at the moment.*/
-    public int curX = 0;
-    /**The y-coordinate of the lower left back-most corner of the package being placed at the moment.*/
-    public int curY = 0;
-    /**The z-coordinate of the lower left back-most corner of the package being placed at the moment.*/
-    public int curZ = 0;
+    private int nrPlaced;
 
     /**
     * The constructor for a CargoSpace object, assigning it its dimensions, initialising the cargoSpace array
@@ -63,7 +56,7 @@ public class CargoSpace {
         this.length = length;
         this.width = width;
         this.height = height;
-        cargoSpace = new PackageType[length][width][height];
+        cargoSpace = new String[length][width][height];
         initialiseCS();
     }
 
@@ -73,7 +66,7 @@ public class CargoSpace {
     *
     * @return cargoSpace The three-dimensional array representing the cargo space.
     */
-    public PackageType[][][] getArray() {return cargoSpace;}
+    public String[][][] getArray() {return cargoSpace;}
 
     /**
     * Determines the initial position of the package currently being placed in the most upper, right and
@@ -84,12 +77,9 @@ public class CargoSpace {
     */
     public void initialPosition(Package p) {
         int[][] coords = p.getCoords();
-        curX = cargoSpace.length - p.getLength();
-        if (DEBUG) {System.out.println(curX);}
-        curY = cargoSpace[0].length - p.getWidth();
-        if (DEBUG) {System.out.println(curY);}
-        curZ = cargoSpace[0][0].length - p.getHeight();
-        if (DEBUG) {System.out.println(curZ);}
+        p.setBaseX(cargoSpace.length - p.getLength());
+        p.setBaseY(cargoSpace[0].length - p.getWidth());
+        p.setBaseZ(cargoSpace[0][0].length - p.getHeight());
     }
 
     /**
@@ -103,15 +93,14 @@ public class CargoSpace {
         // first move as far back as possible, then as far left as possible, then as far down as possible
         // maybe repeat recursively to avoid placing stuff in bad positions?
         while (movable(p)) {
-            while (curY > 0 && !overlap(p)) {curY--;}
-            if (overlap(p)) {curY++;}
-            while (curX > 0 && !overlap(p)) {curX--;}
-            if (overlap(p)) {curX++;}
-            while (curZ > 0 && !overlap(p)) {curZ--;}
-            if (overlap(p)) {curZ++;}
+            while (p.getBaseCoords()[1] > 0 && !overlap(p)) {p.setBaseY(p.getBaseCoords()[1] - 1);}
+            if (overlap(p)) {p.setBaseY(p.getBaseCoords()[1] + 1);}
+            while (p.getBaseCoords()[0] > 0 && !overlap(p)) {p.setBaseX(p.getBaseCoords()[0] - 1);}
+            if (overlap(p)) {p.setBaseX(p.getBaseCoords()[0] + 1);}
+            while (p.getBaseCoords()[2] > 0 && !overlap(p)) {p.setBaseZ(p.getBaseCoords()[2] - 1);}
+            if (overlap(p)) {p.setBaseZ(p.getBaseCoords()[2] + 1);}
         }
-        if (DEBUG) {System.out.println("After placing: curX = " + curX + " curY = " + curY + " curZ = " + curZ);}
-        addToDoc(p);
+        if (DEBUG) {System.out.println("After placing: curX = " + p.getBaseCoords()[0] + " curY = " + p.getBaseCoords()[1] + " curZ = " + p.getBaseCoords()[2]);}
         place(p);
     }
 
@@ -123,30 +112,24 @@ public class CargoSpace {
     */
     public void addToDoc(Package p) {
         if (cargoSpaceFilled == null) {
-            cargoSpaceFilled = new PackageType[1];
-            cargoSpaceFilled[0] = p.getType();
+            cargoSpaceFilled = new Package[1];
+            cargoSpaceFilled[0] = p;
         } else {
-            PackageType[] newCSF = new PackageType[cargoSpaceFilled.length + 1];
+            Package[] newCSF = new Package[cargoSpaceFilled.length + 1];
             System.arraycopy(cargoSpaceFilled, 0, newCSF, 0, cargoSpaceFilled.length);
-            newCSF[newCSF.length - 1] = p.getType();
+            newCSF[newCSF.length - 1] = p;
             cargoSpaceFilled = newCSF;
         }
-
-        if (packageCoords == null) {
-            packageCoords = new int[1][3];
-            packageCoords[0][0] = curX;
-            packageCoords[0][1] = curY;
-            packageCoords[0][2] = curZ;
-        } else {
-            int[][] newPC = new int[packageCoords.length + 1][3];
-            for (int i = 0; i < packageCoords.length; i++) {
-                System.arraycopy(packageCoords[i], 0, newPC[i], 0, 3);
-            }
-            newPC[newPC.length - 1][0] = curX;
-            newPC[newPC.length - 1][1] = curY;
-            newPC[newPC.length - 1][2] = curZ;
-            packageCoords = newPC;
-        }
+    }
+    
+    public CargoSpace copy() {
+    	CargoSpace cargoCopy = new CargoSpace(length,width,height);
+    	for (int i=0; i<1; i++) {
+    		Package p = cargoSpaceFilled[i];
+    		System.out.println("Parcel n="+i+" type=" + p.getType() + " BaseCoords: x=" + p.getBaseCoords()[0] + " y=" + p.getBaseCoords()[1] + " z=" + p.getBaseCoords()[2]);
+    		cargoCopy.place(p);
+    	}
+    	return cargoCopy;
     }
 
     /**
@@ -157,21 +140,21 @@ public class CargoSpace {
     * return boolean Returns true if the package can be moved in some direction, otherwise returns false.
     */
     public boolean movable(Package p) {
-        curY--;
-        if (curY >= 0 && !overlap(p)) {
-            curY++;
+        p.setBaseY(p.getBaseCoords()[1] - 1);
+        if (p.getBaseCoords()[1] >= 0 && !overlap(p)) {
+            p.setBaseY(p.getBaseCoords()[1] + 1);
             return true;
-        } else {curY++;}
-        curX--;
-        if (curX >= 0 && !overlap(p)) {
-            curX++;
+        } else {p.setBaseY(p.getBaseCoords()[1] + 1);}
+        p.setBaseX(p.getBaseCoords()[0] - 1);
+        if (p.getBaseCoords()[0] >= 0 && !overlap(p)) {
+            p.setBaseX(p.getBaseCoords()[0] + 1);
             return true;
-        } else {curX++;}
-        curZ--;
-        if (curZ >= 0 && !overlap(p)) {
-            curZ++;
+        } else {p.setBaseX(p.getBaseCoords()[0] + 1);}
+        p.setBaseZ(p.getBaseCoords()[2] - 1);
+        if (p.getBaseCoords()[2] >= 0 && !overlap(p)) {
+            p.setBaseZ(p.getBaseCoords()[2] + 1);
             return true;
-        } else {curZ++;}
+        } else {p.setBaseZ(p.getBaseCoords()[2] + 1);}
         return false;
     }
 
@@ -182,19 +165,32 @@ public class CargoSpace {
     * @param p The Package that is placed in the array/cargo space.
     */
     public void place(Package p) {
-        int[][] coords = p.getCoords();
-        // coords[4][0] should be the x-coordinate of all the corners of the package on the right side
         for (int x = 0; x < p.getLength(); x++) {
-            // coords[1][1] should be the y-coordinate of all the corners of the package on the front side
             for (int y = 0; y < p.getWidth(); y++) {
-                // coords[3][2] should be the z-coordinate of all the corners of the package on the upper side
-                for (int z = 0; z < p.getHeight(); z++)
-                    cargoSpace[x + curX][y + curY][z + curZ] = p.getType();
+                for (int z = 0; z < p.getHeight(); z++) {
+                    cargoSpace[x + p.getBaseCoords()[0]][y + p.getBaseCoords()[1]][z + p.getBaseCoords()[2]] = p.getType();
+                }
             }
         }
         totalValue += p.getValue();
+        nrPlaced++;
+        addToDoc(p);
     }
-
+    
+    /**
+     * Remove Package p from the internal representation of the cargo space
+     * @param p The Package to be removed
+     */
+    public void remove(Package p) {
+    	for (int i=0; i < p.getLength(); i++) {
+    		for (int j=0; j<p.getWidth(); j++) {
+    			for (int k=0; k<p.getHeight(); k++) {
+    				cargoSpace[i + p.getBaseCoords()[0]][j + p.getBaseCoords()[1]][k + p.getBaseCoords()[2]] = "Empty";
+    			}
+    		}
+    	}
+    }
+    
     /**
     * A method that "fills" the cargo space with "no packages", i.e. empties it, either to reset it or
     * in order to have a proper graphical representation in the GUI.
@@ -203,7 +199,7 @@ public class CargoSpace {
         for (int i = 0; i < cargoSpace.length; i++) {
             for (int j = 0; j < cargoSpace[i].length; j++) {
                 for (int k = 0; k < cargoSpace[i][j].length; k++) {
-                    cargoSpace[i][j][k] = PackageType.NoPackage;
+                    cargoSpace[i][j][k] = "Empty";
                 }
             }
         }
@@ -214,8 +210,7 @@ public class CargoSpace {
         for (int i = 0; i < cargoSpace.length; i++) {
             for (int j = 0; j < cargoSpace[i].length; j++) {
                 for (int k = 0; k < cargoSpace[i][j].length; k++) {
-                    if (cargoSpace[i][j][k] == PackageType.NoPackage)
-                    {
+                    if (cargoSpace[i][j][k].equals("Empty")) {
                         counter++;
                     }
                 }
@@ -223,6 +218,8 @@ public class CargoSpace {
         }
         return counter;
     }
+    
+    
 
     /**
     * A method that try to "fills" the cargo gaps with the packages that haven't been placed yet.
@@ -232,12 +229,10 @@ public class CargoSpace {
       for (int i = 0; i < cargoSpace.length; i++) {
           for (int j = 0; j < cargoSpace[i].length; j++) {
               for (int k = 0; k < cargoSpace[i][j].length; k++) {
-                  if (cargoSpace[i][j][k] == PackageType.NoPackage) {
-                    curX = i;
-                    curY = j;
-                    curZ = k;
+                  if (cargoSpace[i][j][k].equals("Empty")) {
                     for (int z = 0; z < packagesLeft.size(); z++) {
                       Package p = packagesLeft.get(z);
+                      p.setBaseCoords(i, j, k);
                       p.rotateRandom();
                       if (!this.overlap(p)) {
                         this.putPackage(p);
@@ -250,7 +245,21 @@ public class CargoSpace {
               }
           }
       }
-      System.out.println("Packages added by fillGaps() : " + counter);
+      if (DEBUG) {System.out.println("Packages added by fillGaps() : " + counter);}
+    }
+    
+    public void fillGaps(Package[] packageTypes) {
+    	while (getNextEmptySpaceCoords(new Package("A")) != null)
+		{
+			for (int i=0; i<packageTypes.length; i++) {
+				int[] coords;
+				while (getNextEmptySpaceCoords(packageTypes[i]) != null) {
+					coords = getNextEmptySpaceCoords(packageTypes[i]);
+					packageTypes[i].setBaseCoords(coords[0], coords[1], coords[2]);
+					place(packageTypes[i]);
+				}
+			}
+		}
     }
 
     /**
@@ -264,9 +273,9 @@ public class CargoSpace {
         int[][] coords = p.getCoords();
         boolean noOverlap = true;
         for (int i = 0; i < coords.length && noOverlap; i++) {
-            if (curX + coords[i][0] >= cargoSpace.length || curY + coords[i][1] >= cargoSpace[0].length || curZ + coords[i][2] >= cargoSpace[0][0].length || cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] != PackageType.NoPackage) {
+            if (p.getBaseCoords()[0] + coords[i][0] >= cargoSpace.length || p.getBaseCoords()[1] + coords[i][1] >= cargoSpace[0].length || p.getBaseCoords()[2] + coords[i][2] >= cargoSpace[0][0].length || !cargoSpace[p.getBaseCoords()[0] + coords[i][0]][p.getBaseCoords()[1] + coords[i][1]][p.getBaseCoords()[2] + coords[i][2]].equals("Empty")) {
                 noOverlap = false;
-                if (DEBUG) {System.out.println(p.getType() + " overlaps with " + cargoSpace[curX + coords[i][0]][curY + coords[i][1]][curZ + coords[i][2]] + " at x = " + (curX + coords[i][0]) + " y = " + (curY + coords[i][1]) + " z = " + (curZ + coords[i][2]));}
+                if (DEBUG) {System.out.println(p.getType() + " overlaps with " + cargoSpace[p.getBaseCoords()[0] + coords[i][0]][p.getBaseCoords()[1] + coords[i][1]][p.getBaseCoords()[2] + coords[i][2]] + " at x = " + (p.getBaseCoords()[0] + coords[i][0]) + " y = " + (p.getBaseCoords()[1] + coords[i][1]) + " z = " + (p.getBaseCoords()[2] + coords[i][2]));}
             }
         }
         return !noOverlap;
@@ -281,13 +290,13 @@ public class CargoSpace {
             System.out.println("\nLayer " + (i + 1) + ":");
             for (int j = cargoSpace[0][0].length - 1; j >= 0; j--) {
                 for (int k = 0; k < cargoSpace[0].length; k++) {
-                    if (cargoSpace[i][k][j] == PackageType.NoPackage)
+                    if (cargoSpace[i][k][j].equals("Empty"))
                         System.out.print("O ");
-                    else if (cargoSpace[i][k][j] == PackageType.APackage)
+                    else if (cargoSpace[i][k][j].equals("A"))
                         System.out.print("A ");
-                    else if (cargoSpace[i][k][j] == PackageType.BPackage)
+                    else if (cargoSpace[i][k][j].equals("B"))
                         System.out.print("B ");
-                    else if (cargoSpace[i][k][j] == PackageType.CPackage)
+                    else if (cargoSpace[i][k][j].equals("C"))
                         System.out.print("C ");
                 }
                 System.out.println();
@@ -302,7 +311,7 @@ public class CargoSpace {
     */
     public void printDoc() {
         for (int i = 0; i < packageCoords.length; i++) {
-            System.out.println(cargoSpaceFilled[i] + " at x = " + packageCoords[i][0] + ", y = " + packageCoords[i][1] + ", z = " + packageCoords[i][2]);
+            System.out.println(cargoSpaceFilled[i].getType() + " package at x = " + packageCoords[i][0] + ", y = " + packageCoords[i][1] + ", z = " + packageCoords[i][2]);
         }
     }
 
@@ -319,9 +328,120 @@ public class CargoSpace {
         if (DEBUG) {System.out.println("\nTOTAL VALUE: " + totalValue);}
         return totalValue;
     }
-    
+
     public double getFitness() {
-        double fitness = totalValue - 0.25 * ((cargoSpace.length * cargoSpace[0].length * cargoSpace[0][0].length) - this.getTotalGaps());
+        int overlapping = 0;
+        Package p;
+        for (int i = 0; i < cargoSpaceFilled.length; i++) {
+            p = cargoSpaceFilled[i];
+            for (int j = 0; j < cargoSpaceFilled.length; j++) {
+                if (p.overlaps(cargoSpaceFilled[j]))
+                    overlapping++;
+            }
+        }
+        //System.out.println("Overlapping: " + overlapping);
+        double fitness = totalValue - (nrPlaced - overlapping);
         return fitness;
     }
+
+    public void fillCargoSpace(Package[] cargo) {
+        if (DEBUG) {System.out.println("cargo array length: " + cargo.length);}
+        for (int i = 0; i < cargo.length; i++) {
+            if (!overlap(cargo[i])) {
+                if (DEBUG) {System.out.println("Package " + (i + 1) + " placed.");}
+                place(cargo[i]);
+            }
+        }
+    }
+
+    public int getLength() {
+        return cargoSpace.length;
+    }
+
+    public int getWidth() {
+        return cargoSpace[0].length;
+    }
+
+    public int getHeight() {
+        return cargoSpace[0][0].length;
+    }
+
+    public void packRandom(Package[] packing) {
+        int countPacked = 0;
+        for (int i = 0; i < packing.length; i++) {
+            int index = (int) (Math.random() * packing.length);
+            if (!overlap(packing[index])) {
+              place(packing[index]);
+              countPacked++;
+            }
+        }
+        System.out.println("Package placed: " + countPacked);
+    }
+
+    public Package[] getPacking() {
+        return cargoSpaceFilled;
+    }
+
+    /**
+     * Looks for an empty space where the aPackage can be placed and set its baseCoords.
+     * @param aPackage
+     * @return int[3] array coords containing the x,y,z base coords 
+     */
+	public int[] getNextEmptySpaceCoords(Package aPackage) {
+		for (int i = 0; i < cargoSpace.length; i++) {
+	          for (int j = 0; j < cargoSpace[i].length; j++) {
+	              for (int k = 0; k < cargoSpace[i][j].length; k++) {
+	                  if (cargoSpace[i][j][k].equals("Empty")) {
+	                	  int coords[] = new int[3];
+	                	  coords[0] = i;
+	                	  coords[1] = j;
+	                	  coords[2] = k;
+	                	  aPackage.setBaseCoords(i, j, k);
+	                	  if (!overlap(aPackage))
+	                		  return coords;
+	                  }
+	              }
+	          }
+		}
+		return null;
+	}
+	
+	/**
+	 * Fill the cargo following an order of package defined by the parameter packageTypes.
+	 * Until there is space to place at least one of the smallest parcel it keeps looking for empty space and 
+	 * trying to fill them with a specific package.
+	 * @param packageTypes An array containing the package types we want to use in the exact order we want to place them. (i.e. {A,B,C}
+	 */
+	public void fillCargo(Package[] packageTypes) {
+		while (getNextEmptySpaceCoords(new Package("A")) != null)
+		{
+			for (int i=0; i<packageTypes.length; i++) {
+				int[] coords;
+				Package p;
+				while (getNextEmptySpaceCoords(packageTypes[i]) != null) {
+					p = new Package(packageTypes[i].getType());
+					coords = getNextEmptySpaceCoords(p);
+					place(p);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Randomly fill the cargo by selecting random parcel and placing them into the cargo until there is no 
+	 * more space left.
+	 * @param packageTypes An array containing a list of possible parcel types.
+	 */
+	public void fillRandom(Package[] packageTypes) {
+		Package p;
+		int[] coords;
+		while (getNextEmptySpaceCoords(new Package("A")) != null)
+		{
+			p = new Package(packageTypes[Random.randomWithRange(0, 2)].getType());
+			coords = getNextEmptySpaceCoords(p);
+			if (coords != null) {
+				place(p);
+			}
+		}
+	}
 }
