@@ -4,7 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class GeneticAlgorithmDiv {
+public class GeneticAlgorithm {
 
     private final int POPULATION_SIZE = 100;
     private final int NR_TO_PLACE = 1000;

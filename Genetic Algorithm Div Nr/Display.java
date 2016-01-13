@@ -5,7 +5,7 @@ import javax.swing.*;
 /**
 * A class used to give a proper visual representation of the cargo space. It includes
 * methods to rotate the view of the cargo space as well as scroll through the layers
-* of the cargo space (with a thickness of 0.5 m) since it is the only way to give
+* of the cargo space (with a thickness of 0.5 m) since it is the only way to give 
 * information about the third dimension right now.
 *
 * @author Nicola Gheza
@@ -27,7 +27,7 @@ public class Display extends JPanel {
     * A constructor to create a Display object (funtioning as an extension of a JPanel panel)
     * that also acts as a listener for the key- and mousewheel events which can change the view
     * of the cargo space.
-    *
+    * 
     * @param cargoSpace The three-dimensional array representation of the cargo space that is
     *                   supposed to be displayed graphically.
     */
@@ -35,7 +35,7 @@ public class Display extends JPanel {
         setMinimumSize(new Dimension(750, 750));
         setPreferredSize(new Dimension(750, 750));
         setMaximumSize(new Dimension(750, 750));
-
+        
         setLayout(new BorderLayout());
 		addControlPanel();
 
@@ -48,7 +48,7 @@ public class Display extends JPanel {
                 }
             }
         }
-
+        
         setLayout(new BorderLayout());
 		addControlPanel();
 		addKeyListener(new KeyHandler());
@@ -135,9 +135,9 @@ public class Display extends JPanel {
     //------------------------------------------------------------------------------------------------------------------------------------------------------
 
     /**
-    * The overridden paintComponent method that is used to draw the visual representation of the
+    * The overridden paintComponent method that is used to draw the visual representation of the 
     * cargo space on the panel.
-    *
+    * 
     * @param g The Graphics object used to do the drawing.
     */
     public void paintComponent(Graphics g) {
@@ -156,7 +156,7 @@ public class Display extends JPanel {
             }
         }
     }
-
+    
     /**
     * A method that draws a square of a certain color (to distinguish between different) types of
     * packages in each location of the cargo space that is filled with a package.
@@ -168,7 +168,7 @@ public class Display extends JPanel {
     */
     private void drawSquare(Graphics2D g2, int x, int y, String type) {
 
-        Color[] colors = {new Color(0, 0, 102), new Color(0, 102, 0), new Color(36, 191, 175), new Color(255, 227, 40), new Color(170, 40, 255), new Color(50, 50, 50)};
+        Color[] colors = {new Color(0, 0, 102), new Color(0, 102, 0), new Color(36, 191, 175), new Color(255, 227, 40), new Color(170, 40, 255), new Color(238, 247, 59)};
 
         if (type == null || type.equals("Empty"))
         	g2.setColor(Color.LIGHT_GRAY);
@@ -186,7 +186,7 @@ public class Display extends JPanel {
             g2.setColor(colors[5]);
         else
             g2.setColor(new Color((int) (Math.random() * 256), (int) (Math.random() * 256), (int) (Math.random() * 256)));
-
+        
         g2.fill(new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE));
 
 

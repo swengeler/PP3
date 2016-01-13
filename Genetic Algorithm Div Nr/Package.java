@@ -23,12 +23,6 @@ public class Package {
     private int[] rotations = new int[3]; // where [X][Y][Z]
     private int[][] coords;
 
-    private int[][][] coordsTable = new int[][][] {
-        {{0,0,0}, {0,1,0}, {1,0,0}, {2,0,0}, {3,0,0}}, // L package
-        {{0,0,0}, {0,1,0}, {1,0,0}, {1,1,0}, {2,0,0}}, // P package
-        {{0,0,0}, {0,1,0}, {0,2,0}, {1,1,0}, {2,1,0}} // T package
-    };
-
     /**
     * A constructor that constructs a package with certain values according to the definition of
     * the three available pre-defined package types (APackage, BPackage, CPackage).
@@ -66,39 +60,6 @@ public class Package {
             value = 5;
             setPackage("C");
         }
-        else if (type.equals("L")) {
-            length = 4;
-            height = 1;
-            width = 2;
-            orLength = 4;
-            orWidth = 1;
-            orHeight = 2;
-            value = 3;
-            setPackage("L");
-
-        }
-        else if (type.equals("P")) {
-            length = 3;
-            height = 1;
-            width = 2;
-            orLength = 3;
-            orWidth = 1;
-            orHeight = 2;
-            value = 4;
-            setPackage("P");
-
-        }
-        else if (type.equals("T")) {
-            length = 3;
-            height = 1;
-            width = 3;
-            orLength = 3;
-            orWidth = 1;
-            orHeight = 3;
-            value = 5;
-            setPackage("T");
-        }
-
     }
 
     /**
@@ -125,38 +86,15 @@ public class Package {
     * @param type The desired type of package.
     */
     public void setPackage(String type) {
-        if (type.equalsIgnoreCase("L")) {
-            coords = new int[5][3];
-            for (int i = 0; i < coords.length; i++) {
-                for (int j = 0; j < coords[0].length; j++) {
-                    coords[i][j] = coordsTable[0][i][j];
-                }
-            }
-        } else if (type.equalsIgnoreCase("P")) {
-            coords = new int[5][3];
-            for (int i = 0; i < coords.length; i++) {
-                for (int j = 0; j < coords[0].length; j++) {
-                    coords[i][j] = coordsTable[1][i][j];
-                }
-            }
-        } else if (type.equalsIgnoreCase("T")){
-            coords = new int[5][3];
-            for (int i = 0; i < coords.length; i++) {
-                for (int j = 0; j < coords[0].length; j++) {
-                    coords[i][j] = coordsTable[2][i][j];
-                }
-            }
-        } else {
-            coords = new int[height * width * length][3];
-            int counter = 0;
-            for (int i = 0; i < length; i++) {
-                for (int j = 0; j < width; j++) {
-                    for (int k = 0; k < height; k++) {
-                        coords[counter][0] = i;
-                        coords[counter][1] = j;
-                        coords[counter][2] = k;
-                        counter++;
-                    }
+        coords = new int[height * width * length][3];
+        int counter = 0;
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < width; j++) {
+                for (int k = 0; k < height; k++) {
+                    coords[counter][0] = i;
+                    coords[counter][1] = j;
+                    coords[counter][2] = k;
+                    counter++;
                 }
             }
         }

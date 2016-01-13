@@ -17,7 +17,7 @@ public class GreedyAlgorithm {
     * The number of times the algorithm is used to calculate a solution in order to find the best one
     * out of those.
     */
-    private static final int NR_RUNS = 100;
+    private static final int NR_RUNS = 1;
 
     /**
     * A list (in array form) of the packages which are supposed to be placed in the cargo space.
@@ -53,17 +53,17 @@ public class GreedyAlgorithm {
         int nrPackages = nrA + nrB + nrC + nrL + nrP + nrT;
         packages = new Package[nrPackages];
         for (int i = 0; i < nrC; i++)
-            packages[i] = new Package(PackageType.CPackage);
+            packages[i] = new Package("C");
         for (int i = nrC; i < nrC + nrB; i++)
-            packages[i] = new Package(PackageType.BPackage);
+            packages[i] = new Package("B");
         for (int i = nrC + nrB; i < nrC + nrB + nrA; i++)
-            packages[i] = new Package(PackageType.APackage);
+            packages[i] = new Package("A");
         for (int i = nrC + nrB + nrA; i < nrC + nrB + nrA + nrL; i++)
-            packages[i] = new Package(PackageType.LPackage);
+            packages[i] = new Package("L");
         for (int i = nrC + nrB + nrA + nrL; i < nrC + nrB + nrA + nrL + nrP; i++)
-            packages[i] = new Package(PackageType.PPackage);
+            packages[i] = new Package("P");
         for (int i = nrC + nrB + nrA + nrL + nrP; i < nrPackages; i++)
-            packages[i] = new Package(PackageType.TPackage);
+            packages[i] = new Package("T");
 
         ArrayList<Integer> randomNumbers;
         ArrayList<Package> packagesLeft;
@@ -76,10 +76,10 @@ public class GreedyAlgorithm {
             packagesLeft = new ArrayList<Package>();
             for (int j = 0; j < nrPackages; j++)
                 randomNumbers.add(new Integer(j));
-            //Collections.shuffle(randomNumbers);
+            Collections.shuffle(randomNumbers);
             while (!done) {
                 Package p = packages[randomNumbers.get(counter).intValue()];
-                //p.rotateRandom();
+                p.rotateRandom();
                 cs.initialPosition(p);
                 if (!cs.overlap(p))
                     cs.putPackage(p);
@@ -89,7 +89,7 @@ public class GreedyAlgorithm {
                 counter++;
 
                 if (counter >= nrPackages){done = true;}
-                    
+
             }
             System.out.println("There are " + packagesLeft.size() + " packages left");
             long startTime = System.currentTimeMillis();
@@ -116,7 +116,7 @@ public class GreedyAlgorithm {
 
         Display display = new Display(bestCS.getArray());
         f.add(display, BorderLayout.CENTER);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
 
     }
