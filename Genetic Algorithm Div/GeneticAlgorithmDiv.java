@@ -74,7 +74,7 @@ public class GeneticAlgorithmDiv {
 
         HeapSort.sortDownInd(population);
         for (int i = 0; i < population.length; i++) {
-            System.out.println(population[i].getFitness());
+            //System.out.println(population[i].getFitness());
         }
 
         cargoSpace = Converter.chromosomesToCargoSpace(chromosomes, packageTypes, cargoSpace);
