@@ -156,19 +156,13 @@ public class CargoSpace {
     */
     public void place(Package p) {
         int[][] coords = p.getCoords();
-        if (p.getType().equalsIgnoreCase("L") || p.getType().equalsIgnoreCase("P") || p.getType().equalsIgnoreCase("T")) {
-            for(int i = 0; i < coords.length; i++) {
-                    cargoSpace[coords[i][0] + p.getBaseCoords()[0]][coords[i][1] + p.getBaseCoords()[1]][coords[i][2] + p.getBaseCoords()[2]] = p.getType();
-                }
-        } else {
-            // coords[4][0] should be the x-coordinate of all the corners of the package on the right side
-            for (int x = 0; x < p.getLength(); x++) {
-                // coords[1][1] should be the y-coordinate of all the corners of the package on the front side
-                for (int y = 0; y < p.getWidth(); y++) {
-                    // coords[3][2] should be the z-coordinate of all the corners of the package on the upper side
-                    for (int z = 0; z < p.getHeight(); z++) {
-                        cargoSpace[x + p.getBaseCoords()[0]][y + p.getBaseCoords()[1]][z + p.getBaseCoords()[2]] = p.getType();
-                    }
+        // coords[4][0] should be the x-coordinate of all the corners of the package on the right side
+        for (int x = 0; x < p.getLength(); x++) {
+            // coords[1][1] should be the y-coordinate of all the corners of the package on the front side
+            for (int y = 0; y < p.getWidth(); y++) {
+                // coords[3][2] should be the z-coordinate of all the corners of the package on the upper side
+                for (int z = 0; z < p.getHeight(); z++) {
+                    cargoSpace[x + p.getBaseCoords()[0]][y + p.getBaseCoords()[1]][z + p.getBaseCoords()[2]] = p.getType();
                 }
             }
         }

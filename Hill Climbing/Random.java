@@ -12,4 +12,23 @@ public class Random {
         int range = (max - min) + 1;
         return (int)(Math.random() * range) + min;
     }
+
+    public static int[] randomListWithRange(int min, int max, int number) {
+        int[] list = new int[number];
+        list[0] = Random.randomWithRange(min, max);
+        for (int i = 1; i < list.length; i++) {
+            boolean allowed = false;
+            while (!allowed) {
+                list[i] = Random.randomWithRange(min, max);
+                boolean noRep = true;
+                for (int j = 0; j < i && noRep; j++) {
+                    if (list[i] == list [j])
+                        noRep = false;
+                }
+                if (noRep == true)
+                    allowed = true;
+            }
+        }
+        return list;
+    }
 }

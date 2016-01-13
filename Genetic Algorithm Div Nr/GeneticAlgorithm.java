@@ -4,13 +4,16 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class GeneticAlgorithmDiv {
+public class GeneticAlgorithm {
 
     private final int POPULATION_SIZE = 100;
     private final int NR_TO_PLACE = 1000;
-    private final int MUTATION_FREQ = 100;
-    private final int CROSSOVER_FREQ = 2;
-    private final String SELECTION_MODE = "RANDOM";
+    private final int MUTATION_FREQ = 10;
+    private final int MUTATION_RANGE = 100;
+    private final int SWAP_FREQ = 10;
+    private final int SWAP_RANGE = 10;
+    private final int CROSSOVER_FREQ = 1;
+    private final String SELECTION_MODE = "ELITIST";
     private final double ELITIST_TOP_PERCENT = 0.2;
 
     private Individual[] population;
@@ -20,11 +23,11 @@ public class GeneticAlgorithmDiv {
     private int gene;
     private boolean test;
 
-    public GeneticAlgorithmDiv() {
+    public GeneticAlgorithm() {
         this.test = false;
     }
 
-    public GeneticAlgorithmDiv(int gene) {
+    public GeneticAlgorithm(int gene) {
         this.gene = gene;
         this.test = true;
     }
@@ -33,16 +36,16 @@ public class GeneticAlgorithmDiv {
         cargoSpace = new CargoSpace(33, 5, 8);
         //packageTypes = types;
         amountOfType = new int[3];
-        amountOfType[0] = 50;
-        amountOfType[1] = 50;
-        amountOfType[2] = 50;
+        amountOfType[0] = 100;
+        amountOfType[1] = 100;
+        amountOfType[2] = 100;
 
         packageTypes = new Package[3];
         packageTypes[0] = new Package("C");
         packageTypes[1] = new Package("B");
         packageTypes[2] = new Package("A");
 
-        int[][] chromosomes = new int[packageTypes.length][0];
+        //int[][] chromosomes = new int[packageTypes.length][0];
         /*
         for (int i = 0; i < packageTypes.length; i++) {
             chromosomes[i] = new int[packageTypes[i].getNrStates(cargoSpace.getLength(), cargoSpace.getWidth(), cargoSpace.getHeight())[0]];
@@ -52,21 +55,17 @@ public class GeneticAlgorithmDiv {
         }
         */
         // initialising the population
+        int[][] chromosomes = new int[packageTypes.length][0];;
         population = new Individual[POPULATION_SIZE];
         try {
             for (int i = 0; i < population.length; i++) {
                 chromosomes = new int[packageTypes.length][0];
                 for (int j = 0; j < packageTypes.length; j++) {
-                    chromosomes[j] = new int[packageTypes[j].getNrStates(cargoSpace.getLength(), cargoSpace.getWidth(), cargoSpace.getHeight())[0]];
-                }
-                for (int j = 0; j < chromosomes.length; j++) {
-                    int[] ones = Random.randomListWithRange(0, chromosomes[j].length - 1, amountOfType[j]);
-                    for (int k = 0; k < ones.length; k++) {
-                        chromosomes[j][ones[k]] = 1;
-                    }
+                    int range = packageTypes[j].getNrStates(cargoSpace.getLength(), cargoSpace.getWidth(), cargoSpace.getHeight())[0];
+                    chromosomes[j] = Random.randomListWithRange(0, range - 1, amountOfType[j]);
                 }
                 population[i] = new Individual(chromosomes);
-                population[i].setFitness(Converter.chromosomesToCargoSpace(chromosomes, packageTypes, cargoSpace).getTotalValue());
+                population[i].setFitness(Converter.indecesToCargoSpace(chromosomes, packageTypes, new CargoSpace(33, 5, 8)).getTotalValue());
             }
         } catch (BadInputException e) {
             e.printStackTrace();
@@ -77,27 +76,28 @@ public class GeneticAlgorithmDiv {
             //System.out.println(population[i].getFitness());
         }
 
-        cargoSpace = Converter.chromosomesToCargoSpace(chromosomes, packageTypes, cargoSpace);
-
-
-
         int generation = 0;
 
-        while (generation < 100) {
-            population = reproduce(population);
-            population = fitnessAndSort(population);
+        while (generation < 1000) {
             if (generation % 10 == 0) {
-                System.out.println("Generation " + (generation + 1));
+                //System.out.println("Generation " + (generation + 1));
                 //System.out.println("Maximum total value = " + Converter.chromosomesToCargoSpace(population[0].getChromosomes(), packageTypes, cargoSpace).getTotalValue());
                 for (int i = 0; i < POPULATION_SIZE; i += 10) {
-                    System.out.println((i + 1) + ". in the population: " + Converter.chromosomesToCargoSpace(population[i].getChromosomes(), packageTypes, cargoSpace).getTotalValue());
+                    //System.out.println((i + 1) + ". in the population: " + Converter.indecesToCargoSpace(population[i].getChromosomes(), packageTypes, new CargoSpace(33, 5, 8)).getTotalValue());
                 }
-                System.out.println();
+                //System.out.println();
             }
+            population = reproduce(population);
+            population = fitnessAndSort(population);
             generation++;
         }
 
-        cargoSpace = Converter.chromosomesToCargoSpace(population[0].getChromosomes(), packageTypes, cargoSpace);
+
+        chromosomes = new int[3][1];
+
+        cargoSpace = new CargoSpace(33, 5, 8);
+        cargoSpace = Converter.indecesToCargoSpace(population[0].getChromosomes(), packageTypes, cargoSpace);
+        //cargoSpace = Converter.indecesToCargoSpace(chromosomes, packageTypes, cargoSpace);
         System.out.println("Final maximum total value: " + cargoSpace.getTotalValue());
 
 
@@ -105,7 +105,7 @@ public class GeneticAlgorithmDiv {
 
     private Individual[] fitnessAndSort(Individual[] population) {
         for (int i = 0; i < population.length; i++) {
-            population[i].setFitness(Converter.chromosomesToCargoSpace(population[i].getChromosomes(), packageTypes, cargoSpace).getTotalValue());
+            population[i].setFitness(Converter.indecesToCargoSpace(population[i].getChromosomes(), packageTypes, new CargoSpace(33, 5, 8)).getTotalValue());
         }
         HeapSort.sortDownInd(population);
         return population;
@@ -158,7 +158,7 @@ public class GeneticAlgorithmDiv {
             e.printStackTrace();
         }
         Individual child = new Individual(childChr);
-        return mutate(child);
+        return mutateSwap(mutate(child));
     }
 
     private Individual mutate(Individual ind) {
@@ -167,10 +167,11 @@ public class GeneticAlgorithmDiv {
             for (int j = 0; j < chromosomes.length; j++) {
                 int[] randomGenes = Random.randomListWithRange(0, chromosomes[j].length - 1, MUTATION_FREQ);
                 for (int i = 0; i < randomGenes.length; i++) {
-                    if (chromosomes[j][randomGenes[i]] == 0)
-                        chromosomes[j][randomGenes[i]] = 1;
-                    else
+                    chromosomes[j][randomGenes[i]] = Random.randomWithRange(chromosomes[j][randomGenes[i]] - MUTATION_RANGE, chromosomes[j][randomGenes[i]] + MUTATION_RANGE);
+                    if (chromosomes[j][randomGenes[i]] < 0)
                         chromosomes[j][randomGenes[i]] = 0;
+                    else if (chromosomes[j][randomGenes[i]] >= packageTypes[j].getNrStates(cargoSpace.getLength(), cargoSpace.getWidth(), cargoSpace.getHeight())[0])
+                        chromosomes[j][randomGenes[i]] = packageTypes[j].getNrStates(cargoSpace.getLength(), cargoSpace.getWidth(), cargoSpace.getHeight())[0] - 1;
                 }
             }
             ind.setChromosomes(chromosomes);
@@ -181,21 +182,21 @@ public class GeneticAlgorithmDiv {
     }
 
     private Individual mutateSwap(Individual ind) {
-        try {
-            int[][] chromosomes = ind.getChromosomes();
-            for (int j = 0; j < chromosomes.length; j++) {
-                int[] randomGenes = Random.randomListWithRange(0, chromosomes[j].length - 1, MUTATION_FREQ);
-                for (int i = 0; i < randomGenes.length; i++) {
-                    if (chromosomes[j][randomGenes[i]] == 0)
-                        chromosomes[j][randomGenes[i]] = 1;
-                    else
-                        chromosomes[j][randomGenes[i]] = 0;
-                }
+        int[][] chromosomes = ind.getChromosomes();
+        for (int j = 0; j < chromosomes.length; j++) {
+            for (int k = 0; k < SWAP_FREQ; k++) {
+                int randomGene = Random.randomWithRange(0, chromosomes[j].length - 1);
+                int swapIndex = Random.randomWithRange(randomGene - SWAP_RANGE, randomGene + SWAP_RANGE);
+                if (swapIndex < 0)
+                    swapIndex = 0;
+                else if (swapIndex >= chromosomes[j].length)
+                    swapIndex = chromosomes[j].length - 1;
+                int temp = chromosomes[j][randomGene];
+                chromosomes[j][randomGene] = chromosomes[j][swapIndex];
+                chromosomes[j][swapIndex] = temp;
             }
-            ind.setChromosomes(chromosomes);
-        } catch (BadInputException e) {
-            e.printStackTrace();
         }
+        ind.setChromosomes(chromosomes);
         return ind;
     }
 
@@ -249,7 +250,7 @@ public class GeneticAlgorithmDiv {
         Scanner in = new Scanner(System.in);
         // System.out.print("nr = ");
         // int gene = in.nextInt();
-        GeneticAlgorithmDiv gA = new GeneticAlgorithmDiv();
+        GeneticAlgorithm gA = new GeneticAlgorithm();
         gA.initialPopulation(null, null);
         gA.displaySolution();
     }
