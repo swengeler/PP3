@@ -20,6 +20,11 @@ public class Package {
     private int orHeight;
     private int orWidth;
     private int orLength;
+    
+    private int rotateX = 0;
+    private int rotateY = 0;
+    private int rotateZ = 0;
+    
 
     private int[] baseCoords = new int[3]; // where [X][Y][Z]
     private int[] rotations = new int[3]; // where [X][Y][Z]
@@ -189,11 +194,11 @@ public class Package {
 
     public void setRotations(int x, int y, int z) {
         for (int i = 0; i < x; i++)
-            this.rotateX();
+            this.rotateX(false);
         for (int i = 0; i < y; i++)
-            this.rotateY();
+            this.rotateY(false);
         for (int i = 0; i < z; i++)
-            this.rotateZ();
+            this.rotateZ(false);
     }
 
     /**
@@ -274,7 +279,9 @@ public class Package {
     * A method that changes the coordinates of the package in such a manner that they now represent
     * the package rotated around the x-axis (length-axis) of the imaginary coordinate system.
     */
-    public void rotateX() {
+    public void rotateX(boolean fromCube) {
+    	if(!fromCube)rotateX++;
+    	
         int[][] newCoords = new int[coords.length][coords[0].length];
         for (int i = 0; i < newCoords.length; i++) {
             newCoords[i][0] = coords[i][0];
@@ -301,8 +308,9 @@ public class Package {
     * A method that changes the coordinates of the package in such a manner that they now represent
     * the package rotated around the y-axis (width-axis) of the imaginary coordinate system.
     */
-    public void rotateY() {
-        int[][] newCoords = new int[coords.length][coords[0].length];
+    public void rotateY(boolean fromCube) {
+    	if(!fromCube)rotateY++;
+    	int[][] newCoords = new int[coords.length][coords[0].length];
         for (int i = 0; i < newCoords.length; i++) {
             newCoords[i][0] = coords[i][2];
             newCoords[i][1] = coords[i][1];
@@ -328,7 +336,8 @@ public class Package {
     * A method that changes the coordinates of the package in such a manner that they now represent
     * the package rotated around the z-axis (height-axis) of the imaginary coordinate system.
     */
-    public void rotateZ() {
+    public void rotateZ(boolean fromCube) {
+    	if(!fromCube)rotateZ++;
         int[][] newCoords = new int[coords.length][coords[0].length];
         for (int i = 0; i < newCoords.length; i++) {
             newCoords[i][0] = -coords[i][1];
@@ -351,17 +360,21 @@ public class Package {
         this.coords = newCoords;
     }
 
+    public int[] getRotation(){
+    	return new int[]{rotateX,rotateY,rotateZ};
+    }
+    
     public void rotateRandom() {
         int randomX = (int) (Math.random() * 4);
         int randomY = (int) (Math.random() * 4);
         int randomZ = (int) (Math.random() * 4);
 
         for (int i = 0; i < randomX; i++)
-            this.rotateX();
+            this.rotateX(false);
         for (int i = 0; i < randomY; i++)
-            this.rotateY();
+            this.rotateY(false);
         for (int i = 0; i < randomZ; i++)
-            this.rotateZ();
+            this.rotateZ(false);
     }
 
     /**
