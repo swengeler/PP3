@@ -3,7 +3,6 @@ public class Converter {
     private static final boolean DEBUG_CTCS = false;
     private static final boolean DEBUG_CSTCS = false;
     private static final boolean SHOW_COORDS_CSTCS = false;
-    private static final boolean DEBUG_ITCS = false;
 
     /*
     * Order in which the chromosome is "interpreted":
@@ -140,70 +139,6 @@ public class Converter {
         }
         if (DEBUG_CSTCS) System.out.println("Package placed: " + nrPlaced);
         return csToFill;
-    }
-
-    public static Package[] chromosomesToPacking(int[][] chr, Package[] types, CargoSpace csToFill) {
-        int[] nrStates;
-        Package[] packing = new Package[0];
-        Package[] newPacking = new Package[0];
-        int nrDone = 0;
-        Package p;
-        for (int i = 0; i < types.length; i++) {
-            nrStates = types[i].getNrStates(csToFill.getLength(), csToFill.getWidth(), csToFill.getHeight());
-            if (DEBUG_CSTCS) System.out.println(types[i].getType() + " nrStates = " + nrStates[0]);
-            for (int j = 1; j < nrStates.length; j++) {
-                for (int k = nrDone; k < nrStates[j] + nrDone; k++) {
-                    if (chr[i][k] == 1) {
-                        newPacking = new Package[packing.length + 1];
-                        System.arraycopy(packing, 0, newPacking, 0, packing.length);
-
-                        p = new Package(types[i].getType());
-                        if (nrStates.length == 4 && p.getLength() == p.getWidth()) {
-                            if (j >= 2)
-                                p.rotateY();
-                            if (j == 3)
-                                p.rotateZ();
-                        } else if (nrStates.length == 4 && p.getLength() == p.getHeight()) {
-                            if (j >= 2)
-                                p.rotateX();
-                            if (j == 3)
-                                p.rotateY();
-                        } else if (nrStates.length == 4 && p.getWidth() == p.getHeight()) {
-                            if (j >= 2)
-                                p.rotateY();
-                            if (j == 3)
-                                p.rotateX();
-                        } else if (nrStates.length == 7) {
-                            if (j >= 2)
-                                p.rotateX();
-                            if (j >= 3)
-                                p.rotateY();
-                            if (j >= 4)
-                                p.rotateZ();
-                            if (j >= 5)
-                                p.rotateX();
-                            if (j == 6)
-                                p.rotateY();
-                        }
-                        int newX = (int) ((double)(k - nrDone) / (double)((csToFill.getWidth() - p.getWidth() + 1) * (csToFill.getHeight() - p.getHeight() + 1)));
-                        if (DEBUG_CSTCS) System.out.println("Weird expression = " + ((csToFill.getWidth() - p.getWidth() + 1) * (csToFill.getHeight() - p.getHeight() + 1)));
-                        if (DEBUG_CSTCS) System.out.println("k - nrDone = " + (k - nrDone));
-                        int restX = (k - nrDone) % ((csToFill.getWidth() - p.getWidth() + 1) * (csToFill.getHeight() - p.getHeight() + 1));
-                        if (DEBUG_CSTCS) System.out.println("restX = " + restX);
-                        int newY = (int) (restX / (csToFill.getHeight() - p.getHeight() + 1));
-                        int newZ = restX % (csToFill.getHeight() - p.getHeight() + 1);
-                        if (DEBUG_CSTCS || SHOW_COORDS_CSTCS) System.out.println(types[i].getType() + " at: x = " + newX + ", y = " + newY + ", z = " + newZ);
-                        p.setBaseCoords(newX, newY, newZ);
-
-                        newPacking[newPacking.length - 1] = p;
-                        packing = newPacking;
-                    }
-                }
-                nrDone += nrStates[j];
-            }
-            nrDone = 0;
-        }
-        return packing;
     }
 
     public static Package[] chromosomeToPacking(int[] chr, Package[] types, CargoSpace csToFill) {
@@ -367,79 +302,6 @@ public class Converter {
             chromosome[index] = 1;
         }
         return chromosome;
-    }
-
-    public static CargoSpace indecesToCargoSpace(int[][] indeces, Package[] types, CargoSpace csToFill) {
-        int[] nrStates;
-        int nrPlaced = 0;
-        Package p;
-        for (int i = 0; i < types.length; i++) {
-            //System.out.println("Type: " + types[i].getType());
-            nrStates = types[i].getNrStates(csToFill.getLength(), csToFill.getWidth(), csToFill.getHeight());
-            for (int t = 1; t < nrStates.length; t++) {
-                //System.out.println("nrStates[" + t + "] = " + nrStates[t]);
-            }
-            if (DEBUG_ITCS) System.out.println(types[i].getType() + " nrStates = " + nrStates[0]);
-            for (int k = 0; k < indeces[i].length; k++) {
-                int processed = 0;
-                int statesProcessed = 1;
-                for (int x = 1; x < nrStates.length; x++) {
-                    int sum = 0;
-                    for (int y = 1; y <= x; y++)
-                        sum += nrStates[y];
-                    //System.out.println("Sum = " + sum);
-                    if (indeces[i][k] >= sum) {
-                        processed -= nrStates[x];
-                        statesProcessed = x;
-                    }
-                }
-                processed += indeces[i][k];
-                //System.out.println("indeces = " + indeces[i][k] + " processed before = " + (processed - indeces[i][k]) + " processed after = " + processed);
-                p = new Package(types[i].getType());
-                if (nrStates.length == 4 && p.getLength() == p.getWidth()) {
-                    if (statesProcessed >= 2)
-                        p.rotateY();
-                    if (statesProcessed == 3)
-                        p.rotateZ();
-                } else if (nrStates.length == 4 && p.getLength() == p.getHeight()) {
-                    if (statesProcessed >= 2)
-                        p.rotateX();
-                    if (statesProcessed == 3)
-                        p.rotateY();
-                } else if (nrStates.length == 4 && p.getWidth() == p.getHeight()) {
-                    if (statesProcessed >= 2)
-                        p.rotateY();
-                    if (statesProcessed == 3)
-                        p.rotateX();
-                } else if (nrStates.length == 7) {
-                    if (statesProcessed >= 2)
-                        p.rotateX();
-                    if (statesProcessed >= 3)
-                        p.rotateY();
-                    if (statesProcessed >= 4)
-                        p.rotateZ();
-                    if (statesProcessed >= 5)
-                        p.rotateX();
-                    if (statesProcessed == 6)
-                        p.rotateY();
-                }
-                int newX = (int) ((double)(processed) / (double)((csToFill.getWidth() - p.getWidth() + 1) * (csToFill.getHeight() - p.getHeight() + 1)));
-                if (DEBUG_ITCS) System.out.println("Weird expression = " + ((csToFill.getWidth() - p.getWidth() + 1) * (csToFill.getHeight() - p.getHeight() + 1)));
-                if (DEBUG_ITCS) System.out.println("processed = " + (processed));
-                int restX = (processed) % ((csToFill.getWidth() - p.getWidth() + 1) * (csToFill.getHeight() - p.getHeight() + 1));
-                if (DEBUG_ITCS) System.out.println("restX = " + restX);
-                int newY = (int) (restX / (csToFill.getHeight() - p.getHeight() + 1));
-                int newZ = restX % (csToFill.getHeight() - p.getHeight() + 1);
-                if (DEBUG_ITCS || SHOW_COORDS_CSTCS) System.out.println(types[i].getType() + " at: x = " + newX + ", y = " + newY + ", z = " + newZ);
-                p.setBaseCoords(newX, newY, newZ);
-                if (!csToFill.overlap(p)) {
-                    csToFill.place(p);
-                    nrPlaced++;
-                }
-            }
-        }
-        if (DEBUG_CSTCS) System.out.println("Package placed: " + nrPlaced);
-        return csToFill;
     }
 
 }
