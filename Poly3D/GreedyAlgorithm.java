@@ -112,7 +112,6 @@ public class GreedyAlgorithm {
             }
         }
         System.out.println("BEST VALUE: " + bestCS.getTotalValue());
-
         cargoSpace3D.represent(bestCS.cargoSpaceFilled);
 
     }

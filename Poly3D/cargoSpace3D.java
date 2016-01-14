@@ -1,5 +1,6 @@
 package Poly3D;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -15,7 +16,7 @@ public class cargoSpace3D extends JPanel{
 	public static void represent(Package[] packages) {
 		cubes = new Cube[packages.length] ;
 		for(int i=0;i<cubes.length;i++){
-			cubes[i]= new Cube(packages[i],packages[i].getBaseCoords()[0]+500,packages[i].getBaseCoords()[1]+500,packages[i].getBaseCoords()[2]+500);
+			cubes[i]= new Cube(packages[i]);
 		}
 		
 		JFrame f = new JFrame();
@@ -56,7 +57,7 @@ public class cargoSpace3D extends JPanel{
 		
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
-		//g2.setStroke(new BasicStroke(5));
+		g2.setStroke(new BasicStroke(1));
 		for(int i = 0; i<cubes.length; i++){
 			for(int l = 0; l<3; l++){
 				if(cubes[i].getPackage() == "A"){
@@ -75,6 +76,7 @@ public class cargoSpace3D extends JPanel{
 					if(l == 2)g.setColor(new Color(0,0,150));
 				}
 				
+				//g2.setColor(new Color(5*i+50,0,0));
 				g2.fillPolygon(cubes[i].createPolygons()[l]);
 				g2.setColor(Color.BLACK);
 				g2.drawPolygon(cubes[i].createPolygons()[l]);
@@ -83,7 +85,7 @@ public class cargoSpace3D extends JPanel{
 		}
 		for(int i = 0; i<cubes.length; i++){
 			for(int l = 0; l<3; l++){		
-				g2.drawPolygon(cubes[i].createPolygons()[l]);
+				//g2.drawPolygon(cubes[i].createPolygons()[l]);
 				
 			}
 		}

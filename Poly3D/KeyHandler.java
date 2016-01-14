@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
 
 		public void keyPressed(KeyEvent e) {
 			if(e.getKeyCode() == KeyEvent.VK_UP){
-				cargoSpace3D.rotateX(-10);
+				cargoSpace3D.rotateX(350);
 			}
 			if(e.getKeyCode() == KeyEvent.VK_DOWN){
 				cargoSpace3D.rotateX(10);
@@ -16,15 +16,13 @@ import java.awt.event.KeyListener;
 				cargoSpace3D.rotateY(10);
 			}
 			if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-				cargoSpace3D.rotateY(-10);
+				cargoSpace3D.rotateY(350);
 			}
 			if(e.getKeyCode() == KeyEvent.VK_X){
-				cargoSpace3D.rotateX(-10);
-				cargoSpace3D.rotateY(10);
+				cargoSpace3D.rotateZ(350);
 			}
 			if(e.getKeyCode() == KeyEvent.VK_C){
-				cargoSpace3D.rotateX(10);
-				cargoSpace3D.rotateY(-10);
+				cargoSpace3D.rotateZ(10);
 			}
 			cargoSpace3D.panel.repaint();
 		}
