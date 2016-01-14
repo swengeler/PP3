@@ -34,9 +34,9 @@ public class GeneticAlgorithm {
         int chrLength = 0;
         //packageTypes = types;
         packageTypes = new Package[3];
-        packageTypes[0] = new Package("C");
+        packageTypes[0] = new Package("A");
         packageTypes[1] = new Package("B");
-        packageTypes[2] = new Package("A");
+        packageTypes[2] = new Package("C");
 
         for (int i = 0; i < packageTypes.length; i++) {
             chrLength += packageTypes[i].getNrStates(cargoSpace.getLength(), cargoSpace.getWidth(), cargoSpace.getHeight())[0];

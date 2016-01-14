@@ -330,32 +330,16 @@ public class CargoSpace {
         return cargoSpace[0][0].length;
     }
 
-    public CargoSpace packRandom(Package[] packing) {
-        try {
-            int countPacked = 0;
-            int[] randomPackages = Random.randomListWithRange(0, packing.length - 1, packing.length);
-            for (int i = 0; i < randomPackages.length; i++) {
-                if (!overlap(packing[randomPackages[i]])) {
-                    place(packing[randomPackages[i]]);
-                    countPacked++;
-                }
+    public void packRandom(Package[] packing) {
+        int countPacked = 0;
+        for (int i = 0; i < packing.length; i++) {
+            int index = (int) (Math.random() * packing.length);
+            if (!overlap(packing[index])) {
+              place(packing[index]);
+              countPacked++;
             }
-        } catch (BadInputException e) {
-            e.printStackTrace();
         }
-        return this;
-    }
-
-    public CargoSpace packOrdered(Package[] packing, Package[] packageTypes) {
-        int[] borders = new int[packageTypes.length - 1];
-        for (int i = 0; i < packageTypes.length - 1; i++) {
-            int j = 0;
-            while (packing[j].getType().equalsIgnoreCase(packageTypes[i].getType())) {
-                j++;
-            }
-              
-        }
-        return this;
+        System.out.println("Package placed: " + countPacked);
     }
 
     public Package[] getPacking() {
