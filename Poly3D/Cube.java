@@ -181,32 +181,37 @@ public class Cube {
 	       fx[i]=newfx;
 	       fy[i]=newfy;
 	       allPoints[i].setX((int)fx[i]);
-	       allPoints[i].setY((int)fy[i]);      
+	       allPoints[i].setY((int)fy[i]); 
+	       allPoints[i].setX((int)fx[i]);
+	       allPoints[i].setY((int)fy[i]); 	       
 	   }
    }
 
-   public static Cube[] sort(Cube[] cubes){
+   public Cube[] sort(Cube[] cubes){
 	   int[] zCoords = new int[cubes.length];
 	   
-	   for (int i = zCoords.length; i >= 0; i--) {
+	   for(int i = 0; i < zCoords.length; i++){
+		   zCoords[i] = cubes[i].getMaxZ();
+	   }
+	   
+	   System.out.println();
+	   for (int i = zCoords.length-1; i >= 0; i--) {
            for (int j = 0; j < (zCoords.length - 1); j++) {
                if (zCoords[j] < zCoords[(j+1)]) {
                    int temp;
                    Cube tempCube; 
                    
                    temp = zCoords[j];
-                   tempCube = cubes[i];
+                   tempCube = cubes[j];
                    
                    zCoords[j] = zCoords[(j+1)];
                    zCoords[(j+1)] = temp;
                    
                    cubes[j] = cubes[(j+1)];
                    cubes[(j+1)] = tempCube;
-                   
               }
            }
        }
-
 	   return cubes;
    }
    
@@ -237,7 +242,7 @@ public class Cube {
 	    * Z
 	    * 
 	   */
-		Point3D[] allPoints = new Point3D[8];
+		allPoints = new Point3D[8];
 		//						   X 									      ,Y											 ,Z
 		allPoints[0] = new Point3D(-(baseCoords[0]) * Scale				      , -(baseCoords[1]) * Scale 				     ,   baseCoords[2] * Scale);
 		allPoints[1] = new Point3D(-(baseCoords[0])	* Scale	 		          ,  (baseCoords[1]  + type.getHeight()) * Scale ,   baseCoords[2] * Scale);
@@ -247,18 +252,18 @@ public class Cube {
 		allPoints[5] = new Point3D(-(baseCoords[0])	* Scale			   	 	  ,  (baseCoords[1]  + type.getHeight()) * Scale , -(baseCoords[2]  + type.getLength())* Scale);
 		allPoints[6] = new Point3D( (baseCoords[0]  + type.getWidth()) * Scale,  (baseCoords[1]  + type.getHeight()) * Scale , -(baseCoords[2]  + type.getLength())* Scale);
 		allPoints[7] = new Point3D( (baseCoords[0]  + type.getWidth()) * Scale, -(baseCoords[1]) * Scale				     , -(baseCoords[2]  + type.getLength())* Scale);
-		
-		for(int i = 0; i<allPoints.length; i++){
-			allPoints[i].setX(allPoints[i].getX());
-			allPoints[i].setY(allPoints[i].getY());
-			allPoints[i].setZ(allPoints[i].getZ());
-		}
 		return allPoints;
 	}
   
    public int getMaxZ(){
 	   Point3D[] sortedPoints = new Point3D[8];
-	   sortedPoints = createPoints(type.getBaseCoords());
+	   
+	   for(int i = 0; i<sortedPoints.length; i++){
+    	   sortedPoints[i] = new Point3D(0,0,0);
+		   sortedPoints[i].setX(allPoints[i].getX());
+	       sortedPoints[i].setY(allPoints[i].getY());
+		   sortedPoints[i].setZ(allPoints[i].getZ());   
+	   }
 	   
 	   for (int i = sortedPoints.length; i >= 0; i--) {
            for (int j = 0; j < (sortedPoints.length - 1); j++) {
@@ -272,7 +277,6 @@ public class Cube {
               }
            }
        }
-	   
 	   return sortedPoints[0].getZ();
    }
    

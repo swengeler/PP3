@@ -28,6 +28,7 @@ public class cargoSpace3D extends JPanel{
 		f.add(panel);
 		f.setVisible(true);
 		f.addKeyListener(new KeyHandler());
+		f.addMouseMotionListener(new MouseMotionHandler());
 		panel.repaint();
 	}
 	
@@ -58,14 +59,30 @@ public class cargoSpace3D extends JPanel{
 		//g2.setStroke(new BasicStroke(5));
 		for(int i = 0; i<cubes.length; i++){
 			for(int l = 0; l<3; l++){
-				
-				System.out.println(cubes[i].getMaxZ());
-				if(cubes[i].getPackage() == "A") g.setColor(Color.blue);
-				if(cubes[i].getPackage() == "B") g.setColor(Color.red);
-				if(cubes[i].getPackage() == "C") g.setColor(Color.green);
+				if(cubes[i].getPackage() == "A"){
+					if(l == 0)g.setColor(new Color(250,0,0));
+					if(l == 1)g.setColor(new Color(200,0,0));
+					if(l == 2)g.setColor(new Color(150,0,0));
+				}
+				if(cubes[i].getPackage() == "B"){
+					if(l == 0)g.setColor(new Color(0,250,0));
+					if(l == 1)g.setColor(new Color(0,200,0));
+					if(l == 2)g.setColor(new Color(0,150,0));
+				}
+				if(cubes[i].getPackage() == "C"){
+					if(l == 0)g.setColor(new Color(0,0,250));
+					if(l == 1)g.setColor(new Color(0,0,200));
+					if(l == 2)g.setColor(new Color(0,0,150));
+				}
 				
 				g2.fillPolygon(cubes[i].createPolygons()[l]);
 				g2.setColor(Color.BLACK);
+				g2.drawPolygon(cubes[i].createPolygons()[l]);
+				
+			}
+		}
+		for(int i = 0; i<cubes.length; i++){
+			for(int l = 0; l<3; l++){		
 				g2.drawPolygon(cubes[i].createPolygons()[l]);
 				
 			}

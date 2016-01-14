@@ -83,8 +83,8 @@ public class Test3D extends JPanel{
 						if(l == 1) g.setColor(Color.red);
 						if(l == 2) g.setColor(Color.green);
 						
-						g2.fillPolygon(cubes[i][j][k].createPolygons(i*100,j*0,50*k)[l]);
-						g2.drawPolygon(cubes[i][j][k].createPolygons(i*100,j*100,50*k)[l]);
+					//	g2.fillPolygon(cubes[i][j][k].createPolygons(i*100,j*0,50*k)[l]);
+					//	g2.drawPolygon(cubes[i][j][k].createPolygons(i*100,j*100,50*k)[l]);
 						System.out.println(i + " " + j + " " + k);
 					}
 				}
