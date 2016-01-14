@@ -122,6 +122,26 @@ public class CargoSpace {
         }
     }
     
+    /**
+     * remove package at index remIndex from the cargoSpaceFilled array
+     * @param remIndex
+     */
+    public void removeFromDoc(int remIndex) {
+    	Package[] newCargoSpaceFilled = new Package[cargoSpaceFilled.length-1];   
+    	int index = 0;
+    	while (index < newCargoSpaceFilled.length)
+    	{
+    		if (index<remIndex) {
+    			newCargoSpaceFilled[index] = cargoSpaceFilled[index];
+    			index++;
+    		} else {
+    			newCargoSpaceFilled[index] = cargoSpaceFilled[index+1];
+    			index++;
+    		}
+    	}
+    	this.cargoSpaceFilled = newCargoSpaceFilled;
+    }
+    
     public CargoSpace copy() {
     	CargoSpace cargoCopy = new CargoSpace(length,width,height);
     	for (int i=0; i<1; i++) {
@@ -181,7 +201,8 @@ public class CargoSpace {
      * Remove Package p from the internal representation of the cargo space
      * @param p The Package to be removed
      */
-    public void remove(Package p) {
+    public void remove(Package[] packing, int remIndex) {
+    	Package p = packing[remIndex];
     	for (int i=0; i < p.getLength(); i++) {
     		for (int j=0; j<p.getWidth(); j++) {
     			for (int k=0; k<p.getHeight(); k++) {
@@ -189,6 +210,7 @@ public class CargoSpace {
     			}
     		}
     	}
+    	removeFromDoc(remIndex);
     }
     
     /**
@@ -417,8 +439,8 @@ public class CargoSpace {
 		{
 			for (int i=0; i<packageTypes.length; i++) {
 				int[] coords;
-				Package p;
-				while (getNextEmptySpaceCoords(packageTypes[i]) != null) {
+				Package p = new Package(packageTypes[i].getType());
+				while (getNextEmptySpaceCoords(p) != null) {
 					p = new Package(packageTypes[i].getType());
 					coords = getNextEmptySpaceCoords(p);
 					place(p);
@@ -431,13 +453,17 @@ public class CargoSpace {
 	 * Randomly fill the cargo by selecting random parcel and placing them into the cargo until there is no 
 	 * more space left.
 	 * @param packageTypes An array containing a list of possible parcel types.
+	 * @param allowRotations A boolean value. 
 	 */
-	public void fillRandom(Package[] packageTypes) {
+	public void fillRandom(Package[] packageTypes, boolean allowRotations) {
 		Package p;
 		int[] coords;
 		while (getNextEmptySpaceCoords(new Package("A")) != null)
 		{
 			p = new Package(packageTypes[Random.randomWithRange(0, 2)].getType());
+			if (allowRotations) {
+				p.rotateRandom();
+			}
 			coords = getNextEmptySpaceCoords(p);
 			if (coords != null) {
 				place(p);

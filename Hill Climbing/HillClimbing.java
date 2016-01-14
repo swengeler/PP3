@@ -7,35 +7,58 @@ public class HillClimbing {
 	private CargoSpace curCargo;
 	private Package[] packageTypes;
 	
+	/** Initialize the curCargo with an arbitrary solution **/
 	public void init() {	
 		packageTypes = new Package[3];
 		packageTypes[0] = new Package("A");
 		packageTypes[1] = new Package("B");
 		packageTypes[2] = new Package("C");
 		curCargo = new CargoSpace(33,5,8);
-		curCargo.fillRandom(packageTypes);
+		curCargo.fillRandom(packageTypes,true);
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Return the curCargo
+	 * @return CargoSpace curCargo
 	 */
-	public CargoSpace[] genNeighbourhood() {
-		final int NR_NEIGHBOURS = 100;
-		CargoSpace[] neighbours = new CargoSpace[NR_NEIGHBOURS];
-		for (int i=0; i<100; i++) {
-			CargoSpace neighbour = new CargoSpace(33,5,8);
+	public CargoSpace getCurCargo() {
+		return this.curCargo;
+	}
+	
+	/**
+	 * Set the curCargo
+	 * @param newCargo a CargoSpace object representing the new cargo
+	 */
+	public void setCurCargo(CargoSpace newCargo) {
+		this.curCargo = newCargo;
+	}
+	
+	/**
+	 * Generate the neighborhood removing n packages (where n is equals to mutationRate) from the curCargo 
+	 * and trying to refill the remaining spaces with random parcels.
+	 * @return CargoSpace[] array containing the generated neighbors. 
+	 */
+	public CargoSpace[] genNeighbourhood(int nr_neighbours, int mutationRate) {
+		CargoSpace neighbour;
+		CargoSpace[] neighbours = new CargoSpace[nr_neighbours];
+		for (int i=0; i<nr_neighbours; i++) {
+			neighbour = new CargoSpace(33,5,8);
 			neighbour.fillCargoSpace(curCargo.getPacking());
-			neighbour.remove(neighbour.getPacking()[Random.randomWithRange(0, neighbour.getPacking().length-1)]);
-			neighbour.fillRandom(packageTypes);
+			for (int j=0;j<mutationRate; j++) {
+				int remIndex = Random.randomWithRange(0, neighbour.getPacking().length-1);
+				neighbour.remove(neighbour.getPacking(),remIndex);
+			}
+			neighbour.fillRandom(packageTypes, true);
 			neighbours[i] = neighbour;
 		}
 		return neighbours;
 	}
-	
-	
+		
+	/** 
+	 * Display the solution
+	 * TO BE CHANGED FOR THE 3D REPRESENTATION
+	 **/ 
 	public void displaySolution(CargoSpace curCargo) {
-		System.out.println("Total value: " + curCargo.getTotalValue());
         JFrame f = new JFrame();
         f.setSize(750, 770);
         Display display = new Display(curCargo.getArray());
@@ -45,10 +68,38 @@ public class HillClimbing {
     }
 
 	public static void main(String[] args) {
+		
 		HillClimbing localSearch = new HillClimbing();
 		localSearch.init();
-		localSearch.displaySolution(localSearch.curCargo);
-		localSearch.genNeighbourhood();
+		int keepGoing = 100;
+		double mutationRate = .15;
+		int nrNeighbours = 100;
+		System.out.println("Starting total value: " + localSearch.getCurCargo().getTotalValue());
+		System.out.println("Total number of package placed: " + localSearch.getCurCargo().getPacking().length);
+		CargoSpace[] successors;
+		boolean end = false;
+		long startTime = System.currentTimeMillis();
+		while (!end) {
+			successors = localSearch.genNeighbourhood(nrNeighbours,(int)(localSearch.getCurCargo().length*mutationRate));	
+			HeapSort.sort(successors);
+			if (successors[0].getTotalValue() <= localSearch.getCurCargo().getTotalValue()) {
+				if (keepGoing == 0)
+					end = true;
+				keepGoing--;
+			}
+			else {
+				localSearch.setCurCargo(successors[0]);
+				keepGoing = 100;
+				System.out.println("Current total value: " + localSearch.getCurCargo().getTotalValue());
+				System.out.println("Total number of package placed: " + localSearch.getCurCargo().getPacking().length);
+
+			}
+		}
+		long endTime = System.currentTimeMillis();
+		long totTime = endTime - startTime; 
+		System.out.println("Local maximum: " + localSearch.getCurCargo().getTotalValue() + " found in " + totTime + " ms");
+		localSearch.displaySolution(localSearch.getCurCargo());
+		
 	}
 
 }
