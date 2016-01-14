@@ -121,13 +121,13 @@ public class CargoSpace {
             cargoSpaceFilled = newCSF;
         }
     }
-    
+
     /**
      * remove package at index remIndex from the cargoSpaceFilled array
      * @param remIndex
      */
     public void removeFromDoc(int remIndex) {
-    	Package[] newCargoSpaceFilled = new Package[cargoSpaceFilled.length-1];   
+    	Package[] newCargoSpaceFilled = new Package[cargoSpaceFilled.length-1];
     	int index = 0;
     	while (index < newCargoSpaceFilled.length)
     	{
@@ -140,16 +140,6 @@ public class CargoSpace {
     		}
     	}
     	this.cargoSpaceFilled = newCargoSpaceFilled;
-    }
-    
-    public CargoSpace copy() {
-    	CargoSpace cargoCopy = new CargoSpace(length,width,height);
-    	for (int i=0; i<1; i++) {
-    		Package p = cargoSpaceFilled[i];
-    		System.out.println("Parcel n="+i+" type=" + p.getType() + " BaseCoords: x=" + p.getBaseCoords()[0] + " y=" + p.getBaseCoords()[1] + " z=" + p.getBaseCoords()[2]);
-    		cargoCopy.place(p);
-    	}
-    	return cargoCopy;
     }
 
     /**
@@ -196,7 +186,7 @@ public class CargoSpace {
         nrPlaced++;
         addToDoc(p);
     }
-    
+
     /**
      * Remove Package p from the internal representation of the cargo space
      * @param p The Package to be removed
@@ -212,7 +202,7 @@ public class CargoSpace {
     	}
     	removeFromDoc(remIndex);
     }
-    
+
     /**
     * A method that "fills" the cargo space with "no packages", i.e. empties it, either to reset it or
     * in order to have a proper graphical representation in the GUI.
@@ -240,8 +230,8 @@ public class CargoSpace {
         }
         return counter;
     }
-    
-    
+
+
 
     /**
     * A method that try to "fills" the cargo gaps with the packages that haven't been placed yet.
@@ -268,20 +258,6 @@ public class CargoSpace {
           }
       }
       if (DEBUG) {System.out.println("Packages added by fillGaps() : " + counter);}
-    }
-    
-    public void fillGaps(Package[] packageTypes) {
-    	while (getNextEmptySpaceCoords(new Package("A")) != null)
-		{
-			for (int i=0; i<packageTypes.length; i++) {
-				int[] coords;
-				while (getNextEmptySpaceCoords(packageTypes[i]) != null) {
-					coords = getNextEmptySpaceCoords(packageTypes[i]);
-					packageTypes[i].setBaseCoords(coords[0], coords[1], coords[2]);
-					place(packageTypes[i]);
-				}
-			}
-		}
     }
 
     /**
@@ -404,11 +380,11 @@ public class CargoSpace {
         return cargoSpaceFilled;
     }
 
-    /**
-     * Looks for an empty space where the aPackage can be placed and set its baseCoords.
-     * @param aPackage
-     * @return int[3] array coords containing the x,y,z base coords 
-     */
+  /**
+   * Looks for an empty space where the aPackage can be placed and set its baseCoords.
+   * @param aPackage
+   * @return int[3] array coords containing the x,y,z base coords
+   */
 	public int[] getNextEmptySpaceCoords(Package aPackage) {
 		for (int i = 0; i < cargoSpace.length; i++) {
 	          for (int j = 0; j < cargoSpace[i].length; j++) {
@@ -427,10 +403,10 @@ public class CargoSpace {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Fill the cargo following an order of package defined by the parameter packageTypes.
-	 * Until there is space to place at least one of the smallest parcel it keeps looking for empty space and 
+	 * Until there is space to place at least one of the smallest parcel it keeps looking for empty space and
 	 * trying to fill them with a specific package.
 	 * @param packageTypes An array containing the package types we want to use in the exact order we want to place them. (i.e. {A,B,C}
 	 */
@@ -448,12 +424,12 @@ public class CargoSpace {
 			}
 		}
 	}
-	
+
 	/**
-	 * Randomly fill the cargo by selecting random parcel and placing them into the cargo until there is no 
+	 * Randomly fill the cargo by selecting random parcel and placing them into the cargo until there is no
 	 * more space left.
 	 * @param packageTypes An array containing a list of possible parcel types.
-	 * @param allowRotations A boolean value. 
+	 * @param allowRotations A boolean value.
 	 */
 	public void fillRandom(Package[] packageTypes, boolean allowRotations) {
 		Package p;
