@@ -7,13 +7,13 @@ import java.util.Scanner;
 public class GeneticAlgorithm {
 
     private final int POPULATION_SIZE = 100;
-    private final int NR_TO_PLACE = 1000;
+    //private final int NR_TO_PLACE = 1000;
     private final int MUTATION_FREQ = 10;
     private final int MUTATION_RANGE = 100;
     private final int SWAP_FREQ = 10;
     private final int SWAP_RANGE = 10;
     private final int CROSSOVER_FREQ = 1;
-    private final String SELECTION_MODE = "ELITIST";
+    private final String SELECTION_MODE = "ROULETTE";
     private final double ELITIST_TOP_PERCENT = 0.2;
 
     private Individual[] population;

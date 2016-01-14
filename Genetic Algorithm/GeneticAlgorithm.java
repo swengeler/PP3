@@ -7,10 +7,10 @@ import java.util.Scanner;
 public class GeneticAlgorithm {
 
     private final int POPULATION_SIZE = 100;
-    private final int NR_TO_PLACE = 1000;
-    private final int MUTATION_FREQ = 1000;
+    private final int NR_TO_PLACE = 300;
+    private final int MUTATION_FREQ = 100;
     private final int CROSSOVER_FREQ = 2;
-    private final String SELECTION_MODE = "ELITIST";
+    private final String SELECTION_MODE = "ROULETTE";
     private final double ELITIST_TOP_PERCENT = 0.2;
 
     private Individual[] population;
@@ -51,32 +51,64 @@ public class GeneticAlgorithm {
                 chromosome[ones[j]] = 1;
             }
             population[i] = new Individual(chromosome);
-            population[i].setFitness(Converter.chromosomeToCargoSpace(chromosome, packageTypes, cargoSpace).getTotalValue());
+            population[i].setFitness(Converter.chromosomeToCargoSpace(chromosome, packageTypes, new CargoSpace(33, 5, 8)).getTotalValue());
         }
 
         HeapSort.sortDownInd(population);
 
+
         int counter = 1000;
+        int decreaseSince = 0;
+
+        CargoSpace bestCS = Converter.chromosomeToCargoSpace(population[0].getChromosome(), packageTypes, new CargoSpace(33, 5, 8));
+        //CargoSpace lastBest = Converter.chromosomeToCargoSpace(population[0].getChromosome(), packageTypes, new CargoSpace(33, 5, 8));
 
         while (counter > 0) {
             population = reproduce(population);
             population = fitnessAndSort(population);
             if (counter % 10 == 0) {
                 System.out.println("counter = " + counter);
-                System.out.println("Maximum total value = " + Converter.chromosomeToCargoSpace(population[0].getChromosome(), packageTypes, cargoSpace).getTotalValue());
+                System.out.println("Maximum total value = " + Converter.chromosomeToCargoSpace(population[0].getChromosome(), packageTypes, new CargoSpace(33, 5, 8)).getTotalValue());
                 System.out.println();
             }
             counter--;
+            if (population[0].getFitness() > bestCS.getFitness()) {
+                bestCS = Converter.chromosomeToCargoSpace(population[0].getChromosome(), packageTypes, new CargoSpace(33, 5, 8));
+                decreaseSince = 0;
+            }
+            if (population[0].getFitness() < bestCS.getFitness() && decreaseSince >= 2) {
+                population = repopulate(population);
+                decreaseSince = 0;
+            }
+            else if (population[0].getFitness() < bestCS.getFitness())
+                decreaseSince++;
         }
 
-        cargoSpace = Converter.chromosomeToCargoSpace(population[0].getChromosome(), packageTypes, cargoSpace);
+        cargoSpace = Converter.chromosomeToCargoSpace(population[0].getChromosome(), packageTypes, new CargoSpace(33, 5, 8));
         System.out.println("Maximum total value: " + cargoSpace.getTotalValue());
 
     }
 
+    private Individual[] repopulate(Individual[] population) {
+        Individual[] newPopulation = new Individual[population.length];
+        for (int i = 0; i < newPopulation.length; i++) {
+            if (Math.random() < 0.75)
+                newPopulation[i] = population[i];
+            else {
+                int[] chr = new int[population[0].getChromosome().length];
+                int[] ones = Random.randomListWithRange(0, chr.length - 1, NR_TO_PLACE);
+                for (int j = 0; j < ones.length; j++) {
+                    chr[ones[j]] = 1;
+                }
+                newPopulation[i] = new Individual(chr);
+            }
+        }
+        return newPopulation;
+    }
+
     private Individual[] fitnessAndSort(Individual[] population) {
         for (int i = 0; i < population.length; i++) {
-            population[i].setFitness(Converter.chromosomeToCargoSpace(population[i].getChromosome(), packageTypes, cargoSpace).getTotalValue());
+            population[i].setFitness(Converter.chromosomeToCargoSpace(population[i].getChromosome(), packageTypes, new CargoSpace(33, 5, 8)).getTotalValue());
         }
         HeapSort.sortDownInd(population);
         return population;
@@ -91,6 +123,9 @@ public class GeneticAlgorithm {
                 newPopulation[i] = crossOver(parent1, parent2);
             } else if (SELECTION_MODE.equalsIgnoreCase("TOURNAMENT")) {
             } else if (SELECTION_MODE.equalsIgnoreCase("ROULETTE")) {
+                Individual parent1 = rouletteSelection(population);
+                Individual parent2 = rouletteSelection(population);
+                newPopulation[i] = crossOver(parent1, parent2);
             }
         }
         return newPopulation;
@@ -136,6 +171,20 @@ public class GeneticAlgorithm {
     private Individual elitistSelection(Individual[] population) {
         int randomSelect = (int) (Math.random() * (population.length * ELITIST_TOP_PERCENT));
         return population[randomSelect];
+    }
+
+    private Individual rouletteSelection(Individual[] population) {
+        double randomSelect = Math.random();
+        int randomFromSelected;
+        if (randomSelect < 0.4)
+            randomFromSelected = (int)(Math.random() * (population.length * 0.1));
+        else if (randomSelect < 0.7)
+            randomFromSelected = (int)(population.length * 0.1) + (int)(Math.random() * (population.length * 0.2));
+        else if (randomSelect < 0.9)
+            randomFromSelected = (int)(population.length * 0.3) + (int)(Math.random() * (population.length * 0.3));
+        else
+            randomFromSelected = (int)(population.length * 0.6) + (int)(Math.random() * (population.length * 0.4));
+        return population[randomFromSelected];
     }
 
     // ********************* //

@@ -7,10 +7,10 @@ import java.util.Scanner;
 public class GeneticAlgorithmDiv {
 
     private final int POPULATION_SIZE = 100;
-    private final int NR_TO_PLACE = 1000;
+    private final int NR_TO_PLACE = 200;
     private final int MUTATION_FREQ = 100;
     private final int CROSSOVER_FREQ = 2;
-    private final String SELECTION_MODE = "RANDOM";
+    private final String SELECTION_MODE = "ROULETTE";
     private final double ELITIST_TOP_PERCENT = 0.2;
 
     private Individual[] population;
@@ -66,7 +66,7 @@ public class GeneticAlgorithmDiv {
                     }
                 }
                 population[i] = new Individual(chromosomes);
-                population[i].setFitness(Converter.chromosomesToCargoSpace(chromosomes, packageTypes, cargoSpace).getTotalValue());
+                population[i].setFitness(Converter.chromosomesToCargoSpace(chromosomes, packageTypes, new CargoSpace(33, 5, 8)).getTotalValue());
             }
         } catch (BadInputException e) {
             e.printStackTrace();
@@ -77,7 +77,7 @@ public class GeneticAlgorithmDiv {
             //System.out.println(population[i].getFitness());
         }
 
-        cargoSpace = Converter.chromosomesToCargoSpace(chromosomes, packageTypes, cargoSpace);
+        cargoSpace = Converter.chromosomesToCargoSpace(chromosomes, packageTypes, new CargoSpace(33, 5, 8));
 
 
 
@@ -90,14 +90,14 @@ public class GeneticAlgorithmDiv {
                 System.out.println("Generation " + (generation + 1));
                 //System.out.println("Maximum total value = " + Converter.chromosomesToCargoSpace(population[0].getChromosomes(), packageTypes, cargoSpace).getTotalValue());
                 for (int i = 0; i < POPULATION_SIZE; i += 10) {
-                    System.out.println((i + 1) + ". in the population: " + Converter.chromosomesToCargoSpace(population[i].getChromosomes(), packageTypes, cargoSpace).getTotalValue());
+                    System.out.println((i + 1) + ". in the population: " + Converter.chromosomesToCargoSpace(population[i].getChromosomes(), packageTypes, new CargoSpace(33, 5, 8)).getTotalValue());
                 }
                 System.out.println();
             }
             generation++;
         }
 
-        cargoSpace = Converter.chromosomesToCargoSpace(population[0].getChromosomes(), packageTypes, cargoSpace);
+        cargoSpace = Converter.chromosomesToCargoSpace(population[0].getChromosomes(), packageTypes, new CargoSpace(33, 5, 8));
         System.out.println("Final maximum total value: " + cargoSpace.getTotalValue());
 
 
@@ -105,7 +105,7 @@ public class GeneticAlgorithmDiv {
 
     private Individual[] fitnessAndSort(Individual[] population) {
         for (int i = 0; i < population.length; i++) {
-            population[i].setFitness(Converter.chromosomesToCargoSpace(population[i].getChromosomes(), packageTypes, cargoSpace).getTotalValue());
+            population[i].setFitness(Converter.chromosomesToCargoSpace(population[i].getChromosomes(), packageTypes, new CargoSpace(33, 5, 8)).getTotalValue());
         }
         HeapSort.sortDownInd(population);
         return population;
