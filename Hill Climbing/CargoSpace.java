@@ -381,10 +381,10 @@ public class CargoSpace {
     }
 
   /**
-   * Looks for an empty space where the aPackage can be placed and set its baseCoords.
-   * @param aPackage
-   * @return int[3] array coords containing the x,y,z base coords
-   */
+  * Looks for an empty space where the aPackage can be placed and set its baseCoords.
+  * @param aPackage
+  * @return int[3] array coords containing the x,y,z base coords
+  **/
 	public int[] getNextEmptySpaceCoords(Package aPackage) {
 		for (int i = 0; i < cargoSpace.length; i++) {
 	          for (int j = 0; j < cargoSpace[i].length; j++) {
@@ -405,11 +405,11 @@ public class CargoSpace {
 	}
 
 	/**
-	 * Fill the cargo following an order of package defined by the parameter packageTypes.
-	 * Until there is space to place at least one of the smallest parcel it keeps looking for empty space and
-	 * trying to fill them with a specific package.
-	 * @param packageTypes An array containing the package types we want to use in the exact order we want to place them. (i.e. {A,B,C}
-	 */
+	* Fill the cargo following an order of package defined by the parameter packageTypes.
+	* Until there is space to place at least one of the smallest parcel it keeps looking for empty space and
+	* trying to fill them with a specific package.
+	* @param packageTypes An array containing the package types we want to use in the exact order we want to place them. (i.e. {A,B,C}
+	*/
 	public void fillCargo(Package[] packageTypes) {
 		while (getNextEmptySpaceCoords(new Package("A")) != null)
 		{
