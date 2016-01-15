@@ -333,19 +333,13 @@ public class CargoSpace {
     * @return totalValue The total value of all included packages.
     */
     public double getTotalValue(Package[] packing) {
-      int nrA = 0;
-      int nrB = 0;
-      int nrC = 0;
+
+      double totValue;
 
       for (int i=0; i<packing.length; i++) {
-          if (packing[i].getType() == "A")
-            nrA++;
-          else if (packing[i].getType() == "B")
-            nrB++;
-          else if (packing[i].getType() == "C")
-            nrC++;
+          totValue += packing[i].getValue();
       }
-      return (nrA*3 + nrB*4 + nrC*5);
+      return totValue;
     }
 
     public double getFitness() {
