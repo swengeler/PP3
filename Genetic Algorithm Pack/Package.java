@@ -466,4 +466,20 @@ public class Package {
 
         return clone;
     }
+
+    public boolean equals(Package p) {
+        boolean baseCoordsEqual = true;
+        boolean coordsEqual = true;
+        for (int i = 0; i < this.baseCoords.length && baseCoordsEqual; i++) {
+            if (this.baseCoords[i] != p.baseCoords[i])
+                baseCoordsEqual = false;
+        }
+        for (int i = 0; i < this.coords.length && baseCoordsEqual && coordsEqual; i++) {
+            for (int j = 0; j < this.coords[i].length && coordsEqual; j++) {
+                if (this.coords[i][j] != p.coords[i][j])
+                    coordsEqual = false;
+            }
+        }
+        return (this.type.equalsIgnoreCase(p.type) && this.value == p.value && this.height == p.height && this.width == p.width && this.length == p.length && this.orHeight == p.orHeight && this.orWidth == p.orWidth && this.orLength == p.orLength && baseCoordsEqual && coordsEqual);
+    }
 }

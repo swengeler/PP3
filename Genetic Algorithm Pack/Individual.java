@@ -22,7 +22,8 @@ public class Individual {
 	public void setFitness() {
 		CargoSpace csNew = new CargoSpace(cs.getLength(), cs.getWidth(), cs. getHeight());
 		csNew.fillCargoSpace(this.chromosome);
-		this.fitness = csNew.getTotalValue();
+		//this.fitness = (cs.getLength() * cs.getWidth() * cs.getHeight()) - csNew.getTotalGaps();
+		this.fitness = csNew.getTotalValue() - csNew.getOverlap(chromosome);
 	}
 
 	public double getFitness() {

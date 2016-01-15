@@ -7,16 +7,16 @@ import java.util.Scanner;
 public class GeneticAlgorithm {
 
     private final boolean LOG1 = false;
+    private final boolean LOG2 = true;
 
-    private final int POPULATION_SIZE = 200;
-    //private final int NR_TO_PLACE = 1000;
-    private final int MUTATION_FREQ = 10;
-    private final int MUTATION_RANGE = 5;
-    private final int SWAP_FREQ = 5;
-    private final int SWAP_RANGE = 2;
-    private final int CROSSOVER_FREQ = 1;
-    private final String SELECTION_MODE = "ELITIST";
-    private final double ELITIST_TOP_PERCENT = 0.2;
+    private int POPULATION_SIZE = 200;
+    private int MUTATION_FREQ = 10;
+    private int MUTATION_RANGE = 5;
+    private int SWAP_FREQ = 5;
+    private int SWAP_RANGE = 2;
+    private int CROSSOVER_FREQ = 1;
+    private String SELECTION_MODE = "ELITIST";
+    private double ELITIST_TOP_PERCENT = 0.2;
 
     private Individual[] population;
     private Package[] packageTypes;
@@ -70,12 +70,12 @@ public class GeneticAlgorithm {
             for (int j = 0; j < packageTypes.length; j++) {
                 for (int k = 0; k < amountOfType[j]; k++) {
                     chromosome[k + counter] = new Package(packageTypes[j].getType());
-                    /*int randX = Random.randomWithRange(0, cargoSpace.getLength() - 1);
+                    int randX = Random.randomWithRange(0, cargoSpace.getLength() - 1);
                     int randY = Random.randomWithRange(0, cargoSpace.getWidth() - 1);
                     int randZ = Random.randomWithRange(0, cargoSpace.getHeight() - 1);
                     chromosome[k + counter].setBaseCoords(randX, randY, randZ);
                     int randRot = Random.randomWithRange(0, chromosome[k + counter].getNrRotations() - 1);
-                    chromosome[k + counter].setRotations(randRot);*/
+                    chromosome[k + counter].setRotations(randRot);
                 }
                 counter += amountOfType[j];
             }
@@ -94,11 +94,12 @@ public class GeneticAlgorithm {
         //cargoSpace = population[0].toCargoSpace();
 
         Individual bestInd = new Individual(population[0].getChromosome());
+        int noImprovement = 0;
 
         while (generation < 2500) {
             if (generation % 50 == 0 && population.length != 1) {
-                System.out.println("Generation " + (generation + 1));
-                System.out.println("Maximum total value = " + population[0].getFitness());
+                if (LOG2) System.out.println("Generation " + generation);
+                if (LOG2) System.out.println("Maximum fitness value = " + population[0].getFitness());
                 for (int i = 0; i < POPULATION_SIZE; i += 10) {
                     System.out.println((i + 1) + ". in the population: " +  population[i].getFitness());
                 }
@@ -106,25 +107,29 @@ public class GeneticAlgorithm {
             }
             if (POPULATION_SIZE == 1 && LOG1) {
                 System.out.println("---- Generation " + generation + " ----");
-                System.out.println("Total value = " + population[0].getFitness());
+                System.out.println("Fitness value = " + population[0].getFitness());
                 for (int i = 0; i < population[0].getChromosome().length; i++) {
                     int[] bC = population[0].getChromosome()[i].getBaseCoords();
                     System.out.println("Package No." + i + " (" + population[0].getChromosome()[i].getType() + "): x = " + bC[0] + ", y = " + bC[1] + ", z = " + bC[2]);
                 }
                 System.out.println();
             }
+            if (population[0].getFitness() <= bestInd.getFitness())
+                noImprovement++;
+            else
+                noImprovement = 0;
             population = reproduce(population);
             population = fitnessAndSort(population);
             if (population[0].getFitness() > bestInd.getFitness()) {
                 bestInd = population[0].clone();
-                System.out.println("Best individual changed in generation " + generation + " (" + bestInd.getFitness() + ")");
+                if (LOG2) System.out.println("Best individual changed in generation " + generation + " (" + bestInd.getFitness() + ")");
             }
             generation++;
         }
 
         if (POPULATION_SIZE == 1 && LOG1) {
             System.out.println("---- Generation " + generation + " ----");
-            System.out.println("Total value = " + population[0].getFitness());
+            System.out.println("Fitness value = " + population[0].getFitness());
             for (int i = 0; i < population[0].getChromosome().length; i++) {
                 int[] bC = population[0].getChromosome()[i].getBaseCoords();
                 System.out.println("Package No." + i + " (" + population[0].getChromosome()[i].getType() + "): x = " + bC[0] + ", y = " + bC[1] + ", z = " + bC[2]);
@@ -135,6 +140,7 @@ public class GeneticAlgorithm {
         cargoSpace = new CargoSpace(33, 5, 8);
         cargoSpace = bestInd.toCargoSpace();
         //cargoSpace = Converter.indecesToCargoSpace(chromosome, packageTypes, cargoSpace);
+        System.out.println("Final maximum fitness value: " + bestInd.getFitness());
         System.out.println("Final maximum total value: " + cargoSpace.getTotalValue());
 
 
@@ -203,7 +209,7 @@ public class GeneticAlgorithm {
             }
         }
         Individual child = new Individual(childChr);
-        return mutate(child);
+        return mutateSwap(mutate(child));
     }
 
     private Individual mutate(Individual ind) {

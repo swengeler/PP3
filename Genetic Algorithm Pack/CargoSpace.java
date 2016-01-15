@@ -34,11 +34,11 @@ public class CargoSpace {
     * of packages filling certain positions in the cargo space denoted by the corresponding coordinates in
     * the packageCoords array.
     */
-    public Package[] cargoSpaceFilled;
+    public Package[] csPacking;
     /** REDUNDANT
     * An array containing information about the placement of individual packages in form of the coordinates
     * of the lower left back-most corner of each package placed in the cargo space (corresponds to the package
-    * types listed in the cargoSpaceFilled array).
+    * types listed in the csPacking array).
     */
     public int[][] packageCoords;
 
@@ -111,14 +111,14 @@ public class CargoSpace {
     * @param p The latest package that was placed.
     */
     public void addToDoc(Package p) {
-        if (cargoSpaceFilled == null) {
-            cargoSpaceFilled = new Package[1];
-            cargoSpaceFilled[0] = p;
+        if (csPacking == null) {
+            csPacking = new Package[1];
+            csPacking[0] = p;
         } else {
-            Package[] newCSF = new Package[cargoSpaceFilled.length + 1];
-            System.arraycopy(cargoSpaceFilled, 0, newCSF, 0, cargoSpaceFilled.length);
+            Package[] newCSF = new Package[csPacking.length + 1];
+            System.arraycopy(csPacking, 0, newCSF, 0, csPacking.length);
             newCSF[newCSF.length - 1] = p;
-            cargoSpaceFilled = newCSF;
+            csPacking = newCSF;
         }
     }
 
@@ -275,7 +275,7 @@ public class CargoSpace {
     */
     public void printDoc() {
         for (int i = 0; i < packageCoords.length; i++) {
-            System.out.println(cargoSpaceFilled[i].getType() + " package at x = " + packageCoords[i][0] + ", y = " + packageCoords[i][1] + ", z = " + packageCoords[i][2]);
+            System.out.println(csPacking[i].getType() + " package at x = " + packageCoords[i][0] + ", y = " + packageCoords[i][1] + ", z = " + packageCoords[i][2]);
         }
     }
 
@@ -286,8 +286,8 @@ public class CargoSpace {
     */
     public double getTotalValue() {
         /*double totalValue = 0;
-        for (int i = 0; i < cargoSpaceFilled.length; i++) {
-            totalValue += (new Package(cargoSpaceFilled[i])).getValue();
+        for (int i = 0; i < csPacking.length; i++) {
+            totalValue += (new Package(csPacking[i])).getValue();
         }*/
         if (DEBUG) {System.out.println("\nTOTAL VALUE: " + totalValue);}
         return totalValue;
@@ -296,10 +296,10 @@ public class CargoSpace {
     public double getFitness() {
         int overlapping = 0;
         Package p;
-        for (int i = 0; i < cargoSpaceFilled.length; i++) {
-            p = cargoSpaceFilled[i];
-            for (int j = 0; j < cargoSpaceFilled.length; j++) {
-                if (p.overlaps(cargoSpaceFilled[j]))
+        for (int i = 0; i < csPacking.length; i++) {
+            p = csPacking[i];
+            for (int j = 0; j < csPacking.length; j++) {
+                if (p.overlaps(csPacking[j]))
                     overlapping++;
             }
         }
@@ -343,7 +343,18 @@ public class CargoSpace {
     }
 
     public Package[] getPacking() {
-        return cargoSpaceFilled;
+        return csPacking;
+    }
+
+    public int getOverlap(Package[] chromosome) {
+        int overlap = 0;
+        for (int i = 0; i < csPacking.length; i++) {
+            for (int j = 0; j < chromosome.length; j++) {
+                if (csPacking[i].overlaps(chromosome[j]) && !csPacking[i].equals(chromosome[j]))
+                    overlap++;
+            }
+        }
+        return overlap;
     }
 
 }
