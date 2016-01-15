@@ -57,7 +57,7 @@ public class HillClimbing {
 		boolean done = false;
 		int counter = 0;
 		boolean allowRotations = true;
-		int mutationRate = 25;
+		int mutationRate = 1;
 		int nrNeighbours = 100;
 
 		HillClimbing localSearch = new HillClimbing();
