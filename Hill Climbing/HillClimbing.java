@@ -101,7 +101,7 @@ public class HillClimbing {
 				i=0;
 			}
 		}
-		if (successors[0].getTotalValue() > curCargo.getTotalValue())
+		if (successors[0].getTotalValue() < curCargo.getTotalValue())
 			return null;
 		return successors;
 	}
