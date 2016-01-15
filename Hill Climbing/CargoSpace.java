@@ -327,6 +327,27 @@ public class CargoSpace {
         return totalValue;
     }
 
+    /**
+    * A method returning the total value of all the packages that were placed in the cargo space.
+    *
+    * @return totalValue The total value of all included packages.
+    */
+    public double getTotalValue(Package[] packing) {
+      int nrA = 0;
+      int nrB = 0;
+      int nrC = 0;
+
+      for (int i=0; i<packing.length; i++) {
+          if (packing[i].getType() == "A")
+            nrA++;
+          else if (packing[i].getType() == "B")
+            nrB++;
+          else if (packing[i].getType() == "C")
+            nrC++;
+      }
+      return (nrA*3 + nrB*4 + nrC*5);
+    }
+
     public double getFitness() {
         int overlapping = 0;
         Package p;
