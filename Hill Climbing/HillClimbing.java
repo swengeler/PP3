@@ -55,7 +55,7 @@ public class HillClimbing {
 		packageTypes[2] = new Package("C");
 
 		boolean done = false;
-		boolean allowRotations = false;
+		boolean allowRotations = true;
 		int mutationRate = 1;
 		int nrNeighbours = 100;
 
@@ -89,7 +89,7 @@ public class HillClimbing {
 				else if (current.getPacking()[i].getType() == "C")
 					nrC++;
 		}
-		
+
 		System.out.println("Local max: " + current.getTotalValue(current.getPacking()));
 		System.out.println("Gaps left: " + current.getTotalGaps());
 		System.out.println("N of packages: " + current.getPacking().length);
