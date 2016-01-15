@@ -31,7 +31,7 @@ public class Individual {
 		this.fitness = (cs.getLength() * cs.getWidth() * cs.getHeight()) - csNew.getTotalGaps();
 	}
 
-	public void setFitness3() {
+	public void setFitness() {
 		CargoSpace csNew = new CargoSpace(cs.getLength(), cs.getWidth(), cs. getHeight());
 		csNew.fillCargoSpace(this.chromosome);
 		this.fitness = csNew.getTotalValue();

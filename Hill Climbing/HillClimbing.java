@@ -29,7 +29,7 @@ public class HillClimbing {
 			nextNeighbourhood[i] = neighbour;
 		}
 
-		nextNeighbourhood = sort_and_prume(nextNeighbourhood, current);
+		nextNeighbourhood = sort_and_prume_min(nextNeighbourhood, current);
 
 		return nextNeighbourhood;
 	}
@@ -71,6 +71,8 @@ public class HillClimbing {
 			if (neighbours != null) {
 				int random = Random.randomWithRange(0, neighbours.length-1);
 				current = neighbours[random];
+                System.out.println("Local value: " + current.getTotalValue());
+		        System.out.println("Gaps left: " + current.getTotalGaps());
 				counter = 100;
 			} else {
 				if (counter==0)
@@ -102,6 +104,19 @@ public class HillClimbing {
 			}
 		}
 		if (successors[0].getTotalValue() < curCargo.getTotalValue())
+			return null;
+		return successors;
+	}
+    
+    private static CargoSpace[] sort_and_prume_min(CargoSpace[] successors, CargoSpace curCargo) {
+		HeapSort.sort(successors);
+		for (int i=0; i<successors.length; i++) {
+			if (successors[i].getTotalGaps() >= curCargo.getTotalGaps()) {
+				successors = prume(successors, i);
+				i=0;
+			}
+		}
+		if (successors[0].getTotalGaps() > curCargo.getTotalGaps())
 			return null;
 		return successors;
 	}

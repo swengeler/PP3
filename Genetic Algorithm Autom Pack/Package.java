@@ -7,6 +7,10 @@
 
 public class Package {
 
+    private static String[] newTypes = new String[0];
+    private static int[][] newDimensions = new int[0][3];
+    private static double[] newValues = new double[0];
+
     private String type;
     private double value;
 
@@ -59,6 +63,48 @@ public class Package {
             orHeight = 3;
             value = 5;
             setPackage("C");
+        } else if (type.equals("L")) {
+            length = 4;
+            height = 1;
+            width = 2;
+            orLength = 4;
+            orWidth = 1;
+            orHeight = 2;
+            value = 3;
+            setPackage("L");
+        } else if (type.equals("P")) {
+            length = 3;
+            height = 1;
+            width = 2;
+            orLength = 3;
+            orWidth = 1;
+            orHeight = 2;
+            value = 4;
+            setPackage("P");
+        } else if (type.equals("T")) {
+            length = 3;
+            height = 1;
+            width = 3;
+            orLength = 3;
+            orWidth = 1;
+            orHeight = 3;
+            value = 5;
+            setPackage("T");
+        } else {
+            boolean found = false;
+            for (int i = 0; i < newTypes.length && !found; i++) {
+                if (type.equalsIgnoreCase(newTypes[i])) {
+                    found = true;
+                    length = newDimensions[i][0];
+                    width = newDimensions[i][1];
+                    height = newDimensions[i][2];
+                    orLength = newDimensions[i][0];
+                    orWidth = newDimensions[i][1];
+                    orHeight = newDimensions[i][2];
+                    value = newValues[i];
+                    setPackage(newTypes[i]);
+                }
+            }
         }
     }
 
@@ -73,6 +119,26 @@ public class Package {
         this.length = length;
         this.orLength = length;
         this.value = value;
+
+        String[] nnTypes = new String[newTypes.length + 1];
+        System.arraycopy(newTypes, 0, nnTypes, 0, newTypes.length);
+        nnTypes[nnTypes.length - 1] = type;
+        newTypes = nnTypes;
+
+        int[][] nnDimensions = new int[newDimensions.length + 1][3];
+        for (int i = 0; i < newDimensions.length; i++) {
+          System.arraycopy(newDimensions[i], 0, nnDimensions[i], 0, 3);
+        }
+        nnDimensions[nnDimensions.length - 1][0] = length;
+        nnDimensions[nnDimensions.length - 1][1] = width;
+        nnDimensions[nnDimensions.length - 1][2] = height;
+        newDimensions = nnDimensions;
+
+        double[] nnValues = new double[newValues.length + 1];
+        System.arraycopy(newValues, 0, nnValues, 0, newValues.length);
+        nnValues[nnValues.length - 1] = value;
+        newValues = nnValues;
+
         setPackage(type);
     }
 
@@ -86,15 +152,38 @@ public class Package {
     * @param type The desired type of package.
     */
     public void setPackage(String type) {
-        coords = new int[height * width * length][3];
-        int counter = 0;
-        for (int i = 0; i < length; i++) {
-            for (int j = 0; j < width; j++) {
-                for (int k = 0; k < height; k++) {
-                    coords[counter][0] = i;
-                    coords[counter][1] = j;
-                    coords[counter][2] = k;
-                    counter++;
+        if (type.equalsIgnoreCase("L")) {
+            coords = new int[5][3];
+            for (int i = 0; i < coords.length; i++) {
+                for (int j = 0; j < coords[0].length; j++) {
+                    coords[i][j] = coordsTable[0][i][j];
+                }
+            }
+        } else if (type.equalsIgnoreCase("P")) {
+            coords = new int[5][3];
+            for (int i = 0; i < coords.length; i++) {
+                for (int j = 0; j < coords[0].length; j++) {
+                    coords[i][j] = coordsTable[1][i][j];
+                }
+            }
+        } else if (type.equalsIgnoreCase("T")){
+            coords = new int[5][3];
+            for (int i = 0; i < coords.length; i++) {
+                for (int j = 0; j < coords[0].length; j++) {
+                    coords[i][j] = coordsTable[2][i][j];
+                }
+            }
+        } else {
+            coords = new int[height * width * length][3];
+            int counter = 0;
+            for (int i = 0; i < length; i++) {
+                for (int j = 0; j < width; j++) {
+                    for (int k = 0; k < height; k++) {
+                        coords[counter][0] = i;
+                        coords[counter][1] = j;
+                        coords[counter][2] = k;
+                        counter++;
+                    }
                 }
             }
         }

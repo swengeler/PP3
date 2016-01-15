@@ -37,7 +37,7 @@ public class GeneticAlgorithm {
     public void initialPopulation(Package[] types, int[] amountOfType) {
         cargoSpace = new CargoSpace(33, 5, 8);
         Individual.setCargoSpace(cargoSpace);
-        //packageTypes = types;
+
         amountOfType = new int[3];
         amountOfType[0] = 100;
         amountOfType[1] = 100;
@@ -47,16 +47,48 @@ public class GeneticAlgorithm {
             amountSum += amountOfType[i];
         }
 
-        packageTypes = new Package[3];
+        packageTypes = new Package[6];
         packageTypes[0] = new Package("A");
         packageTypes[1] = new Package("B");
         packageTypes[2] = new Package("C");
+        packageTypes[3] = new Package("D", 8, 8, 10, 1.0);
+        packageTypes[4] = new Package("E", 2, 4, 9, 1.5);
+        packageTypes[5] = new Package("F", 3, 6, 7, 4.5);
 
+
+        int stateSum = 0;
+        for (int i = 0; i < packageTypes.length; i++) {
+            stateSum += packageTypes[i].getNrRotations();
+        }
+
+        Package[] statesArray = new Package[stateSum];
+        Package p;
+        int counter = 0;
+        for (int j = 0; j < packageTypes.length; j++) {
+            for (int k = 0; k < packageTypes[j].getNrRotations(); k++) {
+                p = new Package(packageTypes[j].getType());
+                if (packageTypes[j].getNrRotations() > 1) {
+                    p.setRotations(k);
+                }
+                statesArray[counter] = p.clone();
+                counter++;
+            }
+        }
+
+        for (int i = 0; i < statesArray.length; i++) {
+            p = statesArray[i];
+            System.out.println(p.getType() + "-package: length = " + p.getLength() + " width = " + p.getWidth() + " height = " + p.getHeight());
+        }
+/*
         // initialising the population
         int[] chromosome = new int[amountSum];
         population = new Individual[POPULATION_SIZE];
         for (int i = 0; i < population.length; i++) {
-            for (int j = 0; j < )
+            for (int j = 0; j < chromosome.length; j++) {
+                chromosome = new int[amountSum];
+                int choosePackage = Random.randomWithRange(0, stateSum);
+
+            }
         }
 
         for (int i = 0; i < population[0].getChromosome().length; i++) {
@@ -120,9 +152,9 @@ public class GeneticAlgorithm {
         System.out.println("Final maximum fitness value: " + bestInd.getFitness());
         System.out.println("Final maximum total value: " + cargoSpace.getTotalValue());
 
-
+*/
     }
-
+/*
     private Individual[] fitnessAndSort(Individual[] population) {
         for (int i = 0; i < population.length; i++) {
             population[i].setFitness();
@@ -293,7 +325,7 @@ public class GeneticAlgorithm {
     // ********************* //
     // END SELECTION METHODS //
     // ********************* //
-
+*/
     public void displaySolution() {
         JFrame f = new JFrame();
         f.setSize(750, 770);
