@@ -55,7 +55,6 @@ public class HillClimbing {
 		packageTypes[2] = new Package("C");
 
 		boolean done = false;
-		int counter = 0;
 		boolean allowRotations = false;
 		int mutationRate = 1;
 		int nrNeighbours = 100;
@@ -71,20 +70,13 @@ public class HillClimbing {
 			if (neighbours != null) {
 				//int random = Random.randomWithRange(0, neighbours.length-1);
 				current = neighbours[0];
-				counter = 0;
 			} else {
-				if (counter==0)
 					done = true;
-				counter--;
 			}
 		}
 		long endTime = System.currentTimeMillis();
 		long totTime = endTime - startTime;
-		System.out.println("Local max: " + current.getTotalValue(current.getPacking()));
-		System.out.println("N of packages: " + current.getPacking().length);
-		System.out.println("Gaps left: " + current.getTotalGaps());
-		System.out.println("Runtime: " + totTime + "ms");
-		localSearch.displaySolution(current);
+
 		int nrA = 0;
 		int nrB = 0;
 		int nrC = 0;
@@ -97,9 +89,14 @@ public class HillClimbing {
 				else if (current.getPacking()[i].getType() == "C")
 					nrC++;
 		}
-
+		
+		System.out.println("Local max: " + current.getTotalValue(current.getPacking()));
+		System.out.println("Gaps left: " + current.getTotalGaps());
+		System.out.println("N of packages: " + current.getPacking().length);
 		System.out.println("Nunber of A: " + nrA + "\n Number of B: " + nrB + "\n Number of C: " + nrC);
-		System.out.println("Total value x " + (nrA*3 + nrB*4 + nrC*5));
+		System.out.println("Runtime: " + totTime + "ms");
+		localSearch.displaySolution(current);
+
 	}
 
 	/**
