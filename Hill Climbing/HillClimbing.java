@@ -69,7 +69,7 @@ public class HillClimbing {
 		while (!done) {
 			neighbours = localSearch.genNeighbourhood(current, packageTypes, allowRotations, nrNeighbours, mutationRate);
 			if (neighbours != null) {
-				int random = Random.randomWithRange(0, neighbours.length-1);
+				//int random = Random.randomWithRange(0, neighbours.length-1);
 				current = neighbours[0];
 				counter = 0;
 			} else {
@@ -84,7 +84,6 @@ public class HillClimbing {
 		System.out.println("N of packages: " + current.getPacking().length);
 		System.out.println("Gaps left: " + current.getTotalGaps());
 		System.out.println("Runtime: " + totTime + "ms");
-
 		localSearch.displaySolution(current);
 		int nrA = 0;
 		int nrB = 0;
