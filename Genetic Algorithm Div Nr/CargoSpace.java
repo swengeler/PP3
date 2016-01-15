@@ -123,6 +123,26 @@ public class CargoSpace {
     }
 
     /**
+     * remove package at index remIndex from the cargoSpaceFilled array
+     * @param remIndex
+     */
+    public void removeFromDoc(int remIndex) {
+    	Package[] newCargoSpaceFilled = new Package[cargoSpaceFilled.length-1];
+    	int index = 0;
+    	while (index < newCargoSpaceFilled.length)
+    	{
+    		if (index<remIndex) {
+    			newCargoSpaceFilled[index] = cargoSpaceFilled[index];
+    			index++;
+    		} else {
+    			newCargoSpaceFilled[index] = cargoSpaceFilled[index+1];
+    			index++;
+    		}
+    	}
+    	this.cargoSpaceFilled = newCargoSpaceFilled;
+    }
+
+    /**
     * A method to check whether a package can still be moved. It is mostly used to ensure that a package
     * actually does not have any more space to move, so that there are as few gaps between packages
     * as possible.
@@ -155,12 +175,8 @@ public class CargoSpace {
     * @param p The Package that is placed in the array/cargo space.
     */
     public void place(Package p) {
-        int[][] coords = p.getCoords();
-        // coords[4][0] should be the x-coordinate of all the corners of the package on the right side
         for (int x = 0; x < p.getLength(); x++) {
-            // coords[1][1] should be the y-coordinate of all the corners of the package on the front side
             for (int y = 0; y < p.getWidth(); y++) {
-                // coords[3][2] should be the z-coordinate of all the corners of the package on the upper side
                 for (int z = 0; z < p.getHeight(); z++) {
                     cargoSpace[x + p.getBaseCoords()[0]][y + p.getBaseCoords()[1]][z + p.getBaseCoords()[2]] = p.getType();
                 }
@@ -169,6 +185,22 @@ public class CargoSpace {
         totalValue += p.getValue();
         nrPlaced++;
         addToDoc(p);
+    }
+
+    /**
+     * Remove Package p from the internal representation of the cargo space
+     * @param p The Package to be removed
+     */
+    public void remove(Package[] packing, int remIndex) {
+      Package p = packing[remIndex];
+      for (int i=0; i < p.getLength(); i++) {
+        for (int j=0; j<p.getWidth(); j++) {
+          for (int k=0; k<p.getHeight(); k++) {
+            cargoSpace[i + p.getBaseCoords()[0]][j + p.getBaseCoords()[1]][k + p.getBaseCoords()[2]] = "Empty";
+          }
+        }
+      }
+      removeFromDoc(remIndex);
     }
 
     /**
@@ -346,4 +378,70 @@ public class CargoSpace {
         return cargoSpaceFilled;
     }
 
-}
+    /**
+     * Looks for an empty space where the aPackage can be placed and set its baseCoords.
+     * @param aPackage
+     * @return int[3] array coords containing the x,y,z base coords
+     */
+  	public int[] getNextEmptySpaceCoords(Package aPackage) {
+  		for (int i = 0; i < cargoSpace.length; i++) {
+  	          for (int j = 0; j < cargoSpace[i].length; j++) {
+  	              for (int k = 0; k < cargoSpace[i][j].length; k++) {
+  	                  if (cargoSpace[i][j][k].equals("Empty")) {
+  	                	  int coords[] = new int[3];
+  	                	  coords[0] = i;
+  	                	  coords[1] = j;
+  	                	  coords[2] = k;
+  	                	  aPackage.setBaseCoords(i, j, k);
+  	                	  if (!overlap(aPackage))
+  	                		  return coords;
+  	                  }
+  	              }
+  	          }
+  		}
+  		return null;
+  	}
+
+    /**
+  	 * Fill the cargo following an order of package defined by the parameter packageTypes.
+  	 * Until there is space to place at least one of the smallest parcel it keeps looking for empty space and
+  	 * trying to fill them with a specific package.
+  	 * @param packageTypes An array containing the package types we want to use in the exact order we want to place them. (i.e. {A,B,C}
+  	 */
+  	public void fillCargo(Package[] packageTypes) {
+  		while (getNextEmptySpaceCoords(new Package("A")) != null)
+  		{
+  			for (int i=0; i<packageTypes.length; i++) {
+  				int[] coords;
+  				Package p = new Package(packageTypes[i].getType());
+  				while (getNextEmptySpaceCoords(p) != null) {
+  					p = new Package(packageTypes[i].getType());
+  					coords = getNextEmptySpaceCoords(p);
+  					place(p);
+  				}
+  			}
+  		}
+  	}
+
+  	/**
+  	 * Randomly fill the cargo by selecting random parcel and placing them into the cargo until there is no
+  	 * more space left.
+  	 * @param packageTypes An array containing a list of possible parcel types.
+  	 * @param allowRotations A boolean value.
+  	 */
+  	public void fillRandom(Package[] packageTypes, boolean allowRotations) {
+  		Package p;
+  		int[] coords;
+  		while (getNextEmptySpaceCoords(new Package("A")) != null)
+  		{
+  			p = new Package(packageTypes[Random.randomWithRange(0, 2)].getType());
+  			if (allowRotations) {
+  				p.rotateRandom();
+  			}
+  			coords = getNextEmptySpaceCoords(p);
+  			if (coords != null) {
+  				place(p);
+  			}
+  		}
+  	}
+  }
