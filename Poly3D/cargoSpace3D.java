@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -12,23 +13,24 @@ public class cargoSpace3D extends JPanel{
 	static boolean keyPressed = false;
 	private static Cube[] cubes;
 	static cargoSpace3D panel; 
+	
 	public static void represent(Package[] packages) {
+		JFrame f = new JFrame();
+		f.setSize(MainFrame.width, MainFrame.height);
+		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		f.setVisible(true);
+		f.addKeyListener(new KeyHandler());
+		f.addMouseMotionListener(new MouseMotionHandler());
+		
+		
 		cubes = new Cube[packages.length] ;
 		for(int i=0;i<cubes.length;i++){
 			cubes[i]= new Cube(packages[i]);
 		}
-		
-		JFrame f = new JFrame();
-		f.setSize(1900, 1000);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		panel = new cargoSpace3D();
-		
 		panel.setPreferredSize(new Dimension(200,200));
+		
 		f.add(panel);
-		f.setVisible(true);
-		f.addKeyListener(new KeyHandler());
-		f.addMouseMotionListener(new MouseMotionHandler());
 		panel.repaint();
 	}
 	

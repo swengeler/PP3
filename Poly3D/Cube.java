@@ -33,7 +33,7 @@ import java.awt.Polygon;
 public class Cube {
 	
 	private Package type;
-	private boolean startRotation;
+	private boolean startRotation, mainFrame;
 	private int  Scale = 10, x, y, z, xpos, ypos, zpos, xRotation = 0, yRotation = 0, zRotation = 0;
 	private int[] baseCoords;
 	private Point3D[] allPoints;
@@ -45,6 +45,7 @@ public class Cube {
 	 * @param Package type of the package
 	 */
 	public Cube(Package type){
+		mainFrame = false;
 		this.type = type;
 		createBaseCoords();
 		allPoints = createPoints();
@@ -61,6 +62,22 @@ public class Cube {
 		y = ypos;
 		z = zpos;
 	}
+	
+	public Cube(Package type, int xPos, int yPos, int zPos){
+		mainFrame = true;
+		this.type = type;
+		createBaseCoords();
+		allPoints = createPoints();
+		for(int i = 0; i<fx.length; i++){
+			fx[i] = allPoints[i].getX();
+			fy[i] = allPoints[i].getY();
+			fz[i] = allPoints[i].getZ();
+		}
+		rotateBaseCoords();
+			xpos = xPos;ypos = yPos;zpos = zPos;
+			x = xpos;y = ypos;z = zpos;
+	}
+
 
 	public void createBaseCoords(){
 		int x = 0,y = 0,z = 0;
@@ -190,11 +207,14 @@ public class Cube {
            allPoints[i].setY((int)fy[i]);
            allPoints[i].setZ((int)fz[i]);
        }
-       double newy = Math.cos(Math.toRadians(a)) * ypos + -1*Math.sin(Math.toRadians(a)) *zpos;
-       double newz = Math.sin(Math.toRadians(a)) * ypos + Math.cos(Math.toRadians(a)) * zpos;
-       ypos = (int)(newy+fy[0]/(6*Scale));
-       zpos = (int)(newz+fz[0]/(6*Scale));
-       
+       if(!mainFrame){
+	       ypos-=200;zpos-=200;
+	       double newy = Math.cos(Math.toRadians(a)) * ypos + -1*Math.sin(Math.toRadians(a)) *zpos;
+	       double newz = Math.sin(Math.toRadians(a)) * ypos + Math.cos(Math.toRadians(a)) * zpos;
+	       ypos = (int)(newy+fy[0]/(6*Scale));
+	       zpos = (int)(newz+fz[0]/(6*Scale));
+	       ypos+=200;zpos+=200;
+	  }
    }
    
    /**
@@ -202,7 +222,7 @@ public class Cube {
     * @param a Degree of rotation
     */
    public void RotateY(int a) {
-	   if(!startRotation){	   
+	   if(!startRotation|| !mainFrame){	   
 		   yRotation += a;
 			if(yRotation >= 360 || yRotation <= -360){
 				yRotation = 0;
@@ -218,11 +238,14 @@ public class Cube {
            allPoints[i].setX((int)fx[i]);
            allPoints[i].setZ((int)fz[i]);
        }
-	   double newx = Math.cos(Math.toRadians(a)) * xpos + -1*Math.sin(Math.toRadians(a)) *zpos;
-       double newz = Math.sin(Math.toRadians(a)) * xpos + Math.cos(Math.toRadians(a)) * zpos;
-       xpos = (int)(newx+fx[0]/(10*Scale));
-       zpos = (int)(newz+fz[0]/(10*Scale));
-       
+	   if(!mainFrame){
+		   xpos-=200;zpos-=200;
+		   double newx = Math.cos(Math.toRadians(a)) * xpos + -1*Math.sin(Math.toRadians(a)) *zpos;
+	       double newz = Math.sin(Math.toRadians(a)) * xpos + Math.cos(Math.toRadians(a)) * zpos;
+	       xpos = (int)(newx+fx[0]/(10*Scale));
+	       zpos = (int)(newz+fz[0]/(10*Scale));
+	       xpos+=200;zpos+=200;
+	   }
    }
 
    /**
@@ -230,7 +253,7 @@ public class Cube {
     * @param a Degree of rotation
     */
    public void RotateZ(int a) {
-	   if(!startRotation){
+	   if(!startRotation|| !mainFrame){
 			zRotation += a;
 			if(zRotation >= 360 || zRotation <= -360){
 				zRotation = 0;
@@ -246,18 +269,21 @@ public class Cube {
 	       allPoints[i].setX((int)fx[i]);
 	       allPoints[i].setY((int)fy[i]); 
 	   }
-	   double newx = Math.cos(Math.toRadians(a)) * xpos + -1*Math.sin(Math.toRadians(a)) *ypos;
-       double newy = Math.sin(Math.toRadians(a)) * xpos + Math.cos(Math.toRadians(a)) * ypos;
-       xpos = (int)(newx+fx[0]/(6*Scale));
-       ypos = (int)(newy+fy[0]/(6*Scale));
-       
+	   if(!mainFrame){
+		   ypos-=200;xpos-=200;
+		   double newx = Math.cos(Math.toRadians(a)) * xpos + -1*Math.sin(Math.toRadians(a)) *ypos;
+	       double newy = Math.sin(Math.toRadians(a)) * xpos + Math.cos(Math.toRadians(a)) * ypos;
+	       xpos = (int)(newx+fx[0]/(6*Scale));
+	       ypos = (int)(newy+fy[0]/(6*Scale));
+	       ypos+=200;xpos+=200;
+	   }
    }
 
    public Cube[] sort(Cube[] cubes){
 	   int[] zCoords = new int[cubes.length];
 	   
 	   for(int i = 0; i < zCoords.length; i++){
-		   zCoords[i] = cubes[i].getMaxZ();
+		   zCoords[i] = cubes[i].zpos;
 	   }
 	   
 	   for (int i = zCoords.length-1; i >= 0; i--) {
