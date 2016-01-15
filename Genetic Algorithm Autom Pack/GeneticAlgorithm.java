@@ -9,18 +9,22 @@ public class GeneticAlgorithm {
     private final boolean LOG1 = false;
     private final boolean LOG2 = true;
 
-    private int POPULATION_SIZE = 200;
+    private int POPULATION_SIZE = 100;
     private int MUTATION_FREQ = 10;
     private int MUTATION_RANGE = 5;
     private int SWAP_FREQ = 5;
     private int SWAP_RANGE = 2;
+    private double MUTATION_PROB = 0.1;
+    private double SWAP_PROB = 0.1;
     private int CROSSOVER_FREQ = 1;
     private String SELECTION_MODE = "ELITIST";
     private double ELITIST_TOP_PERCENT = 0.2;
 
     private Individual[] population;
     private Package[] packageTypes;
+    private Package[] statesArray;
     private CargoSpace cargoSpace;
+    private int amountSum;
 
     private int gene;
     private boolean test;
@@ -41,10 +45,14 @@ public class GeneticAlgorithm {
         amountOfType[0] = 100;
         amountOfType[1] = 100;
         amountOfType[2] = 100;
-        int amountSum = 0;
+
+        amountSum = 0;
         for (int i = 0; i < amountOfType.length; i++) {
             amountSum += amountOfType[i];
         }
+
+        int[] amountForReduction = new int[amountOfType.length];
+        System.arraycopy(amountOfType, 0, amountForReduction, 0, amountOfType.length);
 
         packageTypes = new Package[3];
         packageTypes[0] = new Package("A");
@@ -60,7 +68,7 @@ public class GeneticAlgorithm {
             stateSum += packageTypes[i].getNrRotations();
         }
 
-        Package[] statesArray = new Package[stateSum];
+        statesArray = new Package[stateSum];
         Package p;
         int counter = 0;
         for (int j = 0; j < packageTypes.length; j++) {
@@ -86,16 +94,31 @@ public class GeneticAlgorithm {
         int[] chromosome = new int[amountSum];
         population = new Individual[POPULATION_SIZE];
         for (int i = 0; i < population.length; i++) {
+            chromosome = new int[amountSum];
+            System.arraycopy(amountOfType, 0, amountForReduction, 0, amountOfType.length);
             for (int j = 0; j < chromosome.length; j++) {
-                chromosome = new int[amountSum];
                 int packageChosen = -1;
-                while (packageChosen < 0 || amountOfType[statesArray[packageChosen].getPositionInArray(statesArray[packageChosen])] <= 0) {
-                    packageChosen = Random.randomWithRange(0, statesArray.length - 1);
+                while (packageChosen < 0) {
+                    packageChosen++;
+                    int random1 = Random.randomWithRange(0, packageTypes.length - 1);
+                    for (int k = 0; k < random1; k++) {
+                        packageChosen += packageTypes[k].getNrRotations();
+                    }
+                    int random2 = Random.randomWithRange(0, packageTypes[random1].getNrRotations() - 1);
+                    packageChosen += random2;
+                    if (amountForReduction[this.getPositionInArray(statesArray[packageChosen])] <= 0)
+                        packageChosen--;
                 }
-                amountOfType[statesArray[packageChosen].getPositionInArray(statesArray[packageChosen])]--;
+                amountForReduction[this.getPositionInArray(statesArray[packageChosen])]--;
                 chromosome[j] = packageChosen;
             }
             population[i] = new Individual(chromosome);
+        }
+
+        if (POPULATION_SIZE == 1 || true) {
+            for (int i = 0; i < population[0].getChromosome().length; i++) {
+                System.out.println(i + ": " + population[0].getChromosome()[i]);
+            }
         }
 
         HeapSort.sortDownInd(population);
@@ -112,15 +135,6 @@ public class GeneticAlgorithm {
                 }
                 System.out.println();
             }
-            if (POPULATION_SIZE == 1 && LOG1) {
-                System.out.println("---- Generation " + generation + " ----");
-                System.out.println("Fitness value = " + population[0].getFitness());
-                for (int i = 0; i < population[0].getChromosome().length; i++) {
-                    int[] bC = population[0].getChromosome()[i].getBaseCoords();
-                    System.out.println("Package No." + i + " (" + population[0].getChromosome()[i].getType() + "): x = " + bC[0] + ", y = " + bC[1] + ", z = " + bC[2]);
-                }
-                System.out.println();
-            }
             population = reproduce(population);
             population = fitnessAndSort(population);
             if (population[0].getFitness() > bestInd.getFitness()) {
@@ -128,16 +142,6 @@ public class GeneticAlgorithm {
                 if (LOG2) System.out.println("Best individual changed in generation " + generation + " (" + bestInd.getFitness() + ")");
             }
             generation++;
-        }
-
-        if (POPULATION_SIZE == 1 && LOG1) {
-            System.out.println("---- Generation " + generation + " ----");
-            System.out.println("Fitness value = " + population[0].getFitness());
-            for (int i = 0; i < population[0].getChromosome().length; i++) {
-                int[] bC = population[0].getChromosome()[i].getBaseCoords();
-                System.out.println("Package No." + i + " (" + population[0].getChromosome()[i].getType() + "): x = " + bC[0] + ", y = " + bC[1] + ", z = " + bC[2]);
-            }
-            System.out.println();
         }
 
         cargoSpace = new CargoSpace(33, 5, 8);
@@ -187,7 +191,7 @@ public class GeneticAlgorithm {
     }
 
     public Individual crossOver(Individual parent1, Individual parent2) {
-        int[] childChr = new Package[parent1.getChromosome().length];
+        int[] childChr = new int[parent1.getChromosome().length];
         try {
             int[] curParentChr;
             int[] crossOverPoints = Random.randomListWithRange(0, childChr.length - 1, CROSSOVER_FREQ);
@@ -213,77 +217,30 @@ public class GeneticAlgorithm {
             e.printStackTrace();
         }
         Individual child = new Individual(childChr);
-        return mutateSwap(mutate(child));
+        return mutateSwap(child);
     }
 
     private Individual mutate(Individual ind) {
-        try {
-            int[] chromosome = ind.getChromosome();
-            int[] randomGenes = Random.randomListWithRange(0, chromosome.length - 1, MUTATION_FREQ);
-            if (LOG1) System.out.println("Changing " + randomGenes.length + " gene(s)");
-            for (int i = 0; i < randomGenes.length; i++) {
-                int changeCoords = Random.randomWithRange(1, 3);
-                if (changeCoords == 1) {
-                    int newX = Random.randomWithRangeNN(chromosome[randomGenes[i]].getBaseCoords()[0] - MUTATION_RANGE, chromosome[randomGenes[i]].getBaseCoords()[0] + MUTATION_RANGE);
-                    if (LOG1) System.out.print("Gene " + randomGenes[i] + " from " + chromosome[randomGenes[i]].getBaseCoords()[0] + " to newX = " + newX);
-                    if (newX < 0) {
-                        newX = 0;
-                        if (LOG1) System.out.println(" set to " + newX);
-                    } else if (newX > (cargoSpace.getLength() - chromosome[randomGenes[i]].getLength())) {
-                        newX = cargoSpace.getLength() - chromosome[randomGenes[i]].getLength();
-                        if (LOG1) System.out.println(" set to " + newX);
-                    } else {
-                        if (LOG1) System.out.println();
-                    }
-                    chromosome[randomGenes[i]].setBaseX(newX);
-                } else if (changeCoords == 2) {
-                    int newY = Random.randomWithRangeNN(chromosome[randomGenes[i]].getBaseCoords()[1] - MUTATION_RANGE, chromosome[randomGenes[i]].getBaseCoords()[1] + MUTATION_RANGE);
-                    if (LOG1) System.out.print("Gene " + randomGenes[i] + " from " + chromosome[randomGenes[i]].getBaseCoords()[1] + " to newY = " + newY);
-                    if (newY < 0) {
-                        newY = 0;
-                        if (LOG1) System.out.println(" set to " + newY);
-                    } else if (newY > (cargoSpace.getWidth() - chromosome[randomGenes[i]].getWidth())) {
-                        newY = cargoSpace.getWidth() - chromosome[randomGenes[i]].getWidth();
-                        if (LOG1) System.out.println(" set to " + newY);
-                    } else {
-                        if (LOG1) System.out.println();
-                    }
-                    chromosome[randomGenes[i]].setBaseY(newY);
-                } else if (changeCoords == 3) {
-                    int newZ = Random.randomWithRangeNN(chromosome[randomGenes[i]].getBaseCoords()[2] - MUTATION_RANGE, chromosome[randomGenes[i]].getBaseCoords()[2] + MUTATION_RANGE);
-                    if (LOG1) System.out.print("Gene " + randomGenes[i] + " from " + chromosome[randomGenes[i]].getBaseCoords()[2] + " to newZ = " + newZ);
-                    if (newZ < 0) {
-                        newZ = 0;
-                        if (LOG1) System.out.println(" set to " + newZ);
-                    } else if (newZ > (cargoSpace.getHeight() - chromosome[randomGenes[i]].getHeight())) {
-                        newZ = cargoSpace.getHeight() - chromosome[randomGenes[i]].getHeight();
-                        if (LOG1) System.out.println(" set to " + newZ);
-                    } else {
-                        if (LOG1) System.out.println();
-                    }
-                    chromosome[randomGenes[i]].setBaseZ(newZ);
-                }
+        int[] chromosome = ind.getChromosome();
+        Package[] p;
+        for (int i = 0; i < chromosome.length; i++) {
+            if (Math.random() < MUTATION_PROB) {
+                
             }
-            if (LOG1) System.out.println();
-            ind.setChromosome(chromosome);
-        } catch (BadInputException e) {
-            e.printStackTrace();
         }
+        ind.setChromosome(chromosome);
         return ind;
     }
 
     private Individual mutateSwap(Individual ind) {
-        Package[] chromosome = ind.getChromosome();
-        for (int k = 0; k < SWAP_FREQ; k++) {
-            int randomGene = Random.randomWithRange(0, chromosome.length - 1);
-            int swapIndex = Random.randomWithRange(randomGene - SWAP_RANGE, randomGene + SWAP_RANGE);
-            if (swapIndex < 0)
-                swapIndex = 0;
-            else if (swapIndex >= chromosome.length)
-                swapIndex = chromosome.length - 1;
-            Package temp = chromosome[randomGene].clone();
-            chromosome[randomGene] = chromosome[swapIndex].clone();
-            chromosome[swapIndex] = temp.clone();
+        int[] chromosome = ind.getChromosome();
+        for (int i = 0; i < chromosome.length; i++) {
+            if (Math.random() < SWAP_PROB) {
+                int temp = chromosome[i];
+                int randomGene = Random.randomWithRange(0, chromosome.length - 1);
+                chromosome[i] = chromosome[randomGene];
+                chromosome[randomGene] = temp;
+            }
         }
         ind.setChromosome(chromosome);
         return ind;

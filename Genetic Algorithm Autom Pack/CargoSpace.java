@@ -14,11 +14,11 @@ public class CargoSpace {
     private static final boolean PRINT_CONSOLE = false;
 
     /** The length of the cargo space (in 0.5m).*/
-    public int length;
+    private int length;
     /** The width of the cargo space (in 0.5m).*/
-    public int width;
+    private int width;
     /** The height of the cargo space (in 0.5m).*/
-    public int height;
+    private int height;
     /** The total value of all packages in the cargo space (calculated when the algorithm is finished).*/
     private double totalValue;
 
@@ -56,6 +56,7 @@ public class CargoSpace {
         this.length = length;
         this.width = width;
         this.height = height;
+        totalValue = 0;
         cargoSpace = new String[length][width][height];
         initialiseCS();
     }
@@ -92,14 +93,14 @@ public class CargoSpace {
     public void putPackage(Package p) {
         // first move as far back as possible, then as far left as possible, then as far down as possible
         // maybe repeat recursively to avoid placing stuff in bad positions?
-        //while (movable(p)) {
+        while (movable(p)) {
             while (p.getBaseCoords()[1] > 0 && !overlap(p)) {p.setBaseY(p.getBaseCoords()[1] - 1);}
             if (overlap(p)) {p.setBaseY(p.getBaseCoords()[1] + 1);}
             while (p.getBaseCoords()[0] > 0 && !overlap(p)) {p.setBaseX(p.getBaseCoords()[0] - 1);}
             if (overlap(p)) {p.setBaseX(p.getBaseCoords()[0] + 1);}
             while (p.getBaseCoords()[2] > 0 && !overlap(p)) {p.setBaseZ(p.getBaseCoords()[2] - 1);}
             if (overlap(p)) {p.setBaseZ(p.getBaseCoords()[2] + 1);}
-        //}
+        }
         if (DEBUG) {System.out.println("After placing: curX = " + p.getBaseCoords()[0] + " curY = " + p.getBaseCoords()[1] + " curZ = " + p.getBaseCoords()[2]);}
         place(p);
     }
@@ -120,6 +121,7 @@ public class CargoSpace {
             newCSF[newCSF.length - 1] = p;
             csPacking = newCSF;
         }
+        totalValue += p.getValue();
     }
 
     /**
@@ -166,7 +168,6 @@ public class CargoSpace {
                 }
             }
         }
-        totalValue += p.getValue();
         nrPlaced++;
         addToDoc(p);
     }
@@ -285,12 +286,12 @@ public class CargoSpace {
     * @return totalValue The total value of all included packages.
     */
     public double getTotalValue() {
-        /*double totalValue = 0;
+        double tV = 0;
         for (int i = 0; i < csPacking.length; i++) {
-            totalValue += (new Package(csPacking[i])).getValue();
-        }*/
+            tV = tV + csPacking[i].getValue();
+        }
         if (DEBUG) {System.out.println("\nTOTAL VALUE: " + totalValue);}
-        return totalValue;
+        return tV;
     }
 
     public double getFitness() {

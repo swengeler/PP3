@@ -6,8 +6,11 @@ public class Individual {
 	private int[] chromosome;
 	private double fitness;
 
-	public Individual(int[] chromosome) {
-		this.chromosome = chromosome;
+	public Individual(int[] chr) {
+		this.chromosome = new int[chr.length];
+		for (int i = 0; i < chr.length; i++) {
+			this.chromosome[i] = chr[i];
+		}
 		this.setFitness();
 	}
 
@@ -20,12 +23,29 @@ public class Individual {
 		this.getFitness();
 	}
 
+	public void setFitnesss() {
+		CargoSpace newCS = new CargoSpace(cs.getLength(), cs.getWidth(), cs.getHeight());
+		for (int i = 0; i < this.chromosome.length; i++) {
+				newCS.initialPosition(sArr[this.chromosome[i]]);
+				if (!newCS.overlap(sArr[this.chromosome[i]])) {
+						newCS.putPackage(sArr[this.chromosome[i]]);
+						//System.out.println("Current fitness = " + this.fitness + ", now added = " + sArr[this.chromosome[i]].getValue());
+				}
+		}
+		//System.out.println("Final fitness = " + this.fitness);
+		//System.out.println();
+		this.fitness = newCS.getTotalValue();
+	}
+
 	public void setFitness() {
 		CargoSpace newCS = new CargoSpace(cs.getLength(), cs.getWidth(), cs.getHeight());
-		for (int i = 0; i < chromosome.length; i++) {
-				newCs.putPackage(sArr[chromosome[i]]);
+		for (int i = 0; i < this.chromosome.length; i++) {
+				newCS.initialPosition(sArr[this.chromosome[i]]);
+				if (!newCS.overlap(sArr[this.chromosome[i]])) {
+						newCS.putPackage(sArr[this.chromosome[i]]);
+				}
 		}
-		return newCs.getTotalValue();
+		this.fitness = (cs.getLength() * cs.getWidth() * cs.getHeight()) - newCS.getTotalGaps();
 	}
 
 	public double getFitness() {
@@ -35,18 +55,28 @@ public class Individual {
 	public Individual clone() {
 		int[] newChr = new int[chromosome.length];
 		for (int i = 0; i < chromosome.length; i++) {
-			newChr[i] = chromosome[i].clone();
+			newChr[i] = chromosome[i];
 		}
 		Individual newInd = new Individual(newChr);
 		newInd.setFitness();
 		return newInd;
 	}
 
+	public CargoSpace toCargoSpace() {
+		CargoSpace newCS = new CargoSpace(cs.getLength(), cs.getWidth(), cs.getHeight());
+		for (int i = 0; i < chromosome.length; i++) {
+				newCS.initialPosition(sArr[this.chromosome[i]]);
+				if (!newCS.overlap(sArr[this.chromosome[i]]))
+						newCS.putPackage(sArr[this.chromosome[i]]);
+		}
+		return newCS;
+	}
+
 	public static void setCargoSpace(CargoSpace cargoSpace) {
 		cs = cargoSpace;
 	}
 
-	public static void setStatesArray(CargoSpace statesArray) {
+	public static void setStatesArray(Package[] statesArray) {
 		sArr = statesArray;
 	}
 
