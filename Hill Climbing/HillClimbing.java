@@ -29,7 +29,7 @@ public class HillClimbing {
 			nextNeighbourhood[i] = neighbour;
 		}
 
-		nextNeighbourhood = sort_and_prume_min(nextNeighbourhood, current);
+		nextNeighbourhood = sort_and_prume(nextNeighbourhood, current);
 
 		return nextNeighbourhood;
 	}
@@ -55,10 +55,9 @@ public class HillClimbing {
 		packageTypes[2] = new Package("C");
 
 		boolean done = false;
-		int counter = 100;
 		boolean allowRotations = true;
-		int mutationRate = 25;
-		int nrNeighbours = 50;
+		int mutationRate = 1;
+		int nrNeighbours = 100;
 
 		HillClimbing localSearch = new HillClimbing();
 		CargoSpace current = new CargoSpace(33,5,8);
@@ -69,23 +68,34 @@ public class HillClimbing {
 		while (!done) {
 			neighbours = localSearch.genNeighbourhood(current, packageTypes, allowRotations, nrNeighbours, mutationRate);
 			if (neighbours != null) {
-				int random = Random.randomWithRange(0, neighbours.length-1);
-				current = neighbours[random];
-                System.out.println("Local value: " + current.getTotalValue());
-		        System.out.println("Gaps left: " + current.getTotalGaps());
-				counter = 100;
+				//int random = Random.randomWithRange(0, neighbours.length-1);
+				current = neighbours[0];
 			} else {
-				if (counter==0)
 					done = true;
-				counter--;
 			}
 		}
 		long endTime = System.currentTimeMillis();
 		long totTime = endTime - startTime;
-		System.out.println("Local max: " + current.getTotalValue());
+
+		int nrA = 0;
+		int nrB = 0;
+		int nrC = 0;
+
+		for (int i=0; i<current.getPacking().length; i++) {
+				if (current.getPacking()[i].getType() == "A")
+					nrA++;
+				else if (current.getPacking()[i].getType() == "B")
+					nrB++;
+				else if (current.getPacking()[i].getType() == "C")
+					nrC++;
+		}
+
+		System.out.println("Local max: " + current.getTotalValue(current.getPacking()));
 		System.out.println("Gaps left: " + current.getTotalGaps());
+		System.out.println("N of packages: " + current.getPacking().length);
+		System.out.println("Nunber of A: " + nrA + "\n Number of B: " + nrB + "\n Number of C: " + nrC);
 		System.out.println("Runtime: " + totTime + "ms");
-        localSearch.displaySolution(current);
+		localSearch.displaySolution(current);
 
 	}
 
@@ -98,25 +108,12 @@ public class HillClimbing {
 	private static CargoSpace[] sort_and_prume(CargoSpace[] successors, CargoSpace curCargo) {
 		HeapSort.sort(successors);
 		for (int i=0; i<successors.length; i++) {
-			if (successors[i].getTotalValue() <= curCargo.getTotalValue()) {
+			if (successors[i].getTotalValue(successors[i].getPacking()) <= curCargo.getTotalValue(curCargo.getPacking())) {
 				successors = prume(successors, i);
 				i=0;
 			}
 		}
-		if (successors[0].getTotalValue() < curCargo.getTotalValue())
-			return null;
-		return successors;
-	}
-    
-    private static CargoSpace[] sort_and_prume_min(CargoSpace[] successors, CargoSpace curCargo) {
-		HeapSort.sort(successors);
-		for (int i=0; i<successors.length; i++) {
-			if (successors[i].getTotalGaps() >= curCargo.getTotalGaps()) {
-				successors = prume(successors, i);
-				i=0;
-			}
-		}
-		if (successors[0].getTotalGaps() > curCargo.getTotalGaps())
+		if (successors[0].getTotalValue(successors[0].getPacking()) < curCargo.getTotalValue(curCargo.getPacking()))
 			return null;
 		return successors;
 	}
