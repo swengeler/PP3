@@ -1,63 +1,43 @@
 import java.awt.BorderLayout;
-
 import javax.swing.JFrame;
 
 public class HillClimbing {
-	
-	private CargoSpace curCargo;
-	private Package[] packageTypes;
-	
-	/** Initialize the curCargo with an arbitrary solution **/
-	public void init() {	
-		packageTypes = new Package[3];
-		packageTypes[0] = new Package("A");
-		packageTypes[1] = new Package("B");
-		packageTypes[2] = new Package("C");
-		curCargo = new CargoSpace(33,5,8);
-		curCargo.fillRandom(packageTypes,true);
+
+	/** genArbitrarySolution **/
+	public CargoSpace genArbitrarySolution(CargoSpace current, Package[] packageTypes, boolean allowRotations) {
+		CargoSpace arbitraryCargo = new CargoSpace(current.length,current.width,current.height);
+		arbitraryCargo.fillRandom(packageTypes,allowRotations);
+		return arbitraryCargo;
 	}
-	
+
 	/**
-	 * Return the curCargo
-	 * @return CargoSpace curCargo
-	 */
-	public CargoSpace getCurCargo() {
-		return this.curCargo;
-	}
-	
-	/**
-	 * Set the curCargo
-	 * @param newCargo a CargoSpace object representing the new cargo
-	 */
-	public void setCurCargo(CargoSpace newCargo) {
-		this.curCargo = newCargo;
-	}
-	
-	/**
-	 * Generate the neighborhood removing n packages (where n is equals to mutationRate) from the curCargo 
+	 * Generate the neighborhood removing n packages (where n is equals to mutationRate) from the curCargo
 	 * and trying to refill the remaining spaces with random parcels.
-	 * @return CargoSpace[] array containing the generated neighbors. 
+	 * @return CargoSpace[] array containing the generated neighbors.
 	 */
-	public CargoSpace[] genNeighbourhood(int nr_neighbours, int mutationRate) {
+	public CargoSpace[] genNeighbourhood(CargoSpace current, Package[] packageTypes, boolean allowRotations, int nrNeighbours, int mutationRate) {
 		CargoSpace neighbour;
-		CargoSpace[] neighbours = new CargoSpace[nr_neighbours];
-		for (int i=0; i<nr_neighbours; i++) {
-			neighbour = new CargoSpace(33,5,8);
-			neighbour.fillCargoSpace(curCargo.getPacking());
+		CargoSpace[] nextNeighbourhood = new CargoSpace[nrNeighbours];
+		for (int i=0; i<nrNeighbours; i++) {
+			neighbour = new CargoSpace(current.length,current.width,current.height);
+			neighbour.fillCargoSpace(current.getPacking());
 			for (int j=0;j<mutationRate; j++) {
 				int remIndex = Random.randomWithRange(0, neighbour.getPacking().length-1);
 				neighbour.remove(neighbour.getPacking(),remIndex);
 			}
-			neighbour.fillRandom(packageTypes, true);
-			neighbours[i] = neighbour;
+			neighbour.fillRandom(packageTypes, allowRotations);
+			nextNeighbourhood[i] = neighbour;
 		}
-		return neighbours;
+
+		nextNeighbourhood = sort_and_prume(nextNeighbourhood, current);
+
+		return nextNeighbourhood;
 	}
-		
-	/** 
+
+	/**
 	 * Display the solution
 	 * TO BE CHANGED FOR THE 3D REPRESENTATION
-	 **/ 
+	 **/
 	public void displaySolution(CargoSpace curCargo) {
         JFrame f = new JFrame();
         f.setSize(750, 770);
@@ -68,38 +48,80 @@ public class HillClimbing {
     }
 
 	public static void main(String[] args) {
-		
-		HillClimbing localSearch = new HillClimbing();
-		localSearch.init();
-		int keepGoing = 100;
-		double mutationRate = .15;
-		int nrNeighbours = 100;
-		System.out.println("Starting total value: " + localSearch.getCurCargo().getTotalValue());
-		System.out.println("Total number of package placed: " + localSearch.getCurCargo().getPacking().length);
-		CargoSpace[] successors;
-		boolean end = false;
-		long startTime = System.currentTimeMillis();
-		while (!end) {
-			successors = localSearch.genNeighbourhood(nrNeighbours,(int)(localSearch.getCurCargo().length*mutationRate));	
-			HeapSort.sort(successors);
-			if (successors[0].getTotalValue() <= localSearch.getCurCargo().getTotalValue()) {
-				if (keepGoing == 0)
-					end = true;
-				keepGoing--;
-			}
-			else {
-				localSearch.setCurCargo(successors[0]);
-				keepGoing = 100;
-				System.out.println("Current total value: " + localSearch.getCurCargo().getTotalValue());
-				System.out.println("Total number of package placed: " + localSearch.getCurCargo().getPacking().length);
 
+		Package[] packageTypes = new Package[3];
+		packageTypes[0] = new Package("A");
+		packageTypes[1] = new Package("B");
+		packageTypes[2] = new Package("C");
+
+		boolean done = false;
+		int counter = 100;
+		boolean allowRotations = true;
+		int mutationRate = 25;
+		int nrNeighbours = 50;
+
+		HillClimbing localSearch = new HillClimbing();
+		CargoSpace current = new CargoSpace(33,5,8);
+		CargoSpace[] neighbours;
+
+		current = localSearch.genArbitrarySolution(current, packageTypes, allowRotations);
+		long startTime = System.currentTimeMillis();
+		while (!done) {
+			neighbours = localSearch.genNeighbourhood(current, packageTypes, allowRotations, nrNeighbours, mutationRate);
+			if (neighbours != null) {
+				int random = Random.randomWithRange(0, neighbours.length-1);
+				current = neighbours[random];
+				counter = 100;
+			} else {
+				if (counter==0)
+					done = true;
+				counter--;
 			}
 		}
 		long endTime = System.currentTimeMillis();
-		long totTime = endTime - startTime; 
-		System.out.println("Local maximum: " + localSearch.getCurCargo().getTotalValue() + " found in " + totTime + " ms");
-		localSearch.displaySolution(localSearch.getCurCargo());
-		
+		long totTime = endTime - startTime;
+		System.out.println("Local max: " + current.getTotalValue());
+		System.out.println("Gaps left: " + current.getTotalGaps());
+		System.out.println("Runtime: " + totTime + "ms");
+
 	}
+
+	/**
+	 * Static method used to sort and prume bad solutions from the successors array
+	 * @param successors
+	 * @param curCargo
+	 * @return
+	 */
+	private static CargoSpace[] sort_and_prume(CargoSpace[] successors, CargoSpace curCargo) {
+		HeapSort.sort(successors);
+		for (int i=0; i<successors.length; i++) {
+			if (successors[i].getTotalGaps() > curCargo.getTotalGaps()) {
+				successors = prume(successors, i);
+				i=0;
+			}
+		}
+		if (successors[0].getTotalGaps() > curCargo.getTotalGaps())
+			return null;
+		return successors;
+	}
+
+	/**
+	 * Static method used to prume a solution from the successors (neighbors) array
+	 * @param successors
+	 * @param remIndex
+	 * @return a new CargoSpace[] array withouth the solution at remIndex
+	 */
+	private static CargoSpace[] prume(CargoSpace[] successors, int remIndex) {
+		CargoSpace[] newSuccessors = new CargoSpace[successors.length-1];
+		for (int i=0; i<newSuccessors.length; i++) {
+			if (i<remIndex)
+				newSuccessors[i] = successors[i];
+			else
+				newSuccessors[i] = successors[i+1];
+		}
+		return newSuccessors;
+	}
+
+
 
 }
