@@ -29,7 +29,7 @@ public class HillClimbing {
 			nextNeighbourhood[i] = neighbour;
 		}
 
-		nextNeighbourhood = sort_and_prume_min(nextNeighbourhood, current);
+		nextNeighbourhood = sort_and_prume(nextNeighbourhood, current);
 
 		return nextNeighbourhood;
 	}
@@ -56,7 +56,7 @@ public class HillClimbing {
 
 		boolean done = false;
 		int counter = 0;
-		boolean allowRotations = true;
+		boolean allowRotations = false;
 		int mutationRate = 1;
 		int nrNeighbours = 100;
 

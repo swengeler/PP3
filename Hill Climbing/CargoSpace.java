@@ -334,7 +334,7 @@ public class CargoSpace {
     */
     public double getTotalValue(Package[] packing) {
 
-      double totValue;
+      double totValue = 0;
 
       for (int i=0; i<packing.length; i++) {
           totValue += packing[i].getValue();
