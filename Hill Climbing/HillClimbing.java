@@ -83,6 +83,7 @@ public class HillClimbing {
 		System.out.println("Local max: " + current.getTotalValue());
 		System.out.println("Gaps left: " + current.getTotalGaps());
 		System.out.println("Runtime: " + totTime + "ms");
+        localSearch.displaySolution(current);
 
 	}
 
@@ -95,12 +96,12 @@ public class HillClimbing {
 	private static CargoSpace[] sort_and_prume(CargoSpace[] successors, CargoSpace curCargo) {
 		HeapSort.sort(successors);
 		for (int i=0; i<successors.length; i++) {
-			if (successors[i].getTotalGaps() > curCargo.getTotalGaps()) {
+			if (successors[i].getTotalValue() <= curCargo.getTotalValue()) {
 				successors = prume(successors, i);
 				i=0;
 			}
 		}
-		if (successors[0].getTotalGaps() > curCargo.getTotalGaps())
+		if (successors[0].getTotalValue() > curCargo.getTotalValue())
 			return null;
 		return successors;
 	}
