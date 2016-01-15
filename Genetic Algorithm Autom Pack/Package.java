@@ -27,6 +27,12 @@ public class Package {
     private int[] rotations = new int[3]; // where [X][Y][Z]
     private int[][] coords;
 
+    private int[][][] coordsTable = new int[][][] {
+        {{0,0,0}, {0,1,0}, {1,0,0}, {2,0,0}, {3,0,0}}, // L package
+        {{0,0,0}, {0,1,0}, {1,0,0}, {1,1,0}, {2,0,0}}, // P package
+        {{0,0,0}, {0,1,0}, {0,2,0}, {1,1,0}, {2,1,0}} // T package
+    };
+
     /**
     * A constructor that constructs a package with certain values according to the definition of
     * the three available pre-defined package types (APackage, BPackage, CPackage).

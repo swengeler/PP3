@@ -1,40 +1,31 @@
 public class Individual {
 
 	private static CargoSpace cs;
+	private static Package[] sArr;
 
-	private Package[] chromosome;
+	private int[] chromosome;
 	private double fitness;
 
-	public Individual(Package[] chromosome) {
+	public Individual(int[] chromosome) {
 		this.chromosome = chromosome;
 		this.setFitness();
 	}
 
-	public Package[] getChromosome() {
+	public int[] getChromosome() {
 		return chromosome;
 	}
 
-	public void setChromosome(Package[] chromosome) {
+	public void setChromosome(int[] chromosome) {
 		this.chromosome = chromosome;
 		this.getFitness();
 	}
 
-	public void setFitness1() {
-		CargoSpace csNew = new CargoSpace(cs.getLength(), cs.getWidth(), cs. getHeight());
-		csNew.fillCargoSpace(this.chromosome);
-		this.fitness = csNew.getTotalValue() - csNew.getOverlap(chromosome);
-	}
-
-	public void setFitness2() {
-		CargoSpace csNew = new CargoSpace(cs.getLength(), cs.getWidth(), cs. getHeight());
-		csNew.fillCargoSpace(this.chromosome);
-		this.fitness = (cs.getLength() * cs.getWidth() * cs.getHeight()) - csNew.getTotalGaps();
-	}
-
 	public void setFitness() {
-		CargoSpace csNew = new CargoSpace(cs.getLength(), cs.getWidth(), cs. getHeight());
-		csNew.fillCargoSpace(this.chromosome);
-		this.fitness = csNew.getTotalValue();
+		CargoSpace newCS = new CargoSpace(cs.getLength(), cs.getWidth(), cs.getHeight());
+		for (int i = 0; i < chromosome.length; i++) {
+				newCs.putPackage(sArr[chromosome[i]]);
+		}
+		return newCs.getTotalValue();
 	}
 
 	public double getFitness() {
@@ -42,7 +33,7 @@ public class Individual {
 	}
 
 	public Individual clone() {
-		Package[] newChr = new Package[chromosome.length];
+		int[] newChr = new int[chromosome.length];
 		for (int i = 0; i < chromosome.length; i++) {
 			newChr[i] = chromosome[i].clone();
 		}
@@ -51,14 +42,12 @@ public class Individual {
 		return newInd;
 	}
 
-	public CargoSpace toCargoSpace() {
-		CargoSpace returnCS = new CargoSpace(cs.getLength(), cs.getWidth(), cs.getHeight());
-		returnCS.fillCargoSpace(this.chromosome);
-		return returnCS;
-	}
-
 	public static void setCargoSpace(CargoSpace cargoSpace) {
 		cs = cargoSpace;
+	}
+
+	public static void setStatesArray(CargoSpace statesArray) {
+		sArr = statesArray;
 	}
 
 }

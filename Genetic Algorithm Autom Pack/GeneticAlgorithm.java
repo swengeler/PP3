@@ -36,7 +36,6 @@ public class GeneticAlgorithm {
 
     public void initialPopulation(Package[] types, int[] amountOfType) {
         cargoSpace = new CargoSpace(33, 5, 8);
-        Individual.setCargoSpace(cargoSpace);
 
         amountOfType = new int[3];
         amountOfType[0] = 100;
@@ -47,13 +46,13 @@ public class GeneticAlgorithm {
             amountSum += amountOfType[i];
         }
 
-        packageTypes = new Package[6];
+        packageTypes = new Package[3];
         packageTypes[0] = new Package("A");
         packageTypes[1] = new Package("B");
         packageTypes[2] = new Package("C");
-        packageTypes[3] = new Package("D", 8, 8, 10, 1.0);
+        /*packageTypes[3] = new Package("D", 8, 8, 10, 1.0);
         packageTypes[4] = new Package("E", 2, 4, 9, 1.5);
-        packageTypes[5] = new Package("F", 3, 6, 7, 4.5);
+        packageTypes[5] = new Package("F", 3, 6, 7, 4.5);*/
 
 
         int stateSum = 0;
@@ -75,35 +74,34 @@ public class GeneticAlgorithm {
             }
         }
 
+        Individual.setCargoSpace(cargoSpace);
+        Individual.setStatesArray(statesArray);
+
         for (int i = 0; i < statesArray.length; i++) {
             p = statesArray[i];
             System.out.println(p.getType() + "-package: length = " + p.getLength() + " width = " + p.getWidth() + " height = " + p.getHeight());
         }
-/*
+
         // initialising the population
         int[] chromosome = new int[amountSum];
         population = new Individual[POPULATION_SIZE];
         for (int i = 0; i < population.length; i++) {
             for (int j = 0; j < chromosome.length; j++) {
                 chromosome = new int[amountSum];
-                int choosePackage = Random.randomWithRange(0, stateSum);
-
+                int packageChosen = -1;
+                while (packageChosen < 0 || amountOfType[statesArray[packageChosen].getPositionInArray(statesArray[packageChosen])] <= 0) {
+                    packageChosen = Random.randomWithRange(0, statesArray.length - 1);
+                }
+                amountOfType[statesArray[packageChosen].getPositionInArray(statesArray[packageChosen])]--;
+                chromosome[j] = packageChosen;
             }
+            population[i] = new Individual(chromosome);
         }
-
-        for (int i = 0; i < population[0].getChromosome().length; i++) {
-            //System.out.println(population[0].getChromosome()[i]);
-        }
-
 
         HeapSort.sortDownInd(population);
 
         int generation = 0;
-
-        //cargoSpace = population[0].toCargoSpace();
-
         Individual bestInd = new Individual(population[0].getChromosome());
-        int noImprovement = 0;
 
         while (generation < 2500) {
             if (generation % 50 == 0 && population.length != 1) {
@@ -123,10 +121,6 @@ public class GeneticAlgorithm {
                 }
                 System.out.println();
             }
-            if (population[0].getFitness() <= bestInd.getFitness())
-                noImprovement++;
-            else
-                noImprovement = 0;
             population = reproduce(population);
             population = fitnessAndSort(population);
             if (population[0].getFitness() > bestInd.getFitness()) {
@@ -148,13 +142,19 @@ public class GeneticAlgorithm {
 
         cargoSpace = new CargoSpace(33, 5, 8);
         cargoSpace = bestInd.toCargoSpace();
-        //cargoSpace = Converter.indecesToCargoSpace(chromosome, packageTypes, cargoSpace);
         System.out.println("Final maximum fitness value: " + bestInd.getFitness());
         System.out.println("Final maximum total value: " + cargoSpace.getTotalValue());
 
-*/
+
     }
-/*
+
+    private int getPositionInArray(Package p) {
+        int counter = 0;
+        while (!p.getType().equalsIgnoreCase(packageTypes[counter].getType()))
+            counter++;
+        return counter;
+    }
+
     private Individual[] fitnessAndSort(Individual[] population) {
         for (int i = 0; i < population.length; i++) {
             population[i].setFitness();
@@ -187,9 +187,9 @@ public class GeneticAlgorithm {
     }
 
     public Individual crossOver(Individual parent1, Individual parent2) {
-        Package[] childChr = new Package[parent1.getChromosome().length];
+        int[] childChr = new Package[parent1.getChromosome().length];
         try {
-            Package[] curParentChr;
+            int[] curParentChr;
             int[] crossOverPoints = Random.randomListWithRange(0, childChr.length - 1, CROSSOVER_FREQ);
             HeapSort.sortUpInt(crossOverPoints);
             int lastCrPoint = 0;
@@ -199,23 +199,18 @@ public class GeneticAlgorithm {
                 else
                     curParentChr = parent2.getChromosome();
                 for (int j = lastCrPoint; j < crossOverPoints[i]; j++) {
-                    childChr[j] = curParentChr[j].clone();
+                    childChr[j] = curParentChr[j];
                 }
                 lastCrPoint = crossOverPoints[i];
             }
             for (int i = crossOverPoints[crossOverPoints.length - 1]; i < childChr.length; i++) {
                 if (crossOverPoints.length % 2 == 0)
-                    childChr[i] = parent2.getChromosome()[i].clone();
+                    childChr[i] = parent2.getChromosome()[i];
                 else
-                    childChr[i] = parent1.getChromosome()[i].clone();
+                    childChr[i] = parent1.getChromosome()[i];
             }
         } catch (BadInputException e) {
             e.printStackTrace();
-        }
-        if (false) {
-            for (int i = 0; i < childChr.length; i++) {
-                System.out.println("Index " + i + ": childChr = " + childChr[i]);
-            }
         }
         Individual child = new Individual(childChr);
         return mutateSwap(mutate(child));
@@ -223,7 +218,7 @@ public class GeneticAlgorithm {
 
     private Individual mutate(Individual ind) {
         try {
-            Package[] chromosome = ind.getChromosome();
+            int[] chromosome = ind.getChromosome();
             int[] randomGenes = Random.randomListWithRange(0, chromosome.length - 1, MUTATION_FREQ);
             if (LOG1) System.out.println("Changing " + randomGenes.length + " gene(s)");
             for (int i = 0; i < randomGenes.length; i++) {
@@ -325,7 +320,7 @@ public class GeneticAlgorithm {
     // ********************* //
     // END SELECTION METHODS //
     // ********************* //
-*/
+
     public void displaySolution() {
         JFrame f = new JFrame();
         f.setSize(750, 770);
