@@ -7,18 +7,18 @@ import java.util.Scanner;
 public class GeneticAlgorithm {
 
     private final boolean LOG1 = false;
-    private final boolean LOG2 = true;
+    private final boolean LOG2 = false;
+    private final boolean TEST_LOG1 = false;
+    private final boolean TEST_LOG2 = true;
 
-    private int POPULATION_SIZE = 100;
-    private int SWAP_RANGE = 100;
+    private int POPULATION_SIZE = 150;
 
-    private double MUTATION_PROB = 0.00;
+    private double MUTATION_PROB = 0.0;
     private double SWAP_PROB = 0.05;
-    private int CROSSOVER_FREQ = 1;
-    private String SELECTION_MODE = "TOURNAMENT";
+    private int CROSSOVER_FREQ = 2;
+    private String SELECTION_MODE = "ROULETTE";
     private double ELITIST_TOP_PERCENT = 0.2;
-    private int TOURNAMENT_SIZE = 30;
-    private boolean GENITOR = false;
+    private int TOURNAMENT_SIZE = (int) (0.2 * POPULATION_SIZE);
 
     private Individual[] population;
     private Package[] packageTypes;
@@ -38,131 +38,176 @@ public class GeneticAlgorithm {
         this.test = true;
     }
 
-    public void initialPopulation(Package[] types, int[] amountOfType) {
-        cargoSpace = new CargoSpace(33, 5, 8);
+    public void run(Package[] types, int[] amountOfType) {
+        int NR_RUNS = 50;
+        double overallBest = 0;
+        double overallWorst = Double.MAX_VALUE;
+        double totalValue = 0;
 
-        amountOfType = new int[3];
-        amountOfType[0] = 83;
-        amountOfType[1] = 55;
-        amountOfType[2] = 50;
+        long bestTime = Long.MAX_VALUE;
+        long worstTime = 0;
+        long totalTimeForAverage = 0;
 
-        amountSum = 0;
-        for (int i = 0; i < amountOfType.length; i++) {
-            amountSum += amountOfType[i];
-        }
+        for (int runs = 0; runs < NR_RUNS; runs++) {
+            if (runs % 10 == 0 && TEST_LOG2)
+                System.out.println("Run No. " + runs);
+            cargoSpace = new CargoSpace(33, 5, 8);
 
-        int[] amountForReduction = new int[amountOfType.length];
-        System.arraycopy(amountOfType, 0, amountForReduction, 0, amountOfType.length);
+            amountOfType = new int[3];
+            amountOfType[0] = 83;
+            amountOfType[1] = 55;
+            amountOfType[2] = 50;
 
-        packageTypes = new Package[3];
-        packageTypes[0] = new Package("A");
-        packageTypes[1] = new Package("B");
-        packageTypes[2] = new Package("C");
-        /*packageTypes[3] = new Package("D", 8, 8, 10, 1.0);
-        packageTypes[4] = new Package("E", 2, 4, 9, 1.5);
-        packageTypes[5] = new Package("F", 3, 6, 7, 4.5);*/
+            packageTypes = new Package[3];
+            packageTypes[0] = new Package("A");
+            packageTypes[1] = new Package("B");
+            packageTypes[2] = new Package("C");
 
-
-        int stateSum = 0;
-        for (int i = 0; i < packageTypes.length; i++) {
-            stateSum += packageTypes[i].getNrRotations();
-        }
-
-        statesArray = new Package[stateSum];
-        Package p;
-        int counter = 0;
-        for (int j = 0; j < packageTypes.length; j++) {
-            for (int k = 0; k < packageTypes[j].getNrRotations(); k++) {
-                p = new Package(packageTypes[j].getType());
-                if (packageTypes[j].getNrRotations() > 1) {
-                    p.setRotations(k);
-                }
-                statesArray[counter] = p.clone();
-                counter++;
+            amountSum = 0;
+            int maxValueSum = 0;
+            for (int i = 0; i < amountOfType.length; i++) {
+                amountSum += amountOfType[i];
+                maxValueSum += amountOfType[i] * packageTypes[i].getValue();
             }
-        }
 
-        Individual.setCargoSpace(cargoSpace);
-        Individual.setStatesArray(statesArray);
-
-        for (int i = 0; i < statesArray.length; i++) {
-            p = statesArray[i];
-            System.out.println(p.getType() + "-package: length = " + p.getLength() + " width = " + p.getWidth() + " height = " + p.getHeight());
-        }
-
-        // initialising the population
-        int[] chromosome = new int[amountSum];
-        population = new Individual[POPULATION_SIZE];
-        for (int i = 0; i < population.length; i++) {
-            chromosome = new int[amountSum];
+            int[] amountForReduction = new int[amountOfType.length];
             System.arraycopy(amountOfType, 0, amountForReduction, 0, amountOfType.length);
-            for (int j = 0; j < chromosome.length; j++) {
-                int packageChosen = -1;
-                while (packageChosen < 0) {
-                    packageChosen++;
-                    int random1 = Random.randomWithRange(0, packageTypes.length - 1);
-                    for (int k = 0; k < random1; k++) {
-                        packageChosen += packageTypes[k].getNrRotations();
+
+            int stateSum = 0;
+            for (int i = 0; i < packageTypes.length; i++) {
+                stateSum += packageTypes[i].getNrRotations();
+            }
+
+            statesArray = new Package[stateSum];
+            Package p;
+            int counter = 0;
+            for (int j = 0; j < packageTypes.length; j++) {
+                for (int k = 0; k < packageTypes[j].getNrRotations(); k++) {
+                    p = new Package(packageTypes[j].getType());
+                    if (packageTypes[j].getNrRotations() > 1) {
+                        p.setRotations(k);
                     }
-                    int random2 = Random.randomWithRange(0, packageTypes[random1].getNrRotations() - 1);
-                    packageChosen += random2;
-                    if (amountForReduction[this.getPositionInArray(statesArray[packageChosen])] <= 0)
-                        packageChosen = -1;
+                    statesArray[counter] = p.clone();
+                    counter++;
                 }
-                amountForReduction[this.getPositionInArray(statesArray[packageChosen])]--;
-                chromosome[j] = packageChosen;
             }
-            population[i] = new Individual(chromosome);
-        }
 
-        if (POPULATION_SIZE == 1 || true) {
-            for (int i = 0; i < population[0].getChromosome().length; i++) {
-                System.out.println(i + ": " + population[0].getChromosome()[i]);
+            Individual.setCargoSpace(cargoSpace);
+            Individual.setStatesArray(statesArray);
+
+            for (int i = 0; i < statesArray.length; i++) {
+                p = statesArray[i];
+                if (LOG1) System.out.println(p.getType() + "-package: length = " + p.getLength() + " width = " + p.getWidth() + " height = " + p.getHeight());
             }
-        }
 
-        HeapSort.sortDownInd(population);
-
-        int generation = 0;
-        int noChange = 0;
-        boolean change = true;
-        Individual bestInd = new Individual(population[0].getChromosome());
-
-        while (generation < 1500 && change) {
-            if (generation % 50 == 0 && population.length != 1) {
-                if (LOG2) System.out.println("Generation " + generation);
-                if (LOG2) System.out.println("Maximum fitness value = " + population[0].getFitness());
-                for (int i = 0; i < POPULATION_SIZE; i += 50) {
-                    System.out.println((i + 1) + ". in the population: " +  population[i].getFitness());
+            // initialising the population
+            int[] chromosome = new int[amountSum];
+            population = new Individual[POPULATION_SIZE];
+            for (int i = 0; i < population.length; i++) {
+                chromosome = new int[amountSum];
+                System.arraycopy(amountOfType, 0, amountForReduction, 0, amountOfType.length);
+                for (int j = 0; j < chromosome.length; j++) {
+                    int packageChosen = -1;
+                    while (packageChosen < 0) {
+                        packageChosen++;
+                        int random1 = Random.randomWithRange(0, packageTypes.length - 1);
+                        for (int k = 0; k < random1; k++) {
+                            packageChosen += packageTypes[k].getNrRotations();
+                        }
+                        int random2 = Random.randomWithRange(0, packageTypes[random1].getNrRotations() - 1);
+                        packageChosen += random2;
+                        if (amountForReduction[this.getPositionInArray(statesArray[packageChosen])] <= 0)
+                            packageChosen = -1;
+                    }
+                    amountForReduction[this.getPositionInArray(statesArray[packageChosen])]--;
+                    chromosome[j] = packageChosen;
                 }
+                population[i] = new Individual(chromosome);
+            }
+
+            HeapSort.sortDownInd(population);
+
+            int generation = 0;
+            int noChange = 0;
+            boolean change = true;
+            Individual bestInd = new Individual(population[0].getChromosome());
+
+            long startTime = System.currentTimeMillis();
+
+            while (generation < 1500 && change) {
+                if (generation % 50 == 0 && population.length != 1) {
+                    if (LOG2 || LOG1) System.out.println("Generation " + generation);
+                    if (LOG2 || LOG1) System.out.println("Maximum fitness value = " + population[0].getFitness());
+                    for (int i = 0; i < POPULATION_SIZE; i += 50) {
+                        if (LOG2) System.out.println((i + 1) + ". in the population: " +  population[i].getFitness());
+                    }
+                    if (LOG2) System.out.println();
+                }
+                population = reproduce(population);
+                population = fitnessAndSort(population);
+                if (population[0].getFitness() > bestInd.getFitness()) {
+                    bestInd = population[0].clone();
+                    if (LOG1) System.out.println("Best individual changed in generation " + generation + " (" + bestInd.getFitness() + ")");
+                }
+                if (population[0].getFitness() <= bestInd.getFitness())
+                    noChange++;
+                else
+                    noChange = 0;
+                if ((bestInd.getFitness() > 230.0 || bestInd.getFitness() > maxValueSum) && noChange > 200) {
+                    noChange = 0;
+                    change = false;
+                }
+                generation++;
+            }
+
+            long endTime = System.currentTimeMillis();
+            long totTime = endTime - startTime;
+
+            for (int i = 0; i < bestInd.toCargoSpace().getPacking().length; i++) {
+                if (LOG1) System.out.println(bestInd.toCargoSpace().getPacking()[i].getType() + "-package with value " + bestInd.toCargoSpace().getPacking()[i].getValue());
+            }
+
+            cargoSpace = new CargoSpace(33, 5, 8);
+            cargoSpace = bestInd.toCargoSpace();
+
+            if (TEST_LOG1) {
+                System.out.println("Iteration " + (runs + 1));
+                System.out.println("Maximum fitness value: " + bestInd.getFitness());
+                System.out.println("Maximum total value: " + cargoSpace.getTotalValue());
+                System.out.println("Runtime: " + totTime + "ms");
                 System.out.println();
             }
-            population = reproduce(population);
-            population = fitnessAndSort(population);
-            if (population[0].getFitness() > bestInd.getFitness()) {
-                bestInd = population[0].clone();
-                if (LOG2) System.out.println("Best individual changed in generation " + generation + " (" + bestInd.getFitness() + ")");
-            }
-            if (population[0].getFitness() <= bestInd.getFitness())
-                noChange++;
-            else
-                noChange = 0;
-            if (noChange > 500) {
-                noChange = 0;
-                //change = false;
-            }
-            generation++;
+
+            if (bestInd.getFitness() > overallBest)
+                overallBest = bestInd.getFitness();
+            if (bestInd.getFitness() < overallWorst)
+                overallWorst = bestInd.getFitness();
+            if (totTime < bestTime)
+                bestTime = totTime;
+            if (totTime > worstTime)
+                worstTime = totTime;
+            totalValue += bestInd.getFitness();
+            totalTimeForAverage += totTime;
         }
 
-        for (int i = 0; i < bestInd.toCargoSpace().getPacking().length; i++) {
-            System.out.println(bestInd.toCargoSpace().getPacking()[i].getType() + "-package with value " + bestInd.toCargoSpace().getPacking()[i].getValue());
-        }
-
-        cargoSpace = new CargoSpace(33, 5, 8);
-        cargoSpace = bestInd.toCargoSpace();
-        System.out.println("Final maximum fitness value: " + bestInd.getFitness());
-        System.out.println("Final maximum total value: " + cargoSpace.getTotalValue());
-
+        System.out.println("OVERALL RESULTS OVER " + NR_RUNS + " ITERATIONS");
+        System.out.println("Best value: " + overallBest);
+        System.out.println("Average value: " + (totalValue / (double)NR_RUNS));
+        System.out.println("Worst value: " + overallWorst);
+        System.out.println("Best runtime: " + bestTime);
+        System.out.println("Average runtime: " + (totalTimeForAverage / (double)NR_RUNS));
+        System.out.println("Worst runtime: " + worstTime);
+        System.out.println();
+        System.out.println("PARAMETERS USED");
+        System.out.println("Population size: " + POPULATION_SIZE);
+        System.out.println("Selection mode: " + SELECTION_MODE.toLowerCase());
+        if (SELECTION_MODE.equalsIgnoreCase("TOURNAMENT"))
+            System.out.println("Tournament size: " + TOURNAMENT_SIZE);
+        else if (SELECTION_MODE.equalsIgnoreCase("ELITIST"))
+            System.out.println("Elitist top percent: " + ELITIST_TOP_PERCENT);
+        System.out.println("Mutation probability: " + MUTATION_PROB);
+        System.out.println("Swap probability: " + SWAP_PROB);
+        System.out.println("Crossover frequency: " + CROSSOVER_FREQ);
 
     }
 
@@ -182,75 +227,57 @@ public class GeneticAlgorithm {
     }
 
     private Individual[] reproduce(Individual[] population) {
-        if (GENITOR) {
-            Individual[] newPopulation = new Individual[POPULATION_SIZE + 1];
-            System.arraycopy(population, 0, newPopulation, 0, population.length);
+        Individual[] newPopulation = new Individual[POPULATION_SIZE];
+        for (int i = 0; i < newPopulation.length; i++) {
             if (SELECTION_MODE.equalsIgnoreCase("ELITIST")) {
                 Individual parent1 = elitistSelection(population);
                 Individual parent2 = elitistSelection(population);
-                newPopulation[population.length] = crossOver(parent1, parent2);
+                newPopulation[i] = crossOver(parent1, parent2);
             } else if (SELECTION_MODE.equalsIgnoreCase("TOURNAMENT")) {
                 Individual parent1 = tournamentSelection(population);
                 Individual parent2 = tournamentSelection(population);
-                newPopulation[population.length] = crossOver(parent1, parent2);
+                newPopulation[i] = crossOver(parent1, parent2);
             } else if (SELECTION_MODE.equalsIgnoreCase("ROULETTE")) {
                 Individual parent1 = rouletteSelection(population);
                 Individual parent2 = rouletteSelection(population);
-                newPopulation[population.length] = crossOver(parent1, parent2);
+                newPopulation[i] = crossOver(parent1, parent2);
             } else if (SELECTION_MODE.equalsIgnoreCase("RANDOM")) {
                 Individual parent1 = randomSelection(population);
                 Individual parent2 = randomSelection(population);
-                newPopulation[population.length] = crossOver(parent1, parent2);
+                newPopulation[i] = crossOver(parent1, parent2);
             }
-            HeapSort.sortDownInd(newPopulation);
-            System.arraycopy(newPopulation, 0, population, 0, population.length);
-            return population;
-        } else {
-            Individual[] newPopulation = new Individual[POPULATION_SIZE];
-            for (int i = 0; i < newPopulation.length; i++) {
-                if (SELECTION_MODE.equalsIgnoreCase("ELITIST")) {
-                    Individual parent1 = elitistSelection(population);
-                    Individual parent2 = elitistSelection(population);
-                    newPopulation[i] = crossOver(parent1, parent2);
-                } else if (SELECTION_MODE.equalsIgnoreCase("TOURNAMENT")) {
-                    Individual parent1 = tournamentSelection(population);
-                    Individual parent2 = tournamentSelection(population);
-                    newPopulation[i] = crossOver(parent1, parent2);
-                } else if (SELECTION_MODE.equalsIgnoreCase("ROULETTE")) {
-                    Individual parent1 = rouletteSelection(population);
-                    Individual parent2 = rouletteSelection(population);
-                    newPopulation[i] = crossOver(parent1, parent2);
-                } else if (SELECTION_MODE.equalsIgnoreCase("RANDOM")) {
-                    Individual parent1 = randomSelection(population);
-                    Individual parent2 = randomSelection(population);
-                    newPopulation[i] = crossOver(parent1, parent2);
-                }
-            }
-            return newPopulation;
         }
+        return newPopulation;
     }
 
     public Individual crossOver(Individual parent1, Individual parent2) {
         int[] childChr = new int[parent1.getChromosome().length];
         int[] curParentChr;
-        int[] crossOverPoints = Random.randomListWithRange(0, childChr.length - 1, CROSSOVER_FREQ);
-        HeapSort.sortUpInt(crossOverPoints);
-        int lastCrPoint = 0;
-        for (int i = 0; i < crossOverPoints.length; i++) {
-            if (i % 2 == 0)
-                curParentChr = parent1.getChromosome();
-            else
-                curParentChr = parent2.getChromosome();
-            for (int j = lastCrPoint; j < crossOverPoints[i]; j++) {
-                childChr[j] = curParentChr[j];
+        if (CROSSOVER_FREQ > 0) {
+            int[] crossOverPoints = Random.randomListWithRange(0, childChr.length - 1, CROSSOVER_FREQ);
+            HeapSort.sortUpInt(crossOverPoints);
+            int lastCrPoint = 0;
+            for (int i = 0; i < crossOverPoints.length; i++) {
+                if (i % 2 == 0)
+                    curParentChr = parent1.getChromosome();
+                else
+                    curParentChr = parent2.getChromosome();
+                for (int j = lastCrPoint; j < crossOverPoints[i]; j++) {
+                    childChr[j] = curParentChr[j];
+                }
+                lastCrPoint = crossOverPoints[i];
             }
-            lastCrPoint = crossOverPoints[i];
-        }
-        for (int i = crossOverPoints[crossOverPoints.length - 1]; i < childChr.length; i++) {
-            if (crossOverPoints.length % 2 == 0)
-                childChr[i] = parent2.getChromosome()[i];
+            for (int i = crossOverPoints[crossOverPoints.length - 1]; i < childChr.length; i++) {
+                if (crossOverPoints.length % 2 == 0)
+                    childChr[i] = parent2.getChromosome()[i];
+                else
+                    childChr[i] = parent1.getChromosome()[i];
+            }
+        } else {
+            if (Math.random() < 0.5)
+                System.arraycopy(parent1.getChromosome(), 0, childChr, 0, childChr.length);
             else
-                childChr[i] = parent1.getChromosome()[i];
+                System.arraycopy(parent2.getChromosome(), 0, childChr, 0, childChr.length);
         }
         Individual child = new Individual(childChr);
         return mutate(mutateSwap(child));
@@ -343,6 +370,30 @@ public class GeneticAlgorithm {
         f.setVisible(true);
     }
 
+    public void runTest() {
+        System.out.println("------ 1 ------");
+        MUTATION_PROB = 0;
+        this.run(null, null);
+        System.out.println("\n------ 2 ------");
+        MUTATION_PROB = 0.01;
+        this.run(null, null);
+        System.out.println("\n------ 3 ------");
+        MUTATION_PROB = 0.02;
+        this.run(null, null);
+        System.out.println("\n------ 4 ------");
+        MUTATION_PROB = 0.03;
+        this.run(null, null);
+        System.out.println("\n------ 5 ------");
+        MUTATION_PROB = 0.04;
+        this.run(null, null);
+        //System.out.println("\n------ 6 ------");
+        //MUTATION_PROB = 0.01;
+        //this.run(null, null);
+        //System.out.println("\n------ 7 ------");
+        //CROSSOVER_FREQ = 0;
+        //this.run(null, null);
+    }
+
     /**
     * The main class for the genetic algorithm for the knapsack problem.
     *
@@ -353,8 +404,8 @@ public class GeneticAlgorithm {
         // System.out.print("nr = ");
         // int gene = in.nextInt();
         GeneticAlgorithm gA = new GeneticAlgorithm();
-        gA.initialPopulation(null, null);
-        gA.displaySolution();
+        gA.run(null, null);
+        //gA.runTest();
     }
 
 }
