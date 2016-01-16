@@ -290,7 +290,6 @@ public class CargoSpace {
         for (int i = 0; i < csPacking.length; i++) {
             tV = tV + csPacking[i].getValue();
         }
-        if (DEBUG) {System.out.println("\nTOTAL VALUE: " + totalValue);}
         return tV;
     }
 

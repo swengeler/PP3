@@ -23,7 +23,7 @@ public class Individual {
 		this.getFitness();
 	}
 
-	public void setFitnesss() {
+	public void setFitness() {
 		CargoSpace newCS = new CargoSpace(cs.getLength(), cs.getWidth(), cs.getHeight());
 		for (int i = 0; i < this.chromosome.length; i++) {
 				newCS.initialPosition(sArr[this.chromosome[i]]);
@@ -37,7 +37,7 @@ public class Individual {
 		this.fitness = newCS.getTotalValue();
 	}
 
-	public void setFitness() {
+	public void setFitness1() {
 		CargoSpace newCS = new CargoSpace(cs.getLength(), cs.getWidth(), cs.getHeight());
 		for (int i = 0; i < this.chromosome.length; i++) {
 				newCS.initialPosition(sArr[this.chromosome[i]]);
@@ -45,7 +45,7 @@ public class Individual {
 						newCS.putPackage(sArr[this.chromosome[i]]);
 				}
 		}
-		this.fitness = (cs.getLength() * cs.getWidth() * cs.getHeight()) - newCS.getTotalGaps();
+		this.fitness = (double)((cs.getLength() * cs.getWidth() * cs.getHeight()) - newCS.getTotalGaps()) / (double)(cs.getLength() * cs.getWidth() * cs.getHeight());
 	}
 
 	public double getFitness() {

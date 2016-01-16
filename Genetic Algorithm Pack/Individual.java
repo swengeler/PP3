@@ -19,6 +19,17 @@ public class Individual {
 		this.getFitness();
 	}
 
+	public void setFitness() {
+		CargoSpace newCS = new CargoSpace(cs.getLength(), cs.getWidth(), cs.getHeight());
+		for (int i = 0; i < this.chromosome.length; i++) {
+				newCS.initialPosition(chromosome[i]);
+				if (!newCS.overlap(chromosome[i])) {
+						newCS.putPackage(chromosome[i]);
+				}
+		}
+		this.fitness = newCS.getTotalValue();
+	}
+
 	public void setFitness1() {
 		CargoSpace csNew = new CargoSpace(cs.getLength(), cs.getWidth(), cs. getHeight());
 		csNew.fillCargoSpace(this.chromosome);
