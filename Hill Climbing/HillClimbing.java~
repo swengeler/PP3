@@ -71,8 +71,6 @@ public class HillClimbing {
 			if (neighbours != null) {
 				int random = Random.randomWithRange(0, neighbours.length-1);
 				current = neighbours[random];
-				System.out.println("Current max value: " + current.getTotalValue());
-				System.out.println("Gaps left: " + current.getTotalGaps());
 				counter = 100;
 			} else {
 				if (counter==0)

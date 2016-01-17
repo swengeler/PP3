@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class GeneticAlgorithm {
 
     private final boolean LOG1 = false;
-    private final boolean LOG2 = false;
+    private final boolean LOG2 = true;
 
     private int POPULATION_SIZE = 200;
     private int MUTATION_FREQ = 10;
@@ -98,10 +98,10 @@ public class GeneticAlgorithm {
 
         while (generation < 2500) {
             if (generation % 50 == 0 && population.length != 1) {
-                if (true) System.out.println("Generation " + generation);
-                if (true) System.out.println("Maximum fitness value = " + population[0].getFitness());
+                if (LOG2) System.out.println("Generation " + generation);
+                if (LOG2) System.out.println("Maximum fitness value = " + population[0].getFitness());
                 for (int i = 0; i < POPULATION_SIZE; i += 10) {
-                    if (LOG1) System.out.println((i + 1) + ". in the population: " +  population[i].getFitness());
+                    System.out.println((i + 1) + ". in the population: " +  population[i].getFitness());
                 }
                 System.out.println();
             }
