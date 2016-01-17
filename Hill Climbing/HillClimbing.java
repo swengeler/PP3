@@ -45,17 +45,17 @@ public class HillClimbing {
         f.add(display, BorderLayout.CENTER);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
-    }
+  }
 
 	public static void main(String[] args) {
 
 		Package[] packageTypes = new Package[2];
 		packageTypes[0] = new Package("A");
-		packageTypes[1] = new Package("B");
+		packageTypes[1] = new Package("C");
 		//packageTypes[2] = new Package("C");
 
 		boolean done = false;
-		boolean allowRotations = true;
+		boolean allowRotations = false;
 		int mutationRate = 1;
 		int nrNeighbours = 100;
 
