@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 public class CargoSpace {
 
+    public static Package[] packageTypes;
+
     private static final boolean DEBUG = false;
     private static final boolean PRINT_CONSOLE = false;
 
@@ -355,6 +357,17 @@ public class CargoSpace {
             }
         }
         return overlap;
+    }
+
+    public int[] getNrIndivPackages() {
+        int[] placed = new int[packageTypes.length];
+        for (int i = 0; i < csPacking.length; i++) {
+            for (int j = 0; j < placed.length; j++) {
+                if (csPacking[i].getType().equalsIgnoreCase(packageTypes[j].getType()))
+                    placed[j]++;
+            }
+        }
+        return placed;
     }
 
 }

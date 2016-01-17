@@ -11,7 +11,7 @@ public class GeneticAlgorithm {
     private final boolean TEST_LOG1 = false;
     private final boolean TEST_LOG2 = true;
 
-    private int POPULATION_SIZE = 150;
+    private int POPULATION_SIZE = 35;
 
     private double MUTATION_PROB = 0.0;
     private double SWAP_PROB = 0.05;
@@ -39,7 +39,7 @@ public class GeneticAlgorithm {
     }
 
     public void run(Package[] types, int[] amountOfType) {
-        int NR_RUNS = 50;
+        int NR_RUNS = 20;
         double overallBest = 0;
         double overallWorst = Double.MAX_VALUE;
         double totalValue = 0;
@@ -48,20 +48,32 @@ public class GeneticAlgorithm {
         long worstTime = 0;
         long totalTimeForAverage = 0;
 
+        int bestGaps = Integer.MAX_VALUE;
+        int worstGaps = 0;
+        int totalGapsForAverage = 0;
+
+        amountOfType = new int[3];
+        amountOfType[0] = 83;
+        amountOfType[1] = 55;
+        amountOfType[2] = 50;
+
+        packageTypes = new Package[3];
+        packageTypes[0] = new Package("A");
+        packageTypes[1] = new Package("B");
+        packageTypes[2] = new Package("C");
+
+        CargoSpace.packageTypes = packageTypes;
+        int[] placed = new int[packageTypes.length];
+        int[] most = new int[packageTypes.length];
+        int[] fewest = new int[packageTypes.length];
+        for (int i = 0; i < fewest.length; i++) {
+            fewest[i] = Integer.MAX_VALUE;
+        }
+
         for (int runs = 0; runs < NR_RUNS; runs++) {
             if (runs % 10 == 0 && TEST_LOG2)
                 System.out.println("Run No. " + runs);
-            cargoSpace = new CargoSpace(33, 5, 8);
 
-            amountOfType = new int[3];
-            amountOfType[0] = 83;
-            amountOfType[1] = 55;
-            amountOfType[2] = 50;
-
-            packageTypes = new Package[3];
-            packageTypes[0] = new Package("A");
-            packageTypes[1] = new Package("B");
-            packageTypes[2] = new Package("C");
 
             amountSum = 0;
             int maxValueSum = 0;
@@ -92,6 +104,7 @@ public class GeneticAlgorithm {
                 }
             }
 
+            cargoSpace = new CargoSpace(33, 5, 8);
             Individual.setCargoSpace(cargoSpace);
             Individual.setStatesArray(statesArray);
 
@@ -153,7 +166,7 @@ public class GeneticAlgorithm {
                     noChange++;
                 else
                     noChange = 0;
-                if ((bestInd.getFitness() > 230.0 || bestInd.getFitness() > maxValueSum) && noChange > 200) {
+                if ((bestInd.getFitness() > 230.0 || bestInd.getFitness() > (0.8 * maxValueSum)) && noChange > 200) {
                     noChange = 0;
                     change = false;
                 }
@@ -169,6 +182,14 @@ public class GeneticAlgorithm {
 
             cargoSpace = new CargoSpace(33, 5, 8);
             cargoSpace = bestInd.toCargoSpace();
+
+            for (int i = 0; i < placed.length; i++) {
+                placed[i] += cargoSpace.getNrIndivPackages()[i];
+                if (cargoSpace.getNrIndivPackages()[i] > most[i])
+                    most[i] = cargoSpace.getNrIndivPackages()[i];
+                if (cargoSpace.getNrIndivPackages()[i] < fewest[i])
+                    fewest[i] = cargoSpace.getNrIndivPackages()[i];
+            }
 
             if (TEST_LOG1) {
                 System.out.println("Iteration " + (runs + 1));
@@ -186,19 +207,41 @@ public class GeneticAlgorithm {
                 bestTime = totTime;
             if (totTime > worstTime)
                 worstTime = totTime;
+            if (cargoSpace.getTotalGaps() < bestGaps)
+                bestGaps = cargoSpace.getTotalGaps();
+            if (cargoSpace.getTotalGaps() > worstGaps)
+                worstGaps = cargoSpace.getTotalGaps();
             totalValue += bestInd.getFitness();
             totalTimeForAverage += totTime;
+            totalGapsForAverage += cargoSpace.getTotalGaps();
         }
 
         System.out.println("OVERALL RESULTS OVER " + NR_RUNS + " ITERATIONS");
-        System.out.println("Best value: " + overallBest);
-        System.out.println("Average value: " + (totalValue / (double)NR_RUNS));
-        System.out.println("Worst value: " + overallWorst);
-        System.out.println("Best runtime: " + bestTime);
-        System.out.println("Average runtime: " + (totalTimeForAverage / (double)NR_RUNS));
-        System.out.println("Worst runtime: " + worstTime);
+        System.out.println("VALUE - Best: " + overallBest);
+        System.out.println("VALUE - Average: " + (totalValue / (double)NR_RUNS));
+        System.out.println("VALUE - Worst: " + overallWorst);
+        System.out.println("RUNTIME - Best: " + bestTime);
+        System.out.println("RUNTIME - Average: " + (totalTimeForAverage / (double)NR_RUNS));
+        System.out.println("RUNTIME - Worst: " + worstTime);
+        System.out.println("GAPS - Best: " + bestGaps);
+        System.out.println("GAPS - Average: " + (totalGapsForAverage / (double)NR_RUNS));
+        System.out.println("GAPS - Worst: " + worstGaps);
+
+        System.out.println("\nPACKAGES PLACED");
+        System.out.print("Most:     ");
+        for (int i = 0; i < packageTypes.length; i++) {
+            System.out.print(packageTypes[i].getType() + ": " + most[i] + " ");
+        }
+        System.out.print("\nAverage:  ");
+        for (int i = 0; i < packageTypes.length; i++) {
+            System.out.print(packageTypes[i].getType() + ": " + ((double)placed[i] / (double)NR_RUNS) + " ");
+        }
+        System.out.print("\nFewest:   ");
+        for (int i = 0; i < packageTypes.length; i++) {
+            System.out.print(packageTypes[i].getType() + ": " + fewest[i] + " ");
+        }
         System.out.println();
-        System.out.println("PARAMETERS USED");
+        System.out.println("\nPARAMETERS USED");
         System.out.println("Population size: " + POPULATION_SIZE);
         System.out.println("Selection mode: " + SELECTION_MODE.toLowerCase());
         if (SELECTION_MODE.equalsIgnoreCase("TOURNAMENT"))
@@ -371,27 +414,105 @@ public class GeneticAlgorithm {
     }
 
     public void runTest() {
-        System.out.println("------ 1 ------");
+        System.out.println("------ 1.1 ------");
+        POPULATION_SIZE = 10;
+        this.run(null, null);
+        System.out.println("\n------ 1.2 ------");
+        POPULATION_SIZE = 20;
+        this.run(null, null);
+        System.out.println("\n------ 1.3 ------");
+        POPULATION_SIZE = 35;
+        this.run(null, null);
+        System.out.println("\n------ 1.4 ------");
+        POPULATION_SIZE = 50;
+        this.run(null, null);
+        System.out.println("\n------ 1.5 ------");
+        POPULATION_SIZE = 70;
+        this.run(null, null);
+        System.out.println("\n------ 1.6 ------");
+        POPULATION_SIZE = 85;
+        this.run(null, null);
+        System.out.println("\n------ 1.7 ------");
+        POPULATION_SIZE = 100;
+        this.run(null, null);
+        POPULATION_SIZE = 35;
+/*
+        System.out.println("\n\n------ 2.1 ------");
+        ELITIST_TOP_PERCENT = 0.05;
+        this.run(null, null);
+        System.out.println("\n------ 2.2 ------");
+        ELITIST_TOP_PERCENT = 0.1;
+        this.run(null, null);
+        System.out.println("\n------ 2.3 ------");
+        ELITIST_TOP_PERCENT = 0.2;
+        this.run(null, null);
+        System.out.println("\n------ 2.4 ------");
+        ELITIST_TOP_PERCENT = 0.3;
+        this.run(null, null);
+        System.out.println("\n------ 2.5 ------");
+        ELITIST_TOP_PERCENT = 0.4;
+        this.run(null, null);
+        System.out.println("\n------ 2.6 ------");
+        ELITIST_TOP_PERCENT = 0.5;
+        this.run(null, null);
+        ELITIST_TOP_PERCENT = 0.2;
+*/
+        System.out.println("\n\n------ 3.1 ------");
+        CROSSOVER_FREQ = 0;
+        this.run(null, null);
+        System.out.println("\n------ 3.2 ------");
+        CROSSOVER_FREQ = 1;
+        this.run(null, null);
+        System.out.println("\n------ 3.3 ------");
+        CROSSOVER_FREQ = 2;
+        this.run(null, null);
+        System.out.println("\n------ 3.4 ------");
+        CROSSOVER_FREQ = 3;
+        this.run(null, null);
+        System.out.println("\n------ 3.5 ------");
+        CROSSOVER_FREQ = 4;
+        this.run(null, null);
+        System.out.println("\n------ 3.6 ------");
+        CROSSOVER_FREQ = 5;
+        this.run(null, null);
+        CROSSOVER_FREQ = 2;
+
+        System.out.println("\n\n------ 4.1 ------");
+        SWAP_PROB = 0.01;
+        this.run(null, null);
+        System.out.println("\n------ 4.2 ------");
+        SWAP_PROB = 0.03;
+        this.run(null, null);
+        System.out.println("\n------ 4.3 ------");
+        SWAP_PROB = 0.05;
+        this.run(null, null);
+        System.out.println("\n------ 4.4 ------");
+        SWAP_PROB = 0.07;
+        this.run(null, null);
+        System.out.println("\n------ 4.5 ------");
+        SWAP_PROB = 0.1;
+        this.run(null, null);
+        System.out.println("\n------ 4.6 ------");
+        SWAP_PROB = 0.15;
+        this.run(null, null);
+        SWAP_PROB = 0.05;
+
+        System.out.println("\n\n------ 5.1 ------");
         MUTATION_PROB = 0;
         this.run(null, null);
-        System.out.println("\n------ 2 ------");
+        System.out.println("\n------ 5.2 ------");
         MUTATION_PROB = 0.01;
         this.run(null, null);
-        System.out.println("\n------ 3 ------");
+        System.out.println("\n------ 5.3 ------");
         MUTATION_PROB = 0.02;
         this.run(null, null);
-        System.out.println("\n------ 4 ------");
+        System.out.println("\n------ 5.4 ------");
         MUTATION_PROB = 0.03;
         this.run(null, null);
-        System.out.println("\n------ 5 ------");
+        System.out.println("\n------ 5.5 ------");
         MUTATION_PROB = 0.04;
         this.run(null, null);
-        //System.out.println("\n------ 6 ------");
-        //MUTATION_PROB = 0.01;
-        //this.run(null, null);
-        //System.out.println("\n------ 7 ------");
-        //CROSSOVER_FREQ = 0;
-        //this.run(null, null);
+        MUTATION_PROB = 0;
     }
 
     /**
@@ -404,8 +525,8 @@ public class GeneticAlgorithm {
         // System.out.print("nr = ");
         // int gene = in.nextInt();
         GeneticAlgorithm gA = new GeneticAlgorithm();
-        gA.run(null, null);
-        //gA.runTest();
+        //gA.run(null, null);
+        gA.runTest();
     }
 
 }
