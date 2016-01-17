@@ -11,7 +11,7 @@ public class GeneticAlgorithm {
     private final boolean TEST_LOG1 = false;
     private final boolean TEST_LOG2 = true;
 
-    private int POPULATION_SIZE = 200;
+    private int POPULATION_SIZE = 85; // default = 85
 
     private double MUTATION_PROB = 0.0; // default  = 0.0
     private double SWAP_PROB = 0.05; // default = 0.5
