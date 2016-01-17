@@ -49,10 +49,10 @@ public class HillClimbing {
 
 	public static void main(String[] args) {
 
-		Package[] packageTypes = new Package[3];
+		Package[] packageTypes = new Package[2];
 		packageTypes[0] = new Package("A");
 		packageTypes[1] = new Package("B");
-		packageTypes[2] = new Package("C");
+		//packageTypes[2] = new Package("C");
 
 		boolean done = false;
 		boolean allowRotations = true;
