@@ -34,12 +34,12 @@ public class Cube {
 	
 	private Package type;
 	private boolean mainFrame;
-	private int  xpos, ypos, zpos, width, height, length;
+	private int  Scale = 5, xpos, ypos, zpos, startX = 200, startY = 500, startZ = 200, width, height, length;
 	static int tempBaseX = 0, tempBaseY = 0, tempBaseZ = 0;
 	private int[] baseCoords;
 	private Point3D[] allPoints;
 	private double[] fx = new double[8], fy = new double[8], fz = new double[8];
-	private static int Scale = 5, Xpos = 33*Scale*2+500, Ypos = 5*Scale*2+500, Zpos = 8*Scale*2+500;
+	private static int Xpos = 200, Ypos = 200, Zpos = 200;
 	
 	/**
 	 * A constructor to create a new cube 
@@ -56,14 +56,29 @@ public class Cube {
 			fy[i] = allPoints[i].getY();
 			fz[i] = allPoints[i].getZ();
 		}
+		//rotateBaseCoords();
+		if(tempBaseX == 0)Xpos = startX;
+		if(tempBaseY == 0)Ypos = startY;
+		if(tempBaseZ == 0)Zpos = startZ;
 		
-		xpos = 200+type.getBaseCoords()[0]*Scale*2+width/2;
-		ypos = 200+type.getBaseCoords()[1]*Scale*2+height/2;
-		zpos = 200+type.getBaseCoords()[2]*Scale*2+length/2;
+		if(tempBaseX<type.getBaseCoords()[0]){
+			Xpos += width;
+			tempBaseX = type.getBaseCoords()[0];
+		}
+		if(tempBaseY<type.getBaseCoords()[1]){
+			Ypos += height;
+			tempBaseY = type.getBaseCoords()[1];
+		}
+		if(tempBaseZ<type.getBaseCoords()[2]){
+			Zpos += length;
+			tempBaseZ = type.getBaseCoords()[2];
+		}
 		
-		
+		xpos = Xpos;
+		ypos = Ypos;
+		zpos = Zpos;
 		System.out.println(type.getBaseCoords()[0] + " " + type.getBaseCoords()[1] + " " + type.getBaseCoords()[2] + " " + type.getType() + "  " + xpos+ "  " + ypos+ "  " + zpos + 
-				" " + (Xpos/2) + " " + (Ypos/2) + " " + (Zpos/2));		
+				" " + (Xpos-startX)/2);		
 	}
 	
 	public Cube(Package type, int xPos, int yPos, int zPos){
@@ -76,9 +91,11 @@ public class Cube {
 			fy[i] = allPoints[i].getY();
 			fz[i] = allPoints[i].getZ();
 		}
+		rotateBaseCoords();
 		xpos = xPos;ypos = yPos;zpos = zPos;	
 	}
-	
+
+
 	public void createBaseCoords(){
 		int x = 0,y = 0,z = 0;
 		if(type.getType() == "A"){
@@ -95,7 +112,15 @@ public class Cube {
 		}
 		setBaseCoords(x,y,z);		
 	}
-			
+	
+	public void rotateBaseCoords(){
+		startRotation = true;
+		for(int j = 0; j<=type.getRotation()[0]; j++)RotateX(90);
+		for(int j = 0; j<=type.getRotation()[1]; j++)RotateY(90);
+		for(int j = 0; j<=type.getRotation()[2]; j++)RotateZ(90);
+		startRotation = false;
+	}
+		
 	public void setBaseCoords(int x, int y, int z){
 		baseCoords = new int[3];
 		baseCoords[0] = x;
@@ -196,23 +221,19 @@ public class Cube {
            allPoints[i].setZ((int)fz[i]);
        }
        tempy -= allPoints[3].getY(); tempz -= allPoints[3].getZ();
- //      ypos += tempy; zpos += tempz;
-       tempy = ypos; tempz = zpos;
+       //ypos += tempy; zpos += tempz;
        if(!mainFrame){
-    	   ypos -=(Ypos/2);zpos -= (Zpos/2);
+    	   ypos -=(Ypos)/2;zpos -= (Zpos)/2;
 	       double newy = Math.cos(Math.toRadians(a)) * ypos + Math.sin(Math.toRadians(a)) *zpos;
 	       double newz = -1*Math.sin(Math.toRadians(a)) * ypos + Math.cos(Math.toRadians(a)) * zpos;
-	       if(a<0){
-	    	   ypos = (int)(newy+20);
-	    	   zpos = (int)(newz+20);
-	       }
-	       else{
-	    	   ypos = (int)(newy-20);
-	    	   zpos = (int)(newz-20);
-	       }
-	       ypos += (Ypos/2);zpos += (Zpos/2);
+	       ypos = (int)(newy);
+	       zpos = (int)(newz);
+	       ypos += (Ypos)/2;zpos += (Zpos)/2;
+	       if(ypos>Ypos) ypos++;
+	       else ypos--;
+	       if(zpos>Zpos) zpos++;
+	       else zpos--;
   		}
-       System.out.println(ypos);
    }
    
    /**
@@ -236,15 +257,13 @@ public class Cube {
 		   xpos -= (Xpos)/2;zpos -= (Zpos)/2;
 		   double newx = Math.cos(Math.toRadians(a)) * xpos + Math.sin(Math.toRadians(a)) *zpos;
 	       double newz = -1*Math.sin(Math.toRadians(a)) * xpos + Math.cos(Math.toRadians(a)) * zpos;
-	       if(a<0){
-	    	   xpos = (int)(newx+20);
-	    	   zpos = (int)(newz+20);
-	       }
-	       else{
-	    	   xpos = (int)(newx-20);
-	    	   zpos = (int)(newz-20);
-	       }
-	       xpos +=(Xpos)/2;zpos += (Zpos)/2;	       
+	       xpos = (int)(newx);
+	       zpos = (int)(newz);
+	       xpos +=(Xpos)/2;zpos += (Zpos)/2;
+	       if(xpos>Xpos) xpos++;
+	       else xpos--;
+	       if(zpos>Zpos) zpos++;
+	       else zpos--;
 	   }
    }
 
@@ -269,15 +288,13 @@ public class Cube {
 		   ypos-=(Ypos)/2;xpos-=(Xpos)/2;;
 		   double newx = Math.cos(Math.toRadians(a)) * xpos + -1*Math.sin(Math.toRadians(a)) *ypos;
 	       double newy = Math.sin(Math.toRadians(a)) * xpos + Math.cos(Math.toRadians(a)) * ypos;
-	       if(a<0){
-	    	   xpos = (int)(newx+20);
-	    	   ypos = (int)(newy+20);
-	       }
-	       else{
-	    	   xpos = (int)(newx-20);
-	    	   ypos = (int)(newy-20);
-	       }
+	       xpos = (int)(newx);
+	       ypos = (int)(newy);
 	       ypos+=(Ypos)/2;xpos+=(Xpos)/2;
+	       if(xpos>Xpos) xpos++;
+	       else xpos--;
+	       if(ypos>Ypos) ypos++;
+	       else ypos--;
 	   }
    }
 
@@ -336,15 +353,15 @@ public class Cube {
 	    * 
 	   */
 		allPoints = new Point3D[8];
-		//						   X 									      ,Y											,Z
-		allPoints[0] = new Point3D(-(type.getWidth()) * Scale , -(type.getHeight()) * Scale ,  (type.getLength()) * Scale);
-		allPoints[1] = new Point3D(-(type.getWidth()) * Scale ,  (type.getHeight()) * Scale ,  (type.getLength()) * Scale);
-		allPoints[2] = new Point3D( (type.getWidth()) * Scale ,  (type.getHeight()) * Scale ,  (type.getLength()) * Scale);
-		allPoints[3] = new Point3D( (type.getWidth()) * Scale , -(type.getHeight()) * Scale	,  (type.getLength()) * Scale);
-		allPoints[4] = new Point3D(-(type.getWidth()) * Scale , -(type.getHeight()) * Scale , -(type.getLength())* Scale);
-		allPoints[5] = new Point3D(-(type.getWidth()) * Scale ,  (type.getHeight()) * Scale , -(type.getLength())* Scale);
-		allPoints[6] = new Point3D( (type.getWidth()) * Scale ,  (type.getHeight()) * Scale , -(type.getLength())* Scale);
-		allPoints[7] = new Point3D( (type.getWidth()) * Scale , -(type.getHeight()) * Scale	, -(type.getLength())* Scale);
+		//						   X 									        ,Y											     ,Z
+		allPoints[0] = new Point3D(-(baseCoords[0]) * Scale		   	          , -(baseCoords[1]) * Scale 				     ,   baseCoords[2] * Scale);
+		allPoints[1] = new Point3D(-(baseCoords[0])	* Scale	             	  ,  (baseCoords[1]  + type.getHeight()) * Scale ,   baseCoords[2] * Scale);
+		allPoints[2] = new Point3D( (baseCoords[0]  + type.getWidth())* Scale ,  (baseCoords[1]  + type.getHeight()) * Scale ,   baseCoords[2] * Scale);
+		allPoints[3] = new Point3D( (baseCoords[0]  + type.getWidth())* Scale , -(baseCoords[1]) * Scale			         ,   baseCoords[2] * Scale);
+		allPoints[4] = new Point3D(-(baseCoords[0]) * Scale				      , -(baseCoords[1]) * Scale 			         , -(baseCoords[2]  + type.getLength())* Scale);
+		allPoints[5] = new Point3D(-(baseCoords[0])	* Scale			   	 	  ,  (baseCoords[1]  + type.getHeight()) * Scale , -(baseCoords[2]  + type.getLength())* Scale);
+		allPoints[6] = new Point3D( (baseCoords[0]  + type.getWidth()) * Scale,  (baseCoords[1]  + type.getHeight()) * Scale , -(baseCoords[2]  + type.getLength())* Scale);
+		allPoints[7] = new Point3D( (baseCoords[0]  + type.getWidth()) * Scale, -(baseCoords[1]) * Scale				     , -(baseCoords[2]  + type.getLength())* Scale);
 		
 		if(allPoints[0].getX()-allPoints[3].getX()<0)
 		     width = -(allPoints[0].getX()-allPoints[3].getX());

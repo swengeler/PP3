@@ -1,4 +1,4 @@
-//package Poly3D;
+package Poly3D;
 
 /** 
 * A new enumerated type that contains a default value and four types of packages.

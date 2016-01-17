@@ -1,4 +1,4 @@
-//package Poly3D;
+package Poly3D;
 
 import java.awt.Color;
 import java.awt.Dimension;
