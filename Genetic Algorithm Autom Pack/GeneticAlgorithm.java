@@ -11,14 +11,14 @@ public class GeneticAlgorithm {
     private final boolean TEST_LOG1 = false;
     private final boolean TEST_LOG2 = true;
 
-    private int POPULATION_SIZE = 40;
+    private int POPULATION_SIZE = 85;
 
     private double MUTATION_PROB = 0.0;
     private double SWAP_PROB = 0.05;
     private int CROSSOVER_FREQ = 2;
-    private String SELECTION_MODE = "TOURNAMENT";
-    private double ELITIST_TOP_PERCENT = 0.2;
-    private int TOURNAMENT_SIZE = (int) (0.2 * POPULATION_SIZE);
+    private String SELECTION_MODE = "ROULETTE";
+    private double ELITIST_TOP_PERCENT = 0.1;
+    private int TOURNAMENT_SIZE = (int) (0.1 * POPULATION_SIZE);
 
     private Individual[] population;
     private Package[] packageTypes;
@@ -42,7 +42,7 @@ public class GeneticAlgorithm {
     }
 
     public void run(Package[] types, int[] amountOfType) {
-        int NR_RUNS = 50;
+        int NR_RUNS = 25;
         double overallBest = 0;
         double overallWorst = Double.MAX_VALUE;
         double totalValue = 0;
@@ -55,20 +55,20 @@ public class GeneticAlgorithm {
         int worstGaps = 0;
         int totalGapsForAverage = 0;
 
-        this.amountOfType = new int[4];
-        this.amountOfType[0] = 4;
-        this.amountOfType[1] = 1;
-        this.amountOfType[2] = 8;
-        this.amountOfType[3] = 2;
+        this.amountOfType = new int[3];
+        this.amountOfType[0] = 83;
+        this.amountOfType[1] = 55;
+        this.amountOfType[2] = 50;
+        //this.amountOfType[3] = 2;
 
         this.amountForReduction = new int[this.amountOfType.length];
         System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
 
-        packageTypes = new Package[4];
+        packageTypes = new Package[3];
         packageTypes[0] = new Package("A");
         packageTypes[1] = new Package("B");
         packageTypes[2] = new Package("C");
-        packageTypes[3] = new Package("D", 1, 3, 2, 1.0);
+        //packageTypes[3] = new Package("D", 1, 3, 2, 1.0);
 
         CargoSpace.packageTypes = packageTypes;
         int[] placed = new int[packageTypes.length];
@@ -154,7 +154,7 @@ public class GeneticAlgorithm {
 
             long startTime = System.currentTimeMillis();
 
-            while (generation < 1 && change) {
+            while (generation < 1500 && change) {
                 if (generation % 50 == 0 && population.length != 1) {
                     if (LOG2 || LOG1) System.out.println("Generation " + generation);
                     if (LOG2 || LOG1) System.out.println("Maximum fitness value = " + population[0].getFitness());
@@ -567,27 +567,34 @@ public class GeneticAlgorithm {
     public void runTest() {
         System.out.println("------ 1.1 ------");
         POPULATION_SIZE = 10;
+        //TOURNAMENT_SIZE = (int) (0.1 * POPULATION_SIZE);
         this.run(null, null);
         System.out.println("\n------ 1.2 ------");
         POPULATION_SIZE = 20;
+        //TOURNAMENT_SIZE = (int) (0.1 * POPULATION_SIZE);
         this.run(null, null);
         System.out.println("\n------ 1.3 ------");
         POPULATION_SIZE = 35;
+        //TOURNAMENT_SIZE = (int) (0.1 * POPULATION_SIZE);
         this.run(null, null);
         System.out.println("\n------ 1.4 ------");
         POPULATION_SIZE = 50;
+        //TOURNAMENT_SIZE = (int) (0.1 * POPULATION_SIZE);
         this.run(null, null);
         System.out.println("\n------ 1.5 ------");
         POPULATION_SIZE = 70;
+        //TOURNAMENT_SIZE = (int) (0.1 * POPULATION_SIZE);
         this.run(null, null);
         System.out.println("\n------ 1.6 ------");
         POPULATION_SIZE = 85;
+        //TOURNAMENT_SIZE = (int) (0.1 * POPULATION_SIZE);
         this.run(null, null);
         System.out.println("\n------ 1.7 ------");
         POPULATION_SIZE = 100;
+        //TOURNAMENT_SIZE = (int) (0.1 * POPULATION_SIZE);
         this.run(null, null);
-        POPULATION_SIZE = 35;
-/*
+        POPULATION_SIZE = 85;
+
         System.out.println("\n\n------ 2.1 ------");
         ELITIST_TOP_PERCENT = 0.05;
         this.run(null, null);
@@ -595,19 +602,19 @@ public class GeneticAlgorithm {
         ELITIST_TOP_PERCENT = 0.1;
         this.run(null, null);
         System.out.println("\n------ 2.3 ------");
-        ELITIST_TOP_PERCENT = 0.2;
+        ELITIST_TOP_PERCENT = 0.15;
         this.run(null, null);
         System.out.println("\n------ 2.4 ------");
-        ELITIST_TOP_PERCENT = 0.3;
+        ELITIST_TOP_PERCENT = 0.2;
         this.run(null, null);
         System.out.println("\n------ 2.5 ------");
-        ELITIST_TOP_PERCENT = 0.4;
+        ELITIST_TOP_PERCENT = 0.3;
         this.run(null, null);
         System.out.println("\n------ 2.6 ------");
-        ELITIST_TOP_PERCENT = 0.5;
+        ELITIST_TOP_PERCENT = 0.4;
         this.run(null, null);
-        ELITIST_TOP_PERCENT = 0.2;
-*/
+        ELITIST_TOP_PERCENT = 0.1;
+
         System.out.println("\n\n------ 3.1 ------");
         CROSSOVER_FREQ = 0;
         this.run(null, null);
@@ -676,8 +683,8 @@ public class GeneticAlgorithm {
         // System.out.print("nr = ");
         // int gene = in.nextInt();
         GeneticAlgorithm gA = new GeneticAlgorithm();
-        gA.run(null, null);
-        //gA.runTest();
+        //gA.run(null, null);
+        gA.runTest();
     }
 
 }

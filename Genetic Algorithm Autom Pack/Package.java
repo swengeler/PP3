@@ -69,7 +69,8 @@ public class Package {
             orHeight = 3;
             value = 5;
             setPackage("C");
-        } else if (type.equals("L")) {
+        } 
+        else if (type.equals("L")) {
             length = 4;
             height = 1;
             width = 2;
