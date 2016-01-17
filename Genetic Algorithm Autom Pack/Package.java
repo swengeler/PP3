@@ -117,7 +117,7 @@ public class Package {
     /**
     * A constructor that creates a package with a given height, length and width(to create the "Other" package).
     */
-    public Package(String type, int height, int width, int length, double value) {
+    public Package(String type, int length, int width, int height, double value) {
         this.height = height;
         this.orHeight = height;
         this.width = width;

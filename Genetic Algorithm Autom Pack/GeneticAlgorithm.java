@@ -11,12 +11,12 @@ public class GeneticAlgorithm {
     private final boolean TEST_LOG1 = false;
     private final boolean TEST_LOG2 = true;
 
-    private int POPULATION_SIZE = 35;
+    private int POPULATION_SIZE = 40;
 
     private double MUTATION_PROB = 0.0;
     private double SWAP_PROB = 0.05;
     private int CROSSOVER_FREQ = 2;
-    private String SELECTION_MODE = "ROULETTE";
+    private String SELECTION_MODE = "TOURNAMENT";
     private double ELITIST_TOP_PERCENT = 0.2;
     private int TOURNAMENT_SIZE = (int) (0.2 * POPULATION_SIZE);
 
@@ -25,6 +25,9 @@ public class GeneticAlgorithm {
     private Package[] statesArray;
     private CargoSpace cargoSpace;
     private int amountSum;
+
+    private int[] amountOfType;
+    private int[] amountForReduction;
 
     private int gene;
     private boolean test;
@@ -39,7 +42,7 @@ public class GeneticAlgorithm {
     }
 
     public void run(Package[] types, int[] amountOfType) {
-        int NR_RUNS = 20;
+        int NR_RUNS = 50;
         double overallBest = 0;
         double overallWorst = Double.MAX_VALUE;
         double totalValue = 0;
@@ -52,15 +55,20 @@ public class GeneticAlgorithm {
         int worstGaps = 0;
         int totalGapsForAverage = 0;
 
-        amountOfType = new int[3];
-        amountOfType[0] = 83;
-        amountOfType[1] = 55;
-        amountOfType[2] = 50;
+        this.amountOfType = new int[4];
+        this.amountOfType[0] = 4;
+        this.amountOfType[1] = 1;
+        this.amountOfType[2] = 8;
+        this.amountOfType[3] = 2;
 
-        packageTypes = new Package[3];
+        this.amountForReduction = new int[this.amountOfType.length];
+        System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
+
+        packageTypes = new Package[4];
         packageTypes[0] = new Package("A");
         packageTypes[1] = new Package("B");
         packageTypes[2] = new Package("C");
+        packageTypes[3] = new Package("D", 1, 3, 2, 1.0);
 
         CargoSpace.packageTypes = packageTypes;
         int[] placed = new int[packageTypes.length];
@@ -77,13 +85,11 @@ public class GeneticAlgorithm {
 
             amountSum = 0;
             int maxValueSum = 0;
-            for (int i = 0; i < amountOfType.length; i++) {
-                amountSum += amountOfType[i];
-                maxValueSum += amountOfType[i] * packageTypes[i].getValue();
+            for (int i = 0; i < this.amountOfType.length; i++) {
+                amountSum += this.amountOfType[i];
+                maxValueSum += this.amountOfType[i] * packageTypes[i].getValue();
             }
 
-            int[] amountForReduction = new int[amountOfType.length];
-            System.arraycopy(amountOfType, 0, amountForReduction, 0, amountOfType.length);
 
             int stateSum = 0;
             for (int i = 0; i < packageTypes.length; i++) {
@@ -118,7 +124,7 @@ public class GeneticAlgorithm {
             population = new Individual[POPULATION_SIZE];
             for (int i = 0; i < population.length; i++) {
                 chromosome = new int[amountSum];
-                System.arraycopy(amountOfType, 0, amountForReduction, 0, amountOfType.length);
+                System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
                 for (int j = 0; j < chromosome.length; j++) {
                     int packageChosen = -1;
                     while (packageChosen < 0) {
@@ -129,10 +135,11 @@ public class GeneticAlgorithm {
                         }
                         int random2 = Random.randomWithRange(0, packageTypes[random1].getNrRotations() - 1);
                         packageChosen += random2;
-                        if (amountForReduction[this.getPositionInArray(statesArray[packageChosen])] <= 0)
+                        if (this.amountForReduction[this.getPositionInArray(statesArray[packageChosen])] <= 0)
                             packageChosen = -1;
                     }
-                    amountForReduction[this.getPositionInArray(statesArray[packageChosen])]--;
+                    //System.out.println("P chosen: " + packageChosen);
+                    this.amountForReduction[this.getPositionInArray(statesArray[packageChosen])]--;
                     chromosome[j] = packageChosen;
                 }
                 population[i] = new Individual(chromosome);
@@ -147,7 +154,7 @@ public class GeneticAlgorithm {
 
             long startTime = System.currentTimeMillis();
 
-            while (generation < 1500 && change) {
+            while (generation < 1 && change) {
                 if (generation % 50 == 0 && population.length != 1) {
                     if (LOG2 || LOG1) System.out.println("Generation " + generation);
                     if (LOG2 || LOG1) System.out.println("Maximum fitness value = " + population[0].getFitness());
@@ -185,6 +192,7 @@ public class GeneticAlgorithm {
 
             for (int i = 0; i < placed.length; i++) {
                 placed[i] += cargoSpace.getNrIndivPackages()[i];
+                //System.out.println(placed[i]);
                 if (cargoSpace.getNrIndivPackages()[i] > most[i])
                     most[i] = cargoSpace.getNrIndivPackages()[i];
                 if (cargoSpace.getNrIndivPackages()[i] < fewest[i])
@@ -294,6 +302,10 @@ public class GeneticAlgorithm {
     }
 
     public Individual crossOver(Individual parent1, Individual parent2) {
+        System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
+        for (int i = 0; i < this.amountForReduction.length; i++) {
+            //System.out.println(this.packageTypes[i].getType() + ": " + this.amountForReduction[i]);
+        }
         int[] childChr = new int[parent1.getChromosome().length];
         int[] curParentChr;
         if (CROSSOVER_FREQ > 0) {
@@ -306,15 +318,64 @@ public class GeneticAlgorithm {
                 else
                     curParentChr = parent2.getChromosome();
                 for (int j = lastCrPoint; j < crossOverPoints[i]; j++) {
-                    childChr[j] = curParentChr[j];
+                    if (this.amountForReduction[this.getPositionInArray(statesArray[curParentChr[j]])] > 0) {
+                        childChr[j] = curParentChr[j];
+                        this.amountForReduction[this.getPositionInArray(statesArray[curParentChr[j]])]--;
+                    }
+                    else {
+                        boolean found = false;
+                        for (int k = j; k < curParentChr.length && !found; k++) {
+                            if (this.amountForReduction[this.getPositionInArray(statesArray[curParentChr[k]])] > 0) {
+                                childChr[j] = curParentChr[k];
+                                this.amountForReduction[this.getPositionInArray(statesArray[curParentChr[k]])]--;
+                                found = true;
+                            }
+                        }
+                        if (!found) {
+                            boolean found2 = false;
+                            for (int k = 0; k < j && !found2; k++) {
+                                if (this.amountForReduction[this.getPositionInArray(statesArray[curParentChr[k]])] > 0) {
+                                    childChr[j] = curParentChr[k];
+                                    this.amountForReduction[this.getPositionInArray(statesArray[curParentChr[k]])]--;
+                                    found2 = true;
+                                }
+                            }
+                        }
+                    }
                 }
                 lastCrPoint = crossOverPoints[i];
             }
+
+            if (crossOverPoints.length % 2 == 0)
+                curParentChr = parent2.getChromosome();
+            else
+                curParentChr = parent1.getChromosome();
+
             for (int i = crossOverPoints[crossOverPoints.length - 1]; i < childChr.length; i++) {
-                if (crossOverPoints.length % 2 == 0)
-                    childChr[i] = parent2.getChromosome()[i];
-                else
-                    childChr[i] = parent1.getChromosome()[i];
+                if (this.amountForReduction[this.getPositionInArray(statesArray[curParentChr[i]])] > 0) {
+                    childChr[i] = curParentChr[i];
+                    this.amountForReduction[this.getPositionInArray(statesArray[curParentChr[i]])]--;
+                }
+                else {
+                    boolean found = false;
+                    for (int k = i; k < curParentChr.length && !found; k++) {
+                        if (this.amountForReduction[this.getPositionInArray(statesArray[curParentChr[k]])] > 0) {
+                            childChr[i] = curParentChr[k];
+                            this.amountForReduction[this.getPositionInArray(statesArray[curParentChr[k]])]--;
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        boolean found2 = false;
+                        for (int k = 0; k < i && !found2; k++) {
+                            if (this.amountForReduction[this.getPositionInArray(statesArray[curParentChr[k]])] > 0) {
+                                childChr[i] = curParentChr[k];
+                                this.amountForReduction[this.getPositionInArray(statesArray[curParentChr[k]])]--;
+                                found2 = true;
+                            }
+                        }
+                    }
+                }
             }
         } else {
             if (Math.random() < 0.5)
@@ -325,6 +386,93 @@ public class GeneticAlgorithm {
         Individual child = new Individual(childChr);
         return mutate(mutateSwap(child));
     }
+
+    public Individual crossOver1(Individual parent1, Individual parent2) {
+        System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
+        for (int i = 0; i < this.amountForReduction.length; i++) {
+            //System.out.println(this.packageTypes[i].getType() + ": " + this.amountForReduction[i]);
+        }
+        int[] childChr = new int[parent1.getChromosome().length];
+        if (CROSSOVER_FREQ > 0) {
+            int[] crossOverPoints = Random.randomListWithRange(0, childChr.length - 1, 2);
+            HeapSort.sortUpInt(crossOverPoints);
+            System.out.println("Crossover points: " + crossOverPoints[0] + " and " + crossOverPoints[1]);
+            for (int i = crossOverPoints[0]; i < crossOverPoints[1]; i++) {
+                childChr[i] = parent2.getChromosome()[i];
+                this.amountForReduction[this.getPositionInArray(statesArray[parent2.getChromosome()[i]])]--;
+                System.out.println("Middle " + i + ": " + childChr[i]);
+                System.out.println("Amount array (" + this.getPositionInArray(statesArray[parent2.getChromosome()[i]]) + ", " + statesArray[parent2.getChromosome()[i]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent2.getChromosome()[i]])]);
+            }
+            for (int i = crossOverPoints[1]; i < childChr.length; i++) {
+                if (this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[i]])] > 0) {
+                    childChr[i] = parent1.getChromosome()[i];
+                    this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[i]])]--;
+                    System.out.println("1Amount array (" + this.getPositionInArray(statesArray[parent1.getChromosome()[i]])+ ", " + statesArray[parent1.getChromosome()[i]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[i]])]);
+                } else {
+                    boolean found = false;
+                    for (int k = i; k < parent1.getChromosome().length && !found; k++) {
+                        if (this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])] > 0) {
+                            childChr[i] = parent1.getChromosome()[k];
+                            this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]--;
+                            System.out.println("2Amount array (" + this.getPositionInArray(statesArray[parent1.getChromosome()[k]])+ ", " + statesArray[parent1.getChromosome()[k]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]);
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        boolean found2 = false;
+                        for (int k = 0; k < i && !found2; k++) {
+                            if (this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])] > 0) {
+                                childChr[i] = parent1.getChromosome()[k];
+                                this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]--;
+                                System.out.println("3Amount array (" + this.getPositionInArray(statesArray[parent1.getChromosome()[k]])+ ", " + statesArray[parent1.getChromosome()[k]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]);
+                                found2 = true;
+                            }
+                        }
+                    }
+                }
+                System.out.println("End " + i + ": " + childChr[i]);
+            }
+            for (int i = 0; i < crossOverPoints[0]; i++) {
+                if (this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[i]])] > 0) {
+                    childChr[i] = parent1.getChromosome()[i];
+                    this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[i]])]--;
+                    System.out.println("4Amount array (" + this.getPositionInArray(statesArray[parent1.getChromosome()[i]])+ ", " + statesArray[parent1.getChromosome()[i]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[i]])]);
+                } else {
+                    boolean found = false;
+                    for (int k = i; k < parent1.getChromosome().length && !found; k++) {
+                        if (this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])] > 0) {
+                            childChr[i] = parent1.getChromosome()[k];
+                            this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]--;
+                            System.out.println("5Amount array (" + this.getPositionInArray(statesArray[parent1.getChromosome()[k]])+ ", " + statesArray[parent1.getChromosome()[k]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]);
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        boolean found2 = false;
+                        for (int k = 0; k < i && !found2; k++) {
+                            if (this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])] > 0) {
+                                childChr[i] = parent1.getChromosome()[k];
+                                this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]--;
+                                System.out.println("6Amount array (" + this.getPositionInArray(statesArray[parent1.getChromosome()[k]])+ ", " + statesArray[parent1.getChromosome()[k]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]);
+                                found2 = true;
+                            }
+                        }
+                    }
+                }
+                System.out.println("Front " + i + ": " + childChr[i]);
+            }
+            System.out.println();
+        } else {
+            if (Math.random() < 0.5)
+                System.arraycopy(parent1.getChromosome(), 0, childChr, 0, childChr.length);
+            else
+                System.arraycopy(parent2.getChromosome(), 0, childChr, 0, childChr.length);
+        }
+        Individual child = new Individual(childChr);
+        return mutate(mutateSwap(child));
+    }
+
+
 
     private Individual mutate(Individual ind) {
         int[] chromosome = ind.getChromosome();
@@ -385,13 +533,16 @@ public class GeneticAlgorithm {
     }
 
     private Individual tournamentSelection(Individual[] population) {
-        Individual[] tournament = new Individual[TOURNAMENT_SIZE];
-        int[] randomList = Random.randomListWithRange(0, population.length - 1, TOURNAMENT_SIZE);
-        for (int i = 0; i < randomList.length; i++) {
-            tournament[i] = population[randomList[i]];
-        }
-        HeapSort.sortDownInd(tournament);
-        return tournament[0];
+        if (TOURNAMENT_SIZE > 0) {
+            Individual[] tournament = new Individual[TOURNAMENT_SIZE];
+            int[] randomList = Random.randomListWithRange(0, population.length - 1, TOURNAMENT_SIZE);
+            for (int i = 0; i < randomList.length; i++) {
+                tournament[i] = population[randomList[i]];
+            }
+            HeapSort.sortDownInd(tournament);
+            return tournament[0];
+        } else
+            return population[Random.randomWithRange(0, population.length - 1)];
     }
 
     private Individual randomSelection(Individual[] population) {
@@ -525,8 +676,8 @@ public class GeneticAlgorithm {
         // System.out.print("nr = ");
         // int gene = in.nextInt();
         GeneticAlgorithm gA = new GeneticAlgorithm();
-        //gA.run(null, null);
-        gA.runTest();
+        gA.run(null, null);
+        //gA.runTest();
     }
 
 }
