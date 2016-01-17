@@ -51,6 +51,11 @@ public class Individual {
 		return chromosome;
 	}
 
+	public void setChromosome(int[] chr) {
+		this.chromosome = chr;
+		this.getFitness();
+	}
+
 	/**
 	* A method to evaluate the fitness of an individual by interpreting its chromosome, filling a cargo space
 	* and then setting the individual's fitness value to the total value of the packing of that cargo space.
