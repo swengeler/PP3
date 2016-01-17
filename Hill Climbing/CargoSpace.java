@@ -451,7 +451,7 @@ public class CargoSpace {
 		int[] coords;
 		while (getNextEmptySpaceCoords(new Package("A")) != null)
 		{
-			p = new Package(packageTypes[Random.randomWithRange(0, 2)].getType());
+			p = new Package(packageTypes[Random.randomWithRange(0, packageTypes.length-1)].getType());
 			if (allowRotations) {
 				p.rotateRandom();
 			}

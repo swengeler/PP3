@@ -68,16 +68,8 @@ public class HillClimbing {
 		while (!done) {
 			neighbours = localSearch.genNeighbourhood(current, packageTypes, allowRotations, nrNeighbours, mutationRate);
 			if (neighbours != null) {
-<<<<<<< HEAD
-				int random = Random.randomWithRange(0, neighbours.length-1);
-				current = neighbours[random];
-				System.out.println("Current max value: " + current.getTotalValue());
-				System.out.println("Gaps left: " + current.getTotalGaps());
-				counter = 100;
-=======
 				//int random = Random.randomWithRange(0, neighbours.length-1);
 				current = neighbours[0];
->>>>>>> 215f6c85db7286645eb27557f829098931db99ec
 			} else {
 					done = true;
 			}
