@@ -45,17 +45,17 @@ public class HillClimbing {
         f.add(display, BorderLayout.CENTER);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
-    }
+  }
 
 	public static void main(String[] args) {
 
-		Package[] packageTypes = new Package[3];
+		Package[] packageTypes = new Package[2];
 		packageTypes[0] = new Package("A");
-		packageTypes[1] = new Package("B");
-		packageTypes[2] = new Package("C");
+		packageTypes[1] = new Package("C");
+		//packageTypes[2] = new Package("C");
 
 		boolean done = false;
-		boolean allowRotations = true;
+		boolean allowRotations = false;
 		int mutationRate = 1;
 		int nrNeighbours = 100;
 
@@ -68,16 +68,8 @@ public class HillClimbing {
 		while (!done) {
 			neighbours = localSearch.genNeighbourhood(current, packageTypes, allowRotations, nrNeighbours, mutationRate);
 			if (neighbours != null) {
-<<<<<<< HEAD
-				int random = Random.randomWithRange(0, neighbours.length-1);
-				current = neighbours[random];
-				System.out.println("Current max value: " + current.getTotalValue());
-				System.out.println("Gaps left: " + current.getTotalGaps());
-				counter = 100;
-=======
 				//int random = Random.randomWithRange(0, neighbours.length-1);
 				current = neighbours[0];
->>>>>>> 215f6c85db7286645eb27557f829098931db99ec
 			} else {
 					done = true;
 			}
