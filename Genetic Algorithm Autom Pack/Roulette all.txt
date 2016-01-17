@@ -1,0 +1,626 @@
+------ 1.1 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 236.0
+VALUE - Average: 230.65
+VALUE - Worst: 226.0
+RUNTIME - Best: 704
+RUNTIME - Average: 2319.75
+RUNTIME - Worst: 5556
+GAPS - Best: 34
+GAPS - Average: 59.9
+GAPS - Worst: 102
+
+PACKAGES PLACED
+Most:     A: 39 B: 30 C: 22
+Average:  A: 33.25 B: 8.85 C: 19.1
+Fewest:   A: 25 B: 0 C: 2
+
+PARAMETERS USED
+Population size: 10
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+------ 1.2 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 238.0
+VALUE - Average: 232.0
+VALUE - Worst: 228.0
+RUNTIME - Best: 1055
+RUNTIME - Average: 3426.55
+RUNTIME - Worst: 9115
+GAPS - Best: 22
+GAPS - Average: 60.5
+GAPS - Worst: 92
+
+PACKAGES PLACED
+Most:     A: 40 B: 14 C: 22
+Average:  A: 35.5 B: 5.75 C: 20.5
+Fewest:   A: 27 B: 2 C: 14
+
+PARAMETERS USED
+Population size: 20
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+------ 1.3 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 240.0
+VALUE - Average: 234.25
+VALUE - Worst: 228.0
+RUNTIME - Best: 1666
+RUNTIME - Average: 2640.55
+RUNTIME - Worst: 15058
+GAPS - Best: 6
+GAPS - Average: 46.4
+GAPS - Worst: 89
+
+PACKAGES PLACED
+Most:     A: 39 B: 12 C: 22
+Average:  A: 33.55 B: 6.4 C: 21.6
+Fewest:   A: 27 B: 1 C: 18
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+------ 1.4 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 239.0
+VALUE - Average: 236.6
+VALUE - Worst: 232.0
+RUNTIME - Best: 2547
+RUNTIME - Average: 2895.0
+RUNTIME - Worst: 4222
+GAPS - Best: 14
+GAPS - Average: 32.05
+GAPS - Worst: 62
+
+PACKAGES PLACED
+Most:     A: 37 B: 11 C: 22
+Average:  A: 33.05 B: 7.05 C: 21.85
+Fewest:   A: 31 B: 3 C: 19
+
+PARAMETERS USED
+Population size: 50
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+------ 1.5 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 240.0
+VALUE - Average: 237.95
+VALUE - Worst: 236.0
+RUNTIME - Best: 3522
+RUNTIME - Average: 3988.4
+RUNTIME - Worst: 4284
+GAPS - Best: 6
+GAPS - Average: 22.4
+GAPS - Worst: 38
+
+PACKAGES PLACED
+Most:     A: 34 B: 10 C: 22
+Average:  A: 32.05 B: 7.95 C: 22.0
+Fewest:   A: 30 B: 6 C: 22
+
+PARAMETERS USED
+Population size: 70
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+------ 1.6 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 240.0
+VALUE - Average: 237.7
+VALUE - Worst: 230.0
+RUNTIME - Best: 4574
+RUNTIME - Average: 6540.5
+RUNTIME - Worst: 38741
+GAPS - Best: 6
+GAPS - Average: 23.65
+GAPS - Worst: 71
+
+PACKAGES PLACED
+Most:     A: 37 B: 10 C: 22
+Average:  A: 32.15 B: 8.0 C: 21.85
+Fewest:   A: 30 B: 3 C: 19
+
+PARAMETERS USED
+Population size: 85
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+------ 1.7 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 240.0
+VALUE - Average: 238.6
+VALUE - Worst: 238.0
+RUNTIME - Best: 5468
+RUNTIME - Average: 5684.1
+RUNTIME - Worst: 5869
+GAPS - Best: 6
+GAPS - Average: 17.2
+GAPS - Worst: 22
+
+PACKAGES PLACED
+Most:     A: 32 B: 10 C: 22
+Average:  A: 31.4 B: 8.6 C: 22.0
+Fewest:   A: 30 B: 8 C: 22
+
+PARAMETERS USED
+Population size: 100
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+
+------ 2.1 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 221.0
+VALUE - Average: 214.25
+VALUE - Worst: 209.0
+RUNTIME - Best: 11871
+RUNTIME - Average: 13271.9
+RUNTIME - Worst: 15315
+GAPS - Best: 106
+GAPS - Average: 145.85
+GAPS - Worst: 166
+
+PACKAGES PLACED
+Most:     A: 37 B: 15 C: 19
+Average:  A: 31.6 B: 9.8 C: 16.05
+Fewest:   A: 25 B: 3 C: 12
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 0
+
+------ 2.2 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 223.0
+VALUE - Average: 212.3
+VALUE - Worst: 205.0
+RUNTIME - Best: 13247
+RUNTIME - Average: 14412.55
+RUNTIME - Worst: 15844
+GAPS - Best: 105
+GAPS - Average: 155.05
+GAPS - Worst: 198
+
+PACKAGES PLACED
+Most:     A: 36 B: 14 C: 21
+Average:  A: 29.75 B: 10.2 C: 16.45
+Fewest:   A: 25 B: 6 C: 13
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 1
+
+------ 2.3 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 238.0
+VALUE - Average: 235.15
+VALUE - Worst: 232.0
+RUNTIME - Best: 1852
+RUNTIME - Average: 2148.7
+RUNTIME - Worst: 3835
+GAPS - Best: 22
+GAPS - Average: 41.65
+GAPS - Worst: 70
+
+PACKAGES PLACED
+Most:     A: 38 B: 11 C: 22
+Average:  A: 34.1 B: 6.4 C: 21.45
+Fewest:   A: 32 B: 2 C: 18
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+------ 2.4 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 238.0
+VALUE - Average: 233.05
+VALUE - Worst: 228.0
+RUNTIME - Best: 1858
+RUNTIME - Average: 3607.1
+RUNTIME - Worst: 16554
+GAPS - Best: 22
+GAPS - Average: 54.95
+GAPS - Worst: 92
+
+PACKAGES PLACED
+Most:     A: 40 B: 9 C: 22
+Average:  A: 34.3 B: 5.6 C: 21.55
+Fewest:   A: 31 B: 1 C: 18
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 3
+
+------ 2.5 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 238.0
+VALUE - Average: 234.3
+VALUE - Worst: 228.0
+RUNTIME - Best: 1863
+RUNTIME - Average: 4081.35
+RUNTIME - Worst: 15662
+GAPS - Best: 22
+GAPS - Average: 46.2
+GAPS - Worst: 92
+
+PACKAGES PLACED
+Most:     A: 40 B: 14 C: 22
+Average:  A: 33.9 B: 6.4 C: 21.4
+Fewest:   A: 23 B: 2 C: 18
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 4
+
+------ 2.6 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 240.0
+VALUE - Average: 236.05
+VALUE - Worst: 231.0
+RUNTIME - Best: 1961
+RUNTIME - Average: 2183.1
+RUNTIME - Worst: 3103
+GAPS - Best: 6
+GAPS - Average: 35.4
+GAPS - Worst: 62
+
+PACKAGES PLACED
+Most:     A: 37 B: 10 C: 22
+Average:  A: 33.15 B: 6.9 C: 21.8
+Fewest:   A: 29 B: 3 C: 18
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 5
+
+
+------ 3.1 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 234.0
+VALUE - Average: 229.2
+VALUE - Worst: 217.0
+RUNTIME - Best: 3785
+RUNTIME - Average: 11103.65
+RUNTIME - Worst: 17316
+GAPS - Best: 26
+GAPS - Average: 58.75
+GAPS - Worst: 115
+
+PACKAGES PLACED
+Most:     A: 35 B: 18 C: 22
+Average:  A: 28.55 B: 12.2 C: 18.95
+Fewest:   A: 19 B: 6 C: 15
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.01
+Crossover frequency: 2
+
+------ 3.2 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 240.0
+VALUE - Average: 233.6
+VALUE - Worst: 231.0
+RUNTIME - Best: 1898
+RUNTIME - Average: 2213.6
+RUNTIME - Worst: 3928
+GAPS - Best: 6
+GAPS - Average: 46.95
+GAPS - Worst: 70
+
+PACKAGES PLACED
+Most:     A: 38 B: 12 C: 22
+Average:  A: 33.15 B: 7.6 C: 20.75
+Fewest:   A: 29 B: 2 C: 18
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.03
+Crossover frequency: 2
+
+------ 3.3 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 240.0
+VALUE - Average: 235.5
+VALUE - Worst: 228.0
+RUNTIME - Best: 1801
+RUNTIME - Average: 3242.35
+RUNTIME - Worst: 14973
+GAPS - Best: 6
+GAPS - Average: 38.75
+GAPS - Worst: 89
+
+PACKAGES PLACED
+Most:     A: 40 B: 10 C: 22
+Average:  A: 33.25 B: 6.75 C: 21.75
+Fewest:   A: 28 B: 0 C: 19
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+------ 3.4 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 240.0
+VALUE - Average: 235.25
+VALUE - Worst: 231.0
+RUNTIME - Best: 1755
+RUNTIME - Average: 1961.5
+RUNTIME - Worst: 3305
+GAPS - Best: 6
+GAPS - Average: 41.15
+GAPS - Worst: 78
+
+PACKAGES PLACED
+Most:     A: 39 B: 10 C: 22
+Average:  A: 33.7 B: 6.35 C: 21.75
+Fewest:   A: 30 B: 1 C: 18
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.07
+Crossover frequency: 2
+
+------ 3.5 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 238.0
+VALUE - Average: 234.05
+VALUE - Worst: 228.0
+RUNTIME - Best: 1647
+RUNTIME - Average: 2588.6
+RUNTIME - Worst: 14315
+GAPS - Best: 22
+GAPS - Average: 50.1
+GAPS - Worst: 92
+
+PACKAGES PLACED
+Most:     A: 40 B: 11 C: 22
+Average:  A: 34.65 B: 5.4 C: 21.7
+Fewest:   A: 31 B: 1 C: 18
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.1
+Crossover frequency: 2
+
+------ 3.6 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 239.0
+VALUE - Average: 233.75
+VALUE - Worst: 226.0
+RUNTIME - Best: 1706
+RUNTIME - Average: 3217.65
+RUNTIME - Worst: 15931
+GAPS - Best: 6
+GAPS - Average: 41.9
+GAPS - Worst: 92
+
+PACKAGES PLACED
+Most:     A: 40 B: 28 C: 22
+Average:  A: 31.75 B: 9.25 C: 20.3
+Fewest:   A: 14 B: 2 C: 3
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.15
+Crossover frequency: 2
+
+
+------ 4.1 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 239.0
+VALUE - Average: 236.45
+VALUE - Worst: 233.0
+RUNTIME - Best: 1817
+RUNTIME - Average: 1897.05
+RUNTIME - Worst: 1980
+GAPS - Best: 14
+GAPS - Average: 31.8
+GAPS - Worst: 54
+
+PACKAGES PLACED
+Most:     A: 36 B: 13 C: 22
+Average:  A: 32.55 B: 7.45 C: 21.8
+Fewest:   A: 25 B: 4 C: 18
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+------ 4.2 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 238.0
+VALUE - Average: 232.4
+VALUE - Worst: 227.0
+RUNTIME - Best: 1834
+RUNTIME - Average: 4466.05
+RUNTIME - Worst: 14495
+GAPS - Best: 22
+GAPS - Average: 62.4
+GAPS - Worst: 102
+
+PACKAGES PLACED
+Most:     A: 39 B: 8 C: 22
+Average:  A: 35.4 B: 4.05 C: 22.0
+Fewest:   A: 31 B: 0 C: 22
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.01
+Swap probability: 0.05
+Crossover frequency: 2
+
+------ 4.3 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 237.0
+VALUE - Average: 230.05
+VALUE - Worst: 225.0
+RUNTIME - Best: 1855
+RUNTIME - Average: 8008.75
+RUNTIME - Worst: 15179
+GAPS - Best: 30
+GAPS - Average: 79.6
+GAPS - Worst: 113
+
+PACKAGES PLACED
+Most:     A: 40 B: 7 C: 22
+Average:  A: 37.55 B: 2.35 C: 21.6
+Fewest:   A: 33 B: 0 C: 20
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.02
+Swap probability: 0.05
+Crossover frequency: 2
+
+------ 4.4 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 235.0
+VALUE - Average: 227.6
+VALUE - Worst: 225.0
+RUNTIME - Best: 1775
+RUNTIME - Average: 11401.6
+RUNTIME - Worst: 13347
+GAPS - Best: 46
+GAPS - Average: 94.9
+GAPS - Worst: 113
+
+PACKAGES PLACED
+Most:     A: 40 B: 5 C: 22
+Average:  A: 38.3 B: 1.55 C: 21.3
+Fewest:   A: 34 B: 0 C: 21
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.03
+Swap probability: 0.05
+Crossover frequency: 2
+
+------ 4.5 ------
+Run No. 0
+Run No. 10
+OVERALL RESULTS OVER 20 ITERATIONS
+VALUE - Best: 231.0
+VALUE - Average: 224.35
+VALUE - Worst: 196.0
+RUNTIME - Best: 2093
+RUNTIME - Average: 12283.05
+RUNTIME - Worst: 13642
+GAPS - Best: 78
+GAPS - Average: 115.05
+GAPS - Worst: 264
+
+PACKAGES PLACED
+Most:     A: 48 B: 3 C: 22
+Average:  A: 39.9 B: 0.6 C: 20.45
+Fewest:   A: 37 B: 0 C: 8
+
+PARAMETERS USED
+Population size: 35
+Selection mode: roulette
+Mutation probability: 0.04
+Swap probability: 0.05
+Crossover frequency: 2

@@ -22,9 +22,7 @@ public class Random {
         return random;
     }
 
-    public static int[] randomListWithRange(int min, int max, int number) throws BadInputException {
-        if (number > (max - min + 1))
-            throw new BadInputException("The amount of unrepeated random numbers cannot exceed the range given for them.");
+    public static int[] randomListWithRange(int min, int max, int number) {
         int[] list = new int[number];
         list[0] = Random.randomWithRange(min, max);
         for (int i = 1; i < list.length; i++) {

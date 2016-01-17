@@ -1,41 +1,45 @@
 /*
- * @(#)HeapSortAlgorithm.java   1.0 95/06/23 Jason Harrison
- *
- * Copyright (c) 1995 University of British Columbia
- *
- * Permission to use, copy, modify, and distribute this software
- * and its documentation for NON-COMMERCIAL purposes and without
- * fee is hereby granted provided that this copyright notice
- * appears in all copies. Please refer to the file "copyright.html"
- * for further important copyright and licensing information.
- *
- * UBC MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
- * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE, OR NON-INFRINGEMENT. UBC SHALL NOT BE LIABLE FOR
- * ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR
- * DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES.
- */
+* @(#)HeapSortAlgorithm.java   1.0 95/06/23 Jason Harrison
+*
+* Copyright (c) 1995 University of British Columbia
+*
+* Permission to use, copy, modify, and distribute this software
+* and its documentation for NON-COMMERCIAL purposes and without
+* fee is hereby granted provided that this copyright notice
+* appears in all copies. Please refer to the file "copyright.html"
+* for further important copyright and licensing information.
+*
+* UBC MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
+* THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+* TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+* PARTICULAR PURPOSE, OR NON-INFRINGEMENT. UBC SHALL NOT BE LIABLE FOR
+* ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR
+* DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES.
+*/
 
 /**
- * A heap sort demonstration algorithm
- * SortAlgorithm.java, Thu Oct 27 10:32:35 1994
- *
- * Modified by Steven de Jong for Genetic Algorithms.
- *
- * Modified by Jo Stevens for practical session.
- *
- *
- * @author Jason Harrison@cs.ubc.ca
- * @version     1.0, 23 Jun 1995
- *
- * @author Steven de Jong
- * @version     1.1, 08 Oct 2004
- *
- * @author Jo Stevens
- * @version 1.2, 14 Nov 2008
- *
- */
+* A heap sort demonstration algorithm
+* SortAlgorithm.java, Thu Oct 27 10:32:35 1994
+*
+* Modified by Steven de Jong for Genetic Algorithms.
+*
+* Modified by Jo Stevens for practical session.
+*
+* Modified by Simon Wengeler for use in Project 1.3 of the Bachelor of
+* Knowledge Engineering at Maastricht University (2016)
+*
+* @author Jason Harrison@cs.ubc.ca
+* @version     1.0, 23 Jun 1995
+*
+* @author Steven de Jong
+* @version     1.1, 08 Oct 2004
+*
+* @author Jo Stevens
+* @version 1.2, 14 Nov 2008
+*
+* @author Simon Wengeler
+* @version 1.3, 10 Jan 2016
+*/
 public class HeapSort {
 
     public static void sortDownInd(Individual[] i) {
