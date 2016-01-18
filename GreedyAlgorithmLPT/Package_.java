@@ -7,10 +7,6 @@
 
 public class Package {
 
-    private static String[] newTypes = new String[0];
-    private static int[][] newDimensions = new int[0][3];
-    private static double[] newValues = new double[0];
-
     private String type;
     private double value;
 
@@ -69,7 +65,7 @@ public class Package {
             orHeight = 3;
             value = 5;
             setPackage("C");
-        } 
+        }
         else if (type.equals("L")) {
             length = 4;
             height = 1;
@@ -79,7 +75,9 @@ public class Package {
             orHeight = 2;
             value = 3;
             setPackage("L");
-        } else if (type.equals("P")) {
+
+        }
+        else if (type.equals("P")) {
             length = 3;
             height = 1;
             width = 2;
@@ -88,7 +86,9 @@ public class Package {
             orHeight = 2;
             value = 4;
             setPackage("P");
-        } else if (type.equals("T")) {
+
+        }
+        else if (type.equals("T")) {
             length = 3;
             height = 1;
             width = 3;
@@ -97,28 +97,14 @@ public class Package {
             orHeight = 3;
             value = 5;
             setPackage("T");
-        } else {
-            boolean found = false;
-            for (int i = 0; i < newTypes.length && !found; i++) {
-                if (type.equalsIgnoreCase(newTypes[i])) {
-                    found = true;
-                    length = newDimensions[i][0];
-                    width = newDimensions[i][1];
-                    height = newDimensions[i][2];
-                    orLength = newDimensions[i][0];
-                    orWidth = newDimensions[i][1];
-                    orHeight = newDimensions[i][2];
-                    value = newValues[i];
-                    setPackage(newTypes[i]);
-                }
-            }
         }
+
     }
 
     /**
     * A constructor that creates a package with a given height, length and width(to create the "Other" package).
     */
-    public Package(String type, int length, int width, int height, double value) {
+    public Package(String type, int height, int width, int length, double value) {
         this.height = height;
         this.orHeight = height;
         this.width = width;
@@ -126,26 +112,6 @@ public class Package {
         this.length = length;
         this.orLength = length;
         this.value = value;
-
-        String[] nnTypes = new String[newTypes.length + 1];
-        System.arraycopy(newTypes, 0, nnTypes, 0, newTypes.length);
-        nnTypes[nnTypes.length - 1] = type;
-        newTypes = nnTypes;
-
-        int[][] nnDimensions = new int[newDimensions.length + 1][3];
-        for (int i = 0; i < newDimensions.length; i++) {
-          System.arraycopy(newDimensions[i], 0, nnDimensions[i], 0, 3);
-        }
-        nnDimensions[nnDimensions.length - 1][0] = length;
-        nnDimensions[nnDimensions.length - 1][1] = width;
-        nnDimensions[nnDimensions.length - 1][2] = height;
-        newDimensions = nnDimensions;
-
-        double[] nnValues = new double[newValues.length + 1];
-        System.arraycopy(newValues, 0, nnValues, 0, newValues.length);
-        nnValues[nnValues.length - 1] = value;
-        newValues = nnValues;
-
         setPackage(type);
     }
 
@@ -226,36 +192,6 @@ public class Package {
             this.rotateY();
         for (int i = 0; i < z; i++)
             this.rotateZ();
-    }
-
-    public void setRotations(int state) {
-      if (this.getNrRotations() == 3 && this.length == this.width) {
-          if (state >= 1)
-              this.rotateY();
-          if (state == 2)
-              this.rotateZ();
-      } else if (this.getNrRotations() == 3 && this.length == this.height) {
-          if (state >= 1)
-              this.rotateX();
-          if (state == 2)
-              this.rotateY();
-      } else if (this.getNrRotations() == 3 && this.width == this.height) {
-          if (state >= 1)
-              this.rotateY();
-          if (state == 2)
-              this.rotateX();
-      } else if (this.getNrRotations() == 6) {
-          if (state >= 1)
-              this.rotateX();
-          if (state >= 2)
-              this.rotateY();
-          if (state >= 3)
-              this.rotateZ();
-          if (state >= 4)
-              this.rotateX();
-          if (state == 5)
-              this.rotateY();
-      }
     }
 
     /**
@@ -484,18 +420,6 @@ public class Package {
         return false;
     }
 
-    public int getNrRotations() {
-      int rotationStates = 0;
-      if (this.length == this.width && this.length == this.height) {
-          rotationStates = 1;
-      } else if (this.length == this.width || this.length == this.height || this.width == this.height) {
-          rotationStates = 3;
-      } else {
-          rotationStates = 6;
-      }
-      return rotationStates;
-    }
-
     public int[] getNrStates(int csLength, int csWidth, int csHeight) {
         int[] nrStates; // where nrStates[0] is the total number of states and the subsequent numbers are those for each state of rotation
         if (this.length == this.width && this.length == this.height) {
@@ -535,47 +459,5 @@ public class Package {
 
     public boolean equalType(Package p) {
         return this.type.equalsIgnoreCase(p.getType());
-    }
-
-    public Package clone() {
-        Package clone = new Package(this.getType());
-        clone.type = this.type;
-        clone.value = this.value;
-
-        clone.height = this.height;
-        clone.width = this.width;
-        clone.length = this.length;
-
-        // the original dimensions of the package (to enable the packingToChromosome method to know which state of rotation the package is in)
-        clone.orHeight = this.orHeight;
-        clone.orWidth = this.orWidth;
-        clone.orLength = this.orLength;
-
-        for (int i = 0; i < baseCoords.length; i++) {
-            clone.baseCoords[i] = this.baseCoords[i];
-            clone.rotations[i] = this.rotations[i];
-        }
-
-        for (int i = 0; i < coords.length; i++) {
-            clone.coords[i] = this.coords[i];
-        }
-
-        return clone;
-    }
-
-    public boolean equals(Package p) {
-        boolean baseCoordsEqual = true;
-        boolean coordsEqual = true;
-        for (int i = 0; i < this.baseCoords.length && baseCoordsEqual; i++) {
-            if (this.baseCoords[i] != p.baseCoords[i])
-                baseCoordsEqual = false;
-        }
-        for (int i = 0; i < this.coords.length && baseCoordsEqual && coordsEqual; i++) {
-            for (int j = 0; j < this.coords[i].length && coordsEqual; j++) {
-                if (this.coords[i][j] != p.coords[i][j])
-                    coordsEqual = false;
-            }
-        }
-        return (this.type.equalsIgnoreCase(p.type) && this.value == p.value && this.height == p.height && this.width == p.width && this.length == p.length && this.orHeight == p.orHeight && this.orWidth == p.orWidth && this.orLength == p.orLength && baseCoordsEqual && coordsEqual);
     }
 }
