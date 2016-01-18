@@ -1,3 +1,5 @@
+package Poly3D;
+
 /**
 * A new enumerated type that contains a default value and three types of packages.
 *
@@ -18,10 +20,21 @@ public class Package {
     private int orHeight;
     private int orWidth;
     private int orLength;
+    
+    private int rotateX = 0;
+    private int rotateY = 0;
+    private int rotateZ = 0;
+    
 
     private int[] baseCoords = new int[3]; // where [X][Y][Z]
     private int[] rotations = new int[3]; // where [X][Y][Z]
     private int[][] coords;
+
+    private int[][][] coordsTable = new int[][][] {
+        {{0,0,0}, {0,1,0}, {1,0,0}, {2,0,0}, {3,0,0}}, // L package
+        {{0,0,0}, {0,1,0}, {1,0,0}, {1,1,0}, {2,0,0}}, // P package
+        {{0,0,0}, {0,1,0}, {0,2,0}, {1,1,0}, {2,1,0}} // T package
+    };
 
     /**
     * A constructor that constructs a package with certain values according to the definition of
@@ -60,6 +73,49 @@ public class Package {
             value = 5;
             setPackage("C");
         }
+        else if (type.equals("L")) {
+            length = 4;
+            height = 1;
+            width = 2;
+            orLength = 4;
+            orWidth = 1;
+            orHeight = 2;
+            value = 3;
+            setPackage("L");
+
+        }
+        else if (type.equals("P")) {
+            length = 3;
+            height = 1;
+            width = 2;
+            orLength = 3;
+            orWidth = 1;
+            orHeight = 2;
+            value = 4;
+            setPackage("P");
+
+        }
+        else if (type.equals("T")) {
+            length = 3;
+            height = 1;
+            width = 3;
+            orLength = 3;
+            orWidth = 1;
+            orHeight = 3;
+            value = 5;
+            setPackage("T");
+        }
+        else if (type.equals("Truck")) {
+            length = 33;
+            height = 5;
+            width = 8;
+            orLength = 33;
+            orWidth = 5;
+            orHeight = 8;
+            value = 10;
+            setPackage("Truck");
+        }
+
     }
 
     /**
@@ -86,15 +142,38 @@ public class Package {
     * @param type The desired type of package.
     */
     public void setPackage(String type) {
-        coords = new int[height * width * length][3];
-        int counter = 0;
-        for (int i = 0; i < length; i++) {
-            for (int j = 0; j < width; j++) {
-                for (int k = 0; k < height; k++) {
-                    coords[counter][0] = i;
-                    coords[counter][1] = j;
-                    coords[counter][2] = k;
-                    counter++;
+        if (type.equalsIgnoreCase("L")) {
+            coords = new int[5][3];
+            for (int i = 0; i < coords.length; i++) {
+                for (int j = 0; j < coords[0].length; j++) {
+                    coords[i][j] = coordsTable[0][i][j];
+                }
+            }
+        } else if (type.equalsIgnoreCase("P")) {
+            coords = new int[5][3];
+            for (int i = 0; i < coords.length; i++) {
+                for (int j = 0; j < coords[0].length; j++) {
+                    coords[i][j] = coordsTable[1][i][j];
+                }
+            }
+        } else if (type.equalsIgnoreCase("T")){
+            coords = new int[5][3];
+            for (int i = 0; i < coords.length; i++) {
+                for (int j = 0; j < coords[0].length; j++) {
+                    coords[i][j] = coordsTable[2][i][j];
+                }
+            }
+        } else {
+            coords = new int[height * width * length][3];
+            int counter = 0;
+            for (int i = 0; i < length; i++) {
+                for (int j = 0; j < width; j++) {
+                    for (int k = 0; k < height; k++) {
+                        coords[counter][0] = i;
+                        coords[counter][1] = j;
+                        coords[counter][2] = k;
+                        counter++;
+                    }
                 }
             }
         }
@@ -125,11 +204,11 @@ public class Package {
 
     public void setRotations(int x, int y, int z) {
         for (int i = 0; i < x; i++)
-            this.rotateX();
+            this.rotateX(false);
         for (int i = 0; i < y; i++)
-            this.rotateY();
+            this.rotateY(false);
         for (int i = 0; i < z; i++)
-            this.rotateZ();
+            this.rotateZ(false);
     }
 
     /**
@@ -210,7 +289,9 @@ public class Package {
     * A method that changes the coordinates of the package in such a manner that they now represent
     * the package rotated around the x-axis (length-axis) of the imaginary coordinate system.
     */
-    public void rotateX() {
+    public void rotateX(boolean fromCube) {
+    	if(!fromCube)rotateX++;
+    	
         int[][] newCoords = new int[coords.length][coords[0].length];
         for (int i = 0; i < newCoords.length; i++) {
             newCoords[i][0] = coords[i][0];
@@ -237,8 +318,9 @@ public class Package {
     * A method that changes the coordinates of the package in such a manner that they now represent
     * the package rotated around the y-axis (width-axis) of the imaginary coordinate system.
     */
-    public void rotateY() {
-        int[][] newCoords = new int[coords.length][coords[0].length];
+    public void rotateY(boolean fromCube) {
+    	if(!fromCube)rotateY++;
+    	int[][] newCoords = new int[coords.length][coords[0].length];
         for (int i = 0; i < newCoords.length; i++) {
             newCoords[i][0] = coords[i][2];
             newCoords[i][1] = coords[i][1];
@@ -264,7 +346,8 @@ public class Package {
     * A method that changes the coordinates of the package in such a manner that they now represent
     * the package rotated around the z-axis (height-axis) of the imaginary coordinate system.
     */
-    public void rotateZ() {
+    public void rotateZ(boolean fromCube) {
+    	if(!fromCube)rotateZ++;
         int[][] newCoords = new int[coords.length][coords[0].length];
         for (int i = 0; i < newCoords.length; i++) {
             newCoords[i][0] = -coords[i][1];
@@ -287,17 +370,21 @@ public class Package {
         this.coords = newCoords;
     }
 
+    public int[] getRotation(){
+    	return new int[]{rotateX,rotateY,rotateZ};
+    }
+    
     public void rotateRandom() {
         int randomX = (int) (Math.random() * 4);
         int randomY = (int) (Math.random() * 4);
         int randomZ = (int) (Math.random() * 4);
 
         for (int i = 0; i < randomX; i++)
-            this.rotateX();
+            this.rotateX(false);
         for (int i = 0; i < randomY; i++)
-            this.rotateY();
+            this.rotateY(false);
         for (int i = 0; i < randomZ; i++)
-            this.rotateZ();
+            this.rotateZ(false);
     }
 
     /**
