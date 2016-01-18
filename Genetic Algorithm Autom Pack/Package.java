@@ -487,12 +487,16 @@ public class Package {
 
     public int getNrRotations() {
       int rotationStates = 0;
-      if (this.length == this.width && this.length == this.height) {
-          rotationStates = 1;
-      } else if (this.length == this.width || this.length == this.height || this.width == this.height) {
-          rotationStates = 3;
+      if (this.type.equals("L") || this.type.equals("P") || this.type.equals("T")) {
+          if (this.length == this.width && this.length == this.height) {
+            rotationStates = 1;
+          } else if (this.length == this.width || this.length == this.height || this.width == this.height) {
+            rotationStates = 3;
+          } else {
+            rotationStates = 6;
+          }
       } else {
-          rotationStates = 6;
+          rotationStates = 8;
       }
       return rotationStates;
     }
