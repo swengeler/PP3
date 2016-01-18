@@ -99,6 +99,16 @@ public class Package {
             orHeight = 3;
             value = 5;
             setPackage("T");
+        }
+        else if (type.equals("Truck")) {
+            length = 10;
+            height = 7;
+            width = 35;
+            orLength = 7;
+            orWidth = 35;
+            orHeight = 9;
+            value = 0;
+            setPackage("Truck");
         } else {
             boolean found = false;
             for (int i = 0; i < newTypes.length && !found; i++) {
@@ -489,16 +499,12 @@ public class Package {
 
     public int getNrRotations() {
       int rotationStates = 0;
-      if (this.type.equals("L") || this.type.equals("P") || this.type.equals("T")) {
-          if (this.length == this.width && this.length == this.height) {
-            rotationStates = 1;
-          } else if (this.length == this.width || this.length == this.height || this.width == this.height) {
-            rotationStates = 3;
-          } else {
-            rotationStates = 6;
-          }
+      if (this.length == this.width && this.length == this.height) {
+          rotationStates = 1;
+      } else if (this.length == this.width || this.length == this.height || this.width == this.height) {
+          rotationStates = 3;
       } else {
-          rotationStates = 8;
+          rotationStates = 6;
       }
       return rotationStates;
     }
