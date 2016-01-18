@@ -177,7 +177,7 @@ public class GeneticAlgorithm {
                     noChange++;
                 else
                     noChange = 0;
-                if ((bestInd.getFitness() > 230.0 || bestInd.getFitness() > (0.8 * maxValueSum)) && noChange > 200) {
+                if ((bestInd.getFitness() < 20 || bestInd.getFitness() > (0.8 * maxValueSum)) && noChange > 200) {
                     noChange = 0;
                     change = false;
                 }
