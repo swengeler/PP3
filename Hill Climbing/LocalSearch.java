@@ -1,7 +1,7 @@
 /**
  * Created by nicolagheza on 18/01/16.
  */
-public class HillClimbing {
+public class LocalSearch {
 
     public CargoSpace genArbitrarySolution(CargoSpace current, Package[] packageTypes, boolean allowRotations) {
         CargoSpace arbitraryCargo = new CargoSpace(current.getLength(),current.getWidth(),current.getHeight());
@@ -92,7 +92,7 @@ public class HillClimbing {
             int mutationRate = 1;
             int nrNeighbours = 100;
 
-            HillClimbing localSearch = new HillClimbing();
+            LocalSearch localSearch = new LocalSearch();
             CargoSpace current = new CargoSpace(33,5,8);
             CargoSpace[] neighbours;
 

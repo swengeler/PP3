@@ -8,6 +8,8 @@ import java.util.Scanner;
 
 public class GeneticAlgorithm {
 
+    private final boolean abcTest = true;
+
     private final boolean LOG1 = false;
     private final boolean LOG2 = false;
     private final boolean TEST_LOG1 = false;
@@ -36,11 +38,6 @@ public class GeneticAlgorithm {
 
     public GeneticAlgorithm() {
         this.test = false;
-    }
-
-    public GeneticAlgorithm(int gene) {
-        this.gene = gene;
-        this.test = true;
     }
 
     public void run(Package[] types, int[] amountOfType) {
@@ -179,7 +176,7 @@ public class GeneticAlgorithm {
                     noChange++;
                 else
                     noChange = 0;
-                if ((bestInd.getFitness() < 20 || bestInd.getFitness() > (0.8 * maxValueSum)) && noChange > 200) {
+                if (((abcTest && bestInd.getFitness() > 230) || bestInd.getFitness() > (0.8 * maxValueSum)) && noChange > 200) {
                     noChange = 0;
                     change = false;
                 }

@@ -359,7 +359,8 @@ public class CargoSpace {
     }
 
   /**
-  * Looks for an empty space where the aPackage can be placed and set its baseCoords.
+  * Looks for an empty space where the aPackage can be placed and set its baseCoords.#
+  *
   * @param aPackage
   * @return int[3] array coords containing the x,y,z base coords
   **/
@@ -386,11 +387,11 @@ public class CargoSpace {
 	* Fill the cargo following an order of package defined by the parameter packageTypes.
 	* Until there is space to place at least one of the smallest parcel it keeps looking for empty space and
 	* trying to fill them with a specific package.
+    *
 	* @param packageTypes An array containing the package types we want to use in the exact order we want to place them. (i.e. {A,B,C}
 	*/
 	public void fillCargo(Package[] packageTypes) {
-		while (getNextEmptySpaceCoords(new Package("A")) != null)
-		{
+		while (getNextEmptySpaceCoords(new Package("A")) != null) {
 			for (int i=0; i<packageTypes.length; i++) {
 				int[] coords;
 				Package p = new Package(packageTypes[i].getType());
@@ -406,14 +407,14 @@ public class CargoSpace {
 	/**
 	 * Randomly fill the cargo by selecting random parcel and placing them into the cargo until there is no
 	 * more space left.
+     *
 	 * @param packageTypes An array containing a list of possible parcel types.
 	 * @param allowRotations A boolean value.
 	 */
 	public void fillRandom(Package[] packageTypes, boolean allowRotations) {
 		Package p;
 		int[] coords;
-		while (getNextEmptySpaceCoords(new Package("A")) != null)
-		{
+		while (getNextEmptySpaceCoords(new Package("A")) != null) {
 			p = new Package(packageTypes[Random.randomWithRange(0, packageTypes.length-1)].getType());
 			if (allowRotations) {
 				p.rotateRandom();

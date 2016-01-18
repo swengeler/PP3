@@ -65,7 +65,7 @@ public class HeapSort
         while (k <= N/2) 
         {
             int j = k + k;
-            if ((j < N) && (cargo[j - 1].getFitness() > cargo[j].getFitness())) 
+            if ((j < N) && (cargo[j - 1].getTotalValue() > cargo[j].getTotalValue()))
             j++;
 
             if (cargoSpace.getTotalValue() <= cargo[j - 1].getTotalValue()) 
