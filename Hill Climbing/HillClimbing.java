@@ -146,9 +146,9 @@ public class HillClimbing {
 			if (neighbours != null) {
 				//int random = Random.randomWithRange(0, neighbours.length-1);
 				current = neighbours[0];
-				System.out.println("Local max: " + current.getTotalValue(current.getPacking()));
-				System.out.println("Gaps left: " + current.getTotalGaps());
-				System.out.println("N of packages: " + current.getPacking().length);
+				System.out.println("Current max: " + current.getTotalValue(current.getPacking()));
+				System.out.println("Current Gaps left: " + current.getTotalGaps());
+				System.out.println("Current N of packages: " + current.getPacking().length);
 				int nrA = 0;
 				int nrB = 0;
 				int nrC = 0;
