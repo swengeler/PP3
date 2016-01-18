@@ -68,7 +68,7 @@ public class Individual {
 						newCS.putPackage(sArr[this.chromosome[i]]);
 				}
 		}
-		this.fitness = 1320 - newCS.getTotalGaps();
+		this.fitness = newCS.getTotalValue();
 	}
 
 	/**
