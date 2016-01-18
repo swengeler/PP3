@@ -48,7 +48,97 @@ public class HillClimbing {
   }
 
 	public static void main(String[] args) {
+		double[][] results = new double[50][4];
+		for (int t=0; t<50; t++) {
+			Package[] packageTypes = new Package[2];
+			packageTypes[0] = new Package("A");
+			packageTypes[1] = new Package("C");
+			//packageTypes[2] = new Package("C");
 
+			boolean done = false;
+			boolean allowRotations = false;
+			int mutationRate = 1;
+			int nrNeighbours = 100;
+
+			HillClimbing localSearch = new HillClimbing();
+			CargoSpace current = new CargoSpace(33,5,8);
+			CargoSpace[] neighbours;
+
+			current = localSearch.genArbitrarySolution(current, packageTypes, allowRotations);
+			long startTime = System.currentTimeMillis();
+			while (!done) {
+				neighbours = localSearch.genNeighbourhood(current, packageTypes, allowRotations, nrNeighbours, mutationRate);
+				if (neighbours != null) {
+					//int random = Random.randomWithRange(0, neighbours.length-1);
+					current = neighbours[0];
+				} else {
+						done = true;
+				}
+			}
+			long endTime = System.currentTimeMillis();
+			long totTime = endTime - startTime;
+
+			int nrA = 0;
+			int nrB = 0;
+			int nrC = 0;
+
+			for (int i=0; i<current.getPacking().length; i++) {
+					if (current.getPacking()[i].getType() == "A")
+						nrA++;
+					else if (current.getPacking()[i].getType() == "B")
+						nrB++;
+					else if (current.getPacking()[i].getType() == "C")
+						nrC++;
+			}
+			System.out.println("Test N°" + (t+1));
+			System.out.println("Local max: " + current.getTotalValue(current.getPacking()));
+			System.out.println("Gaps left: " + current.getTotalGaps());
+			System.out.println("N of packages: " + current.getPacking().length);
+			System.out.println("Nunber of A: " + nrA + "\nNumber of B: " + nrB + "\nNumber of C: " + nrC);
+			System.out.println("Runtime: " + totTime + "ms");
+
+			results[t][0] = current.getTotalValue(current.getPacking());
+			results[t][1] = current.getTotalGaps();
+			results[t][2] = current.getPacking().length;
+			results[t][3] = totTime;
+
+		}
+		double totValueAverage = 0;
+		double totGapsAverage = 0;
+		double totParcelsAverage = 0;
+		double totValueMax = 0;
+		double totParcelsMax = 0;
+		double totTimeAverage = 0;
+		double minRuntime = 0;
+
+		for (int i=0; i<50; i++) {
+				if (i==0) {
+					totValueMax = results[i][0];
+					totParcelsMax = results[i][2];
+					minRuntime = results[i][3];
+				} else {
+					if (results[i][0] > totValueMax)
+						totValueMax = results[i][0];
+					if (results[i][2] > totParcelsMax)
+						totParcelsMax = results[i][2];
+					if (results[i][3] < minRuntime)
+						minRuntime = results[i][3];
+				}
+				totValueAverage += results[i][0];
+				totGapsAverage += results[i][1];
+				totParcelsAverage += results[i][2];
+				totTimeAverage += results[i][3];
+		}
+
+		System.out.println("Average total value: " + (totValueAverage/50));
+		System.out.println("Average total gaps : " + (totGapsAverage/50));
+		System.out.println("Average parcels placed: " + (totParcelsAverage/50));
+		System.out.println("Runtime average: " + (totTimeAverage/50));
+		System.out.println("Best total value: " + totValueMax);
+		System.out.println("Best number of placed parcels " + totParcelsMax);
+		System.out.println("Runtime best: " + minRuntime);
+
+		/*
 		Package[] packageTypes = new Package[2];
 		packageTypes[0] = new Package("A");
 		packageTypes[1] = new Package("C");
@@ -96,6 +186,7 @@ public class HillClimbing {
 		System.out.println("Nunber of A: " + nrA + "\n Number of B: " + nrB + "\n Number of C: " + nrC);
 		System.out.println("Runtime: " + totTime + "ms");
 		localSearch.displaySolution(current);
+		*/
 
 	}
 
