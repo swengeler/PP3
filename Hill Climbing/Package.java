@@ -1,5 +1,3 @@
-package Poly3D;
-
 /**
 * A new enumerated type that contains a default value and three types of packages.
 *
@@ -20,11 +18,11 @@ public class Package {
     private int orHeight;
     private int orWidth;
     private int orLength;
-    
+
     private int rotateX = 0;
     private int rotateY = 0;
     private int rotateZ = 0;
-    
+
 
     private int[] baseCoords = new int[3]; // where [X][Y][Z]
     private int[] rotations = new int[3]; // where [X][Y][Z]
@@ -291,7 +289,7 @@ public class Package {
     */
     public void rotateX(boolean fromCube) {
     	if(!fromCube)rotateX++;
-    	
+
         int[][] newCoords = new int[coords.length][coords[0].length];
         for (int i = 0; i < newCoords.length; i++) {
             newCoords[i][0] = coords[i][0];
@@ -373,7 +371,7 @@ public class Package {
     public int[] getRotation(){
     	return new int[]{rotateX,rotateY,rotateZ};
     }
-    
+
     public void rotateRandom() {
         int randomX = (int) (Math.random() * 4);
         int randomY = (int) (Math.random() * 4);
@@ -416,21 +414,6 @@ public class Package {
         for (int i = 0; i < 8; i++)
             min = Math.min(min, coords[i][2]);
         return min;
-    }
-
-    /**
-     * Returns a random Package
-     * @return random Package p
-     */
-    public Package random() {
-        int random = Random.randomWithRange(1,3);
-        if (random == 1) {
-            return new Package("A");
-        } else if (random == 2) {
-            return new Package("B");
-        } else {
-            return new Package("C");
-        }
     }
 
     public boolean overlaps(Package other) {

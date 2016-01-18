@@ -1,5 +1,4 @@
 import java.awt.BorderLayout;
-import javax.swing.JFrame;
 
 public class HillClimbing {
 
@@ -33,14 +32,6 @@ public class HillClimbing {
 
 		return nextNeighbourhood;
 	}
-
-	/**
-	 * Display the solution
-	 * TO BE CHANGED FOR THE 3D REPRESENTATION
-	 **/
-	public void displaySolution(CargoSpace curCargo) {
-  		cargoSpace3D.represent(curCargo);
-  }
 
 	public static void main(String[] args) {
 		/*double[][] results = new double[50][4];
@@ -106,7 +97,7 @@ public class HillClimbing {
 		double totTimeAverage = 0;
 		double minRuntime = 0;
 
-		for (int i=0; i<5; i++) {
+		for (int i=0; i<50; i++) {
 				if (i==0) {
 					totValueMax = results[i][0];
 					totParcelsMax = results[i][2];
@@ -155,6 +146,21 @@ public class HillClimbing {
 			if (neighbours != null) {
 				//int random = Random.randomWithRange(0, neighbours.length-1);
 				current = neighbours[0];
+				System.out.println("Local max: " + current.getTotalValue(current.getPacking()));
+				System.out.println("Gaps left: " + current.getTotalGaps());
+				System.out.println("N of packages: " + current.getPacking().length);
+				int nrA = 0;
+				int nrB = 0;
+				int nrC = 0;
+				for (int i=0; i<current.getPacking().length; i++) {
+						if (current.getPacking()[i].getType() == "A")
+							nrA++;
+						else if (current.getPacking()[i].getType() == "B")
+							nrB++;
+						else if (current.getPacking()[i].getType() == "C")
+							nrC++;
+				}
+				System.out.println("Nunber of A: " + nrA + "\n Number of B: " + nrB + "\n Number of C: " + nrC);
 			} else {
 				done = true;
 			}
@@ -180,8 +186,6 @@ public class HillClimbing {
 		System.out.println("N of packages: " + current.getPacking().length);
 		System.out.println("Nunber of A: " + nrA + "\n Number of B: " + nrB + "\n Number of C: " + nrC);
 		System.out.println("Runtime: " + totTime + "ms");
-		localSearch.displaySolution(current);
-
 
 	}
 
