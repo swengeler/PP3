@@ -99,6 +99,16 @@ public class Package {
             orHeight = 3;
             value = 5;
             setPackage("T");
+        }
+        else if (type.equals("Truck")) {
+            length = 10;
+            height = 7;
+            width = 35;
+            orLength = 7;
+            orWidth = 35;
+            orHeight = 9;
+            value = 0;
+            setPackage("Truck");
         } else {
             boolean found = false;
             for (int i = 0; i < newTypes.length && !found; i++) {

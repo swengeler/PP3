@@ -25,26 +25,18 @@ public class CargoSpace {
     private int height;
 
     /**
-    * A three-dimensional array of String objects (denoting the space taken up by certain packages)
-    * used as an internal representation of the cargo space. It does not contain any information about the
-    * placement of individual packages (which are indiscernible in it).
-    */
+     * A three-dimensional array of String objects (denoting the space taken up by certain packages)
+     * used as an internal representation of the cargo space. It does not contain any information about the
+     * placement of individual packages (which are indiscernible in it).
+     */
     private String[][][] cargoSpace;
 
     /**
-    * An array containing information about the placement of individual packages in the form of the types
-    * of packages filling certain positions in the cargo space denoted by the corresponding coordinates in
-    * the packageCoords array.
-    */
+     * An array containing information about the placement of individual packages in the form of the types
+     * of packages filling certain positions in the cargo space denoted by the corresponding coordinates in
+     * the packageCoords array.
+     */
     public Package[] csPacking;
-    /** REDUNDANT
-    * An array containing information about the placement of individual packages in form of the coordinates
-    * of the lower left back-most corner of each package placed in the cargo space (corresponds to the package
-    * types listed in the csPacking array).
-    */
-    public int[][] packageCoords;
-
-    private int nrPlaced;
 
     /**
     * The constructor for a CargoSpace object, assigning it its dimensions, initialising the cargoSpace array
@@ -107,21 +99,42 @@ public class CargoSpace {
     }
 
     /**
-    * A method that adds both the package type and the coordinates of the last package placed to arrays
-    * used for documentation that might be useful later on.
-    *
-    * @param p The latest package that was placed.
-    */
+     * A method that adds both the package type and the coordinates of the last package placed to arrays
+     * used for documentation that might be useful later on.
+     *
+     * @param p The latest package that was placed.
+     */
     public void addToDoc(Package p) {
         if (csPacking == null) {
             csPacking = new Package[1];
-            csPacking[0] = p;
+            csPacking[0] = p.clone();
         } else {
             Package[] newCSF = new Package[csPacking.length + 1];
             System.arraycopy(csPacking, 0, newCSF, 0, csPacking.length);
-            newCSF[newCSF.length - 1] = p;
+            newCSF[newCSF.length - 1] = p.clone();
             csPacking = newCSF;
+            //System.out.println(p.getBaseCoords()[0] + " " + p.getBaseCoords()[1] + " " + p.getBaseCoords()[2]);
         }
+    }
+
+    /**
+     * remove package at index remIndex from the csPacking array
+     * @param remIndex
+     */
+    public void removeFromDoc(int remIndex) {
+    	Package[] newCargoSpaceFilled = new Package[csPacking.length-1];
+    	int index = 0;
+    	while (index < newCargoSpaceFilled.length)
+    	{
+    		if (index<remIndex) {
+    			newCargoSpaceFilled[index] = csPacking[index];
+    			index++;
+    		} else {
+    			newCargoSpaceFilled[index] = csPacking[index+1];
+    			index++;
+    		}
+    	}
+    	this.csPacking = newCargoSpaceFilled;
     }
 
     /**
@@ -130,7 +143,7 @@ public class CargoSpace {
     * as possible.
     *
     * return boolean Returns true if the package can be moved in some direction, otherwise returns false.
-    */
+    **/
     public boolean movable(Package p) {
         p.setBaseY(p.getBaseCoords()[1] - 1);
         if (p.getBaseCoords()[1] >= 0 && !overlap(p)) {
@@ -151,25 +164,36 @@ public class CargoSpace {
     }
 
     /**
-    * Changes the internal representation of the cargo space (the three-dimensional array) in order to
-    * properly represent the package that was placed at a certain position and is now filling up space.
-    *
-    * @param p The Package that is placed in the array/cargo space.
-    */
+     * Changes the internal representation of the cargo space (the three-dimensional array) in order to
+     * properly represent the package that was placed at a certain position and is now filling up space.
+     *
+     * @param p The Package that is placed in the array/cargo space.
+     */
     public void place(Package p) {
-        int[][] coords = p.getCoords();
-        // coords[4][0] should be the x-coordinate of all the corners of the package on the right side
         for (int x = 0; x < p.getLength(); x++) {
-            // coords[1][1] should be the y-coordinate of all the corners of the package on the front side
             for (int y = 0; y < p.getWidth(); y++) {
-                // coords[3][2] should be the z-coordinate of all the corners of the package on the upper side
                 for (int z = 0; z < p.getHeight(); z++) {
                     cargoSpace[x + p.getBaseCoords()[0]][y + p.getBaseCoords()[1]][z + p.getBaseCoords()[2]] = p.getType();
                 }
             }
         }
-        nrPlaced++;
         addToDoc(p);
+    }
+
+    /**
+     * Remove Package p from the internal representation of the cargo space
+     * @param p The Package to be removed
+     */
+    public void remove(Package[] packing, int remIndex) {
+    	Package p = packing[remIndex];
+    	for (int i=0; i < p.getLength(); i++) {
+    		for (int j=0; j<p.getWidth(); j++) {
+    			for (int k=0; k<p.getHeight(); k++) {
+    				cargoSpace[i + p.getBaseCoords()[0]][j + p.getBaseCoords()[1]][k + p.getBaseCoords()[2]] = "Empty";
+    			}
+    		}
+    	}
+    	removeFromDoc(remIndex);
     }
 
     /**
@@ -228,12 +252,12 @@ public class CargoSpace {
     }
 
     /**
-    * A method that checks whether there is any overlap between packages already put in the cargo space
-    * and the package to be put there at its current position.
-    *
-    * @param p The package for which the overlap is to be checked.
-    * @return boolean Returns true if there is no overlap anywhere and false if there is some overlap.
-    */
+     * A method that checks whether there is any overlap between packages already put in the cargo space
+     * and the package to be put there at its current position.
+     *
+     * @param p The package for which the overlap is to be checked.
+     * @return boolean Returns true if there is no overlap anywhere and false if there is some overlap.
+     */
     public boolean overlap(Package p) {
         int[][] coords = p.getCoords();
         boolean noOverlap = true;
@@ -272,17 +296,6 @@ public class CargoSpace {
     }
 
     /**
-    * A method used to print out the "documentation" created during the run of the algorithm. It provides
-    * information printed out in the command line about the location of each of the packages placed in the
-    * cargo space.
-    */
-    public void printDoc() {
-        for (int i = 0; i < packageCoords.length; i++) {
-            System.out.println(csPacking[i].getType() + " package at x = " + packageCoords[i][0] + ", y = " + packageCoords[i][1] + ", z = " + packageCoords[i][2]);
-        }
-    }
-
-    /**
     * A method returning the total value of all the packages that were placed in the cargo space.
     *
     * @return totalValue The total value of all included packages.
@@ -293,6 +306,21 @@ public class CargoSpace {
             tV = tV + csPacking[i].getValue();
         }
         return tV;
+    }
+
+    /**
+    * A method returning the total value of all the packages that were placed in the cargo space.
+    *
+    * @return totalValue The total value of all included packages.
+    */
+    public double getTotalValue(Package[] packing) {
+
+      double totValue = 0;
+
+      for (int i=0; i<packing.length; i++) {
+          totValue += packing[i].getValue();
+      }
+      return totValue;
     }
 
     public void fillCargoSpace(Package[] cargo) {
@@ -332,6 +360,73 @@ public class CargoSpace {
     public Package[] getPacking() {
         return csPacking;
     }
+
+  /**
+  * Looks for an empty space where the aPackage can be placed and set its baseCoords.
+  * @param aPackage
+  * @return int[3] array coords containing the x,y,z base coords
+  **/
+	public int[] getNextEmptySpaceCoords(Package aPackage) {
+		for (int i = 0; i < cargoSpace.length; i++) {
+	          for (int j = 0; j < cargoSpace[i].length; j++) {
+	              for (int k = 0; k < cargoSpace[i][j].length; k++) {
+	                  if (cargoSpace[i][j][k].equals("Empty")) {
+	                	  int coords[] = new int[3];
+	                	  coords[0] = i;
+	                	  coords[1] = j;
+	                	  coords[2] = k;
+	                	  aPackage.setBaseCoords(i, j, k);
+	                	  if (!overlap(aPackage))
+	                		  return coords;
+	                  }
+	              }
+	          }
+		}
+		return null;
+	}
+
+	/**
+	* Fill the cargo following an order of package defined by the parameter packageTypes.
+	* Until there is space to place at least one of the smallest parcel it keeps looking for empty space and
+	* trying to fill them with a specific package.
+	* @param packageTypes An array containing the package types we want to use in the exact order we want to place them. (i.e. {A,B,C}
+	*/
+	public void fillCargo(Package[] packageTypes) {
+		while (getNextEmptySpaceCoords(new Package("A")) != null)
+		{
+			for (int i=0; i<packageTypes.length; i++) {
+				int[] coords;
+				Package p = new Package(packageTypes[i].getType());
+				while (getNextEmptySpaceCoords(p) != null) {
+					p = new Package(packageTypes[i].getType());
+					coords = getNextEmptySpaceCoords(p);
+					place(p);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Randomly fill the cargo by selecting random parcel and placing them into the cargo until there is no
+	 * more space left.
+	 * @param packageTypes An array containing a list of possible parcel types.
+	 * @param allowRotations A boolean value.
+	 */
+	public void fillRandom(Package[] packageTypes, boolean allowRotations) {
+		Package p;
+		int[] coords;
+		while (getNextEmptySpaceCoords(new Package("A")) != null)
+		{
+			p = new Package(packageTypes[Random.randomWithRange(0, packageTypes.length-1)].getType());
+			if (allowRotations) {
+				p.rotateRandom();
+			}
+			coords = getNextEmptySpaceCoords(p);
+			if (coords != null) {
+				place(p);
+			}
+		}
+	}
 
     public int getOverlap(Package[] chromosome) {
         int overlap = 0;

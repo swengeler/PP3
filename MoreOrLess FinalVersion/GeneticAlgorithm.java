@@ -21,11 +21,13 @@ public class GeneticAlgorithm {
     private String SELECTION_MODE = "TOURNAMENT"; // default = "TOURNAMENT"
     private double ELITIST_TOP_PERCENT = 0.1; // default = 0.1
     private int TOURNAMENT_SIZE = (int) (0.1 * POPULATION_SIZE); // default = (int) (0.1 * POPULATION_SIZE)
+    private long totTime;
 
     private Individual[] population;
     private Package[] packageTypes;
     private Package[] statesArray;
     private CargoSpace cargoSpace;
+    private static CargoSpace endCargoSpace;
     private int amountSum;
 
     private int[] amountOfType;
@@ -44,7 +46,7 @@ public class GeneticAlgorithm {
     }
 
     public void run(Package[] types, int[] amountOfType) {
-        int NR_RUNS = 25;
+        int NR_RUNS = 1;
         double overallBest = 0;
         double overallWorst = Double.MAX_VALUE;
         double totalValue = 0;
@@ -61,20 +63,20 @@ public class GeneticAlgorithm {
         //this.amountOfType[0] = 10;
         //this.amountOfType[1] = 10;
         //this.amountOfType[2] = 10;
-        this.amountOfType[0] = 225;
+        this.amountOfType[0] = 83;
         this.amountOfType[1] = 55;
-        this.amountOfType[2] = 83;
+        this.amountOfType[2] = 50;
 
         this.amountForReduction = new int[this.amountOfType.length];
         System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
 
         packageTypes = new Package[3];
-        //packageTypes[0] = new Package("A");
-        //packageTypes[1] = new Package("B");
-        //packageTypes[2] = new Package("C");
-        packageTypes[0] = new Package("O", 5, 1, 1, 1.0);
-        packageTypes[1] = new Package("X", 6, 2, 2, 1.0);
-        packageTypes[2] = new Package("Q", 8, 2, 1, 1.0);
+        packageTypes[0] = new Package("A");
+        packageTypes[1] = new Package("B");
+        packageTypes[2] = new Package("C");
+        //packageTypes[0] = new Package("O", 5, 1, 1, 1.0);
+        //packageTypes[1] = new Package("X", 6, 2, 2, 1.0);
+        //packageTypes[2] = new Package("Q", 8, 2, 1, 1.0);
 
         CargoSpace.packageTypes = packageTypes;
         int[] placed = new int[packageTypes.length];
@@ -187,7 +189,7 @@ public class GeneticAlgorithm {
             }
 
             long endTime = System.currentTimeMillis();
-            long totTime = endTime - startTime;
+            totTime = endTime - startTime;
 
             for (int i = 0; i < bestInd.toCargoSpace().getPacking().length; i++) {
                 if (LOG1) System.out.println(bestInd.toCargoSpace().getPacking()[i].getType() + "-package with value " + bestInd.toCargoSpace().getPacking()[i].getValue());
@@ -195,6 +197,9 @@ public class GeneticAlgorithm {
 
             cargoSpace = new CargoSpace(33, 5, 8);
             cargoSpace = bestInd.toCargoSpace();
+            
+            System.out.println("BEST IND " + bestInd.getChromosome().length);
+            System.out.println("BEST CS " + cargoSpace.getPacking().length);
 
             for (int i = 0; i < placed.length; i++) {
                 placed[i] += cargoSpace.getNrIndivPackages()[i];
@@ -559,17 +564,12 @@ public class GeneticAlgorithm {
     // ********************* //
     // END SELECTION METHODS //
     // ********************* //
-
+    
     public void displaySolution() {
-        JFrame f = new JFrame();
-        f.setSize(750, 770);
-        f.setTitle("GA - Automated Packing");
-        Display display = new Display(cargoSpace.getArray());
-        f.add(display, BorderLayout.CENTER);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setVisible(true);
+        Display3D display = new Display3D();
+        display.represent(endCargoSpace);
     }
-
+    
     public void runTest() {
         System.out.println("------ 1.1 ------");
         POPULATION_SIZE = 10;
@@ -679,6 +679,19 @@ public class GeneticAlgorithm {
         MUTATION_PROB = 0;
     }
 
+	
+	public long getRuntime(){
+		return totTime;
+	}
+	
+	public int[] getNrPack(){
+		return endCargoSpace.getNrIndivPackages();
+	}
+	
+	public int getGaps(){
+		return endCargoSpace.getTotalGaps();
+	}
+
     /**
     * The main class for the genetic algorithm for the knapsack problem.
     *
@@ -691,6 +704,9 @@ public class GeneticAlgorithm {
         GeneticAlgorithm gA = new GeneticAlgorithm();
         gA.run(null, null);
         //gA.runTest();
+        //System.out.println(cargoSpace);
+        endCargoSpace = gA.cargoSpace;
+        gA.displaySolution();
     }
-
+    
 }

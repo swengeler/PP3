@@ -45,6 +45,47 @@ package Poly3D;
 */
 public class HeapSort {
 
+	private static void downheap(CargoSpace cargo[], int k, int N)
+    {
+        CargoSpace cargoSpace = cargo[k - 1];
+        
+        while (k <= N/2) 
+        {
+            int j = k + k;
+            if ((j < N) && (cargo[j - 1].getTotalValue() > cargo[j].getTotalValue())) 
+            j++;
+
+            if (cargoSpace.getTotalValue() <= cargo[j - 1].getTotalValue()) 
+            break;
+
+            else 
+            {
+                cargo[k - 1] =cargo[j - 1];
+                k = j;
+            }
+        }
+        cargo[k - 1] = cargoSpace;
+    }
+	
+	public static void sort(CargoSpace cargo[])
+    {
+        int N = cargo.length;
+        
+        for (int k = N/2; k > 0; k--) 
+        downheap(cargo, k, N);
+
+        do 
+        {
+            CargoSpace cargoSpace = cargo[0];
+            cargo[0] = cargo[N - 1];
+            cargo[N - 1] = cargoSpace;
+            
+            N = N - 1;
+            downheap(cargo, 1, N);
+        } 
+        while (N > 1);
+    }
+	
     public static void sortDownInd(Individual[] i) {
         int N = i.length;
 
