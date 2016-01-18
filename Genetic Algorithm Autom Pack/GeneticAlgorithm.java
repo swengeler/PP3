@@ -1,5 +1,3 @@
-package Poly3D;
-
 import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Array;
@@ -55,23 +53,23 @@ public class GeneticAlgorithm {
         int totalGapsForAverage = 0;
 
         this.amountOfType = new int[3];
-        //this.amountOfType[0] = 10;
-        //this.amountOfType[1] = 10;
-        //this.amountOfType[2] = 10;
-        this.amountOfType[0] = 225;
-        this.amountOfType[1] = 55;
-        this.amountOfType[2] = 83;
+        this.amountOfType[0] = 100;
+        this.amountOfType[1] = 100;
+        this.amountOfType[2] = 100;
+        //this.amountOfType[0] = 225;
+        //this.amountOfType[1] = 55;
+        //this.amountOfType[2] = 83;
 
         this.amountForReduction = new int[this.amountOfType.length];
         System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
 
         packageTypes = new Package[3];
-        //packageTypes[0] = new Package("A");
-        //packageTypes[1] = new Package("B");
-        //packageTypes[2] = new Package("C");
-        packageTypes[0] = new Package("O", 5, 1, 1, 1.0);
-        packageTypes[1] = new Package("X", 6, 2, 2, 1.0);
-        packageTypes[2] = new Package("Q", 8, 2, 1, 1.0);
+        packageTypes[0] = new Package("A");
+        packageTypes[1] = new Package("B");
+        packageTypes[2] = new Package("C");
+        //packageTypes[0] = new Package("O", 5, 1, 1, 1.0);
+        //packageTypes[1] = new Package("X", 6, 2, 2, 1.0);
+        //packageTypes[2] = new Package("Q", 8, 2, 1, 1.0);
 
         CargoSpace.packageTypes = packageTypes;
         int[] placed = new int[packageTypes.length];

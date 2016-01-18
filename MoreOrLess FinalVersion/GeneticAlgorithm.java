@@ -1,5 +1,3 @@
-package Poly3D;
-
 import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Array;
@@ -45,8 +43,18 @@ public class GeneticAlgorithm {
         this.test = true;
     }
 
+    /**
+    * The primary method of the class GeneticAlgorithm. It creates an initial population of individuals
+    * with randomly generated chromosomes (that contain all of the packages specified). Then it uses a
+    * loop to evolve that population over several generations using the selection, crossover and mutation
+    * methods provided in the class.
+    *
+    * @param types An array containing all the types of packages that can be used to generate a solution.
+    * @param amountOfType An array corresponding to the types array, designating the maximum number of
+    *                     packages that can be placed of the corresponding package type.
+    */
     public void run(Package[] types, int[] amountOfType) {
-        int NR_RUNS = 1;
+        int NR_RUNS = 25;
         double overallBest = 0;
         double overallWorst = Double.MAX_VALUE;
         double totalValue = 0;
@@ -60,23 +68,24 @@ public class GeneticAlgorithm {
         int totalGapsForAverage = 0;
 
         this.amountOfType = new int[3];
-        //this.amountOfType[0] = 10;
-        //this.amountOfType[1] = 10;
-        //this.amountOfType[2] = 10;
-        this.amountOfType[0] = 83;
-        this.amountOfType[1] = 55;
-        this.amountOfType[2] = 50;
+        //this.amountOfType[0] = 264;
+        //this.amountOfType[1] = 55;
+        //this.amountOfType[2] = 83;
+        this.amountOfType[0] = 66;
+        this.amountOfType[1] = 147;
+        this.amountOfType[2] = 28;
+        //this.amountOfType[3] = 220;
 
         this.amountForReduction = new int[this.amountOfType.length];
         System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
 
         packageTypes = new Package[3];
-        packageTypes[0] = new Package("A");
-        packageTypes[1] = new Package("B");
-        packageTypes[2] = new Package("C");
-        //packageTypes[0] = new Package("O", 5, 1, 1, 1.0);
-        //packageTypes[1] = new Package("X", 6, 2, 2, 1.0);
-        //packageTypes[2] = new Package("Q", 8, 2, 1, 1.0);
+        //packageTypes[0] = new Package("A");
+        //packageTypes[1] = new Package("B");
+        //packageTypes[2] = new Package("C");
+        packageTypes[0] = new Package("Flat1", 4, 5, 1, 1.0);
+        packageTypes[1] = new Package("Flat2", 3, 3, 1, 1.0);
+        packageTypes[2] = new Package("Flat3", 6, 4, 2, 1.0);
 
         CargoSpace.packageTypes = packageTypes;
         int[] placed = new int[packageTypes.length];
@@ -181,7 +190,7 @@ public class GeneticAlgorithm {
                     noChange++;
                 else
                     noChange = 0;
-                if ((bestInd.getFitness() < 20 || bestInd.getFitness() > (0.8 * maxValueSum)) && noChange > 200) {
+                if ((bestInd.getFitness() > 230 || bestInd.getFitness() > (0.8 * maxValueSum)) && noChange > 200) {
                     noChange = 0;
                     change = false;
                 }
@@ -197,9 +206,6 @@ public class GeneticAlgorithm {
 
             cargoSpace = new CargoSpace(33, 5, 8);
             cargoSpace = bestInd.toCargoSpace();
-            
-            System.out.println("BEST IND " + bestInd.getChromosome().length);
-            System.out.println("BEST CS " + cargoSpace.getPacking().length);
 
             for (int i = 0; i < placed.length; i++) {
                 placed[i] += cargoSpace.getNrIndivPackages()[i];
@@ -273,6 +279,14 @@ public class GeneticAlgorithm {
 
     }
 
+    /**
+    * A method used to determine the position of a package used in the packing of the cargo cargo space
+    * in the packageType array. It is mostly used to also get information about the number of packages
+    * of that type which should be placed/that are left.
+    *
+    * @param p The package for which the position in the packageType/amountOfType array should be determined.
+    * @return counter The index of the position of said package in the array.
+    */
     private int getPositionInArray(Package p) {
         int counter = 0;
         while (!p.getType().equalsIgnoreCase(packageTypes[counter].getType()))
@@ -280,6 +294,14 @@ public class GeneticAlgorithm {
         return counter;
     }
 
+    /**
+    * A method to set the fitness of every individual in the population to be sorted and then sorting the
+    * individuals by their fitness values.
+    *
+    * @param population The population to be sorted.
+    * @return population The same population, now with updated fitness values and sorted according to the
+    *                    individuals' fitness.
+    */
     private Individual[] fitnessAndSort(Individual[] population) {
         for (int i = 0; i < population.length; i++) {
             population[i].setFitness();
@@ -288,6 +310,14 @@ public class GeneticAlgorithm {
         return population;
     }
 
+    /**
+    * A method creating a new population from the former generation's population by crossover. Depending on
+    * one of the parameters of the genetic algorithms different selection methods for the parents of each
+    * child individual in the new population are chosen.
+    *
+    * @param population The old population (parents).
+    * @return newPopulation The new population (children).
+    */
     private Individual[] reproduce(Individual[] population) {
         Individual[] newPopulation = new Individual[POPULATION_SIZE];
         for (int i = 0; i < newPopulation.length; i++) {
@@ -303,15 +333,19 @@ public class GeneticAlgorithm {
                 Individual parent1 = rouletteSelection(population);
                 Individual parent2 = rouletteSelection(population);
                 newPopulation[i] = crossOver(parent1, parent2);
-            } else if (SELECTION_MODE.equalsIgnoreCase("RANDOM")) {
-                Individual parent1 = randomSelection(population);
-                Individual parent2 = randomSelection(population);
-                newPopulation[i] = crossOver(parent1, parent2);
             }
         }
         return newPopulation;
     }
 
+    /**
+    * A method that applies a "modified crossover" which maintains package ordering and the correct number
+    * of each package type in the chromosome.
+    *
+    * @param parent1 The first parent.
+    * @param parent2 The second parent.
+    * @return child The child created by crossover between the parents' chromosomes.
+    */
     public Individual crossOver(Individual parent1, Individual parent2) {
         System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
         for (int i = 0; i < this.amountForReduction.length; i++) {
@@ -398,93 +432,13 @@ public class GeneticAlgorithm {
         return mutate(mutateSwap(child));
     }
 
-    public Individual crossOver1(Individual parent1, Individual parent2) {
-        System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
-        for (int i = 0; i < this.amountForReduction.length; i++) {
-            //System.out.println(this.packageTypes[i].getType() + ": " + this.amountForReduction[i]);
-        }
-        int[] childChr = new int[parent1.getChromosome().length];
-        if (CROSSOVER_FREQ > 0) {
-            int[] crossOverPoints = Random.randomListWithRange(0, childChr.length - 1, 2);
-            HeapSort.sortUpInt(crossOverPoints);
-            System.out.println("Crossover points: " + crossOverPoints[0] + " and " + crossOverPoints[1]);
-            for (int i = crossOverPoints[0]; i < crossOverPoints[1]; i++) {
-                childChr[i] = parent2.getChromosome()[i];
-                this.amountForReduction[this.getPositionInArray(statesArray[parent2.getChromosome()[i]])]--;
-                System.out.println("Middle " + i + ": " + childChr[i]);
-                System.out.println("Amount array (" + this.getPositionInArray(statesArray[parent2.getChromosome()[i]]) + ", " + statesArray[parent2.getChromosome()[i]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent2.getChromosome()[i]])]);
-            }
-            for (int i = crossOverPoints[1]; i < childChr.length; i++) {
-                if (this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[i]])] > 0) {
-                    childChr[i] = parent1.getChromosome()[i];
-                    this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[i]])]--;
-                    System.out.println("1Amount array (" + this.getPositionInArray(statesArray[parent1.getChromosome()[i]])+ ", " + statesArray[parent1.getChromosome()[i]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[i]])]);
-                } else {
-                    boolean found = false;
-                    for (int k = i; k < parent1.getChromosome().length && !found; k++) {
-                        if (this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])] > 0) {
-                            childChr[i] = parent1.getChromosome()[k];
-                            this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]--;
-                            System.out.println("2Amount array (" + this.getPositionInArray(statesArray[parent1.getChromosome()[k]])+ ", " + statesArray[parent1.getChromosome()[k]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]);
-                            found = true;
-                        }
-                    }
-                    if (!found) {
-                        boolean found2 = false;
-                        for (int k = 0; k < i && !found2; k++) {
-                            if (this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])] > 0) {
-                                childChr[i] = parent1.getChromosome()[k];
-                                this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]--;
-                                System.out.println("3Amount array (" + this.getPositionInArray(statesArray[parent1.getChromosome()[k]])+ ", " + statesArray[parent1.getChromosome()[k]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]);
-                                found2 = true;
-                            }
-                        }
-                    }
-                }
-                System.out.println("End " + i + ": " + childChr[i]);
-            }
-            for (int i = 0; i < crossOverPoints[0]; i++) {
-                if (this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[i]])] > 0) {
-                    childChr[i] = parent1.getChromosome()[i];
-                    this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[i]])]--;
-                    System.out.println("4Amount array (" + this.getPositionInArray(statesArray[parent1.getChromosome()[i]])+ ", " + statesArray[parent1.getChromosome()[i]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[i]])]);
-                } else {
-                    boolean found = false;
-                    for (int k = i; k < parent1.getChromosome().length && !found; k++) {
-                        if (this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])] > 0) {
-                            childChr[i] = parent1.getChromosome()[k];
-                            this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]--;
-                            System.out.println("5Amount array (" + this.getPositionInArray(statesArray[parent1.getChromosome()[k]])+ ", " + statesArray[parent1.getChromosome()[k]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]);
-                            found = true;
-                        }
-                    }
-                    if (!found) {
-                        boolean found2 = false;
-                        for (int k = 0; k < i && !found2; k++) {
-                            if (this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])] > 0) {
-                                childChr[i] = parent1.getChromosome()[k];
-                                this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]--;
-                                System.out.println("6Amount array (" + this.getPositionInArray(statesArray[parent1.getChromosome()[k]])+ ", " + statesArray[parent1.getChromosome()[k]].getType() + ") to " + this.amountForReduction[this.getPositionInArray(statesArray[parent1.getChromosome()[k]])]);
-                                found2 = true;
-                            }
-                        }
-                    }
-                }
-                System.out.println("Front " + i + ": " + childChr[i]);
-            }
-            System.out.println();
-        } else {
-            if (Math.random() < 0.5)
-                System.arraycopy(parent1.getChromosome(), 0, childChr, 0, childChr.length);
-            else
-                System.arraycopy(parent2.getChromosome(), 0, childChr, 0, childChr.length);
-        }
-        Individual child = new Individual(childChr);
-        return mutate(mutateSwap(child));
-    }
-
-
-
+    /**
+    * A (mostly unused) method that randomly rotates the packages in an individuals chromosome,
+    * thereby mutating it.
+    *
+    * @param ind The individual whose chromosome should be mutated.
+    * @return ind The individual after its chromosome has been mutated.
+    */
     private Individual mutate(Individual ind) {
         int[] chromosome = ind.getChromosome();
         Package p;
@@ -497,15 +451,19 @@ public class GeneticAlgorithm {
                 while (newGene == chromosome[i]) {
                     newGene = Random.randomWithRange(position, (position + nrRot - 1));
                 }
-                //System.out.print("Gene changed from " + statesArray[chromosome[i]].getType());
                 chromosome[i] = newGene;
-                //System.out.println(" to " + statesArray[chromosome[i]].getType());
             }
         }
         ind.setChromosome(chromosome);
         return ind;
     }
 
+    /**
+    * A second mutation method. It swaps a certain number of genes in a chromosome with other genes.
+    *
+    * @param ind The individual whose chromosome should be mutated.
+    * @return ind The individual after its chromosome has been mutated.
+    */
     private Individual mutateSwap(Individual ind) {
         int[] chromosome = ind.getChromosome();
         for (int i = 0; i < chromosome.length; i++) {
@@ -520,15 +478,26 @@ public class GeneticAlgorithm {
         return ind;
     }
 
-    // ***************** //
-    // SELECTION METHODS //
-    // ***************** //
-
+    /**
+    * A selection method applying elitist selection. It randomly chooses one individual from a certain
+    * percentage of the fittest individuals in the population.
+    *
+    * @param population The population from which an individual should be chosen for reproduction.
+    * @return Individual The randomly selected individual.
+    */
     private Individual elitistSelection(Individual[] population) {
         int randomSelect = (int) (Math.random() * (population.length * ELITIST_TOP_PERCENT));
         return population[randomSelect];
     }
 
+    /**
+    * A selection method applying roulette selection. Each individual has a certain probability to be
+    * selected for reproduction. That probability is much higher for fitter individuals than for
+    * "weakest" ones.
+    *
+    * @param population The population from which an individual should be chosen for reproduction.
+    * @return Individual The selected individual.
+    */
     private Individual rouletteSelection(Individual[] population) {
         double randomSelect = Math.random();
         int randomFromSelected;
@@ -543,6 +512,14 @@ public class GeneticAlgorithm {
         return population[randomFromSelected];
     }
 
+    /**
+    * A selection method applying tournament selecction. A certain number of individuals from the
+    * population is chosen for a "tournament". The fittest of these individual is selected for
+    * reproduction.
+    *
+    * @param population The population from which an individual should be chosen for reproduction.
+    * return Individual The selected indivual (fittest in the current tournament).
+    */
     private Individual tournamentSelection(Individual[] population) {
         if (TOURNAMENT_SIZE > 0) {
             Individual[] tournament = new Individual[TOURNAMENT_SIZE];
@@ -556,20 +533,11 @@ public class GeneticAlgorithm {
             return population[Random.randomWithRange(0, population.length - 1)];
     }
 
-    private Individual randomSelection(Individual[] population) {
-        int randomSelect = Random.randomWithRange(0, population.length - 1);
-        return population[randomSelect];
-    }
-
-    // ********************* //
-    // END SELECTION METHODS //
-    // ********************* //
-    
     public void displaySolution() {
         Display3D display = new Display3D();
         display.represent(endCargoSpace);
     }
-    
+
     public void runTest() {
         System.out.println("------ 1.1 ------");
         POPULATION_SIZE = 10;
@@ -679,15 +647,15 @@ public class GeneticAlgorithm {
         MUTATION_PROB = 0;
     }
 
-	
+
 	public long getRuntime(){
 		return totTime;
 	}
-	
+
 	public int[] getNrPack(){
 		return endCargoSpace.getNrIndivPackages();
 	}
-	
+
 	public int getGaps(){
 		return endCargoSpace.getTotalGaps();
 	}
@@ -706,7 +674,7 @@ public class GeneticAlgorithm {
         //gA.runTest();
         //System.out.println(cargoSpace);
         endCargoSpace = gA.cargoSpace;
-        gA.displaySolution();
+        //gA.displaySolution();
     }
-    
+
 }

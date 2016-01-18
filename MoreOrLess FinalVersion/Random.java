@@ -1,5 +1,3 @@
-package Poly3D;
-
 /**
 * A class containing methods used to generate random integers.
 *

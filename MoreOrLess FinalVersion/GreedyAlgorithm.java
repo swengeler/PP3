@@ -1,5 +1,3 @@
-package Poly3D;
-
 import java.util.Scanner;
 import java.util.*;
 import javax.swing.JFrame;
@@ -16,11 +14,11 @@ import java.awt.BorderLayout;
 * @author Simon Wengeler
 */
 public class GreedyAlgorithm {
-	
+
     private static ArrayList<Package> packagesLeft;
-    
+
     private static CargoSpace bestCS;
-    
+
     private static long totalTime;
     /**
     * The number of times the algorithm is used to calculate a solution in order to find the best one
@@ -29,12 +27,12 @@ public class GreedyAlgorithm {
     private static final int NR_RUNS = 1;
 
     static int[] nrPack = new int[6];
-    
+
     /**
     * A list (in array form) of the packages which are supposed to be placed in the cargo space.
     */
     private static Package[] packages;
-    
+
     /**
     * The main method of the class, initialising the array used for the internal representation
     * of the cargo space, asking for the number of certain package types to be used and
@@ -46,9 +44,9 @@ public class GreedyAlgorithm {
         Scanner in = new Scanner(System.in);
 
         CargoSpace[] allCS = new CargoSpace[NR_RUNS];
-         
+
         int nrA = nrPack[0], nrB = nrPack[1], nrC = nrPack[2], nrL = nrPack[3], nrP = nrPack[4], nrT = nrPack[5];
-        
+
         int nrPackages = nrA + nrB + nrC + nrL + nrP + nrT;
         packages = new Package[nrPackages];
         for (int i = 0; i < nrC; i++)
@@ -65,7 +63,7 @@ public class GreedyAlgorithm {
             packages[i] = new Package("T");
 
         ArrayList<Integer> randomNumbers;
-  
+
         for (int i  = 0; i < NR_RUNS; i++) {
             CargoSpace cs = new CargoSpace(33, 5, 8);
             boolean done = false;
@@ -109,18 +107,18 @@ public class GreedyAlgorithm {
         /*for(int i = 0; i<bestCS.cargoSpaceFilled.length; i++){
         	bestCS.simplePrint();
         }*/
-        System.out.println("BEST VALUE: " + bestCS.getTotalValue());  
+        System.out.println("BEST VALUE: " + bestCS.getTotalValue());
         Display3D.represent(bestCS);
     }
-    
+
     public long getRuntime(){
     	return totalTime;
     }
-    
+
     public int getGaps(){
     	return bestCS.getTotalGaps();
     }
-    
+
     public int getLeftPackages(){
     	return packagesLeft.size();
     }

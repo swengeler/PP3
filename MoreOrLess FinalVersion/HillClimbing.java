@@ -1,14 +1,12 @@
-package Poly3D;
-
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 
 public class HillClimbing {
-	
+
 	private static long totTime;
 	private static int nrA, nrB, nrC;
 	private static CargoSpace current;
-	
+
 	/** genArbitrarySolution **/
 	public CargoSpace genArbitrarySolution(CargoSpace current, Package[] packageTypes, boolean allowRotations) {
 		CargoSpace arbitraryCargo = new CargoSpace(current.getLength(),current.getWidth(),current.getHeight());
@@ -69,7 +67,7 @@ public class HillClimbing {
 			System.out.println("N of packages: " + current.getPacking().length);
 			System.out.println("Number of A: " + nrA + "\n Number of B: " + nrB + "\n Number of C: " + nrC);
 			System.out.println("Runtime: " + totTime + "ms");
-			
+
 		}
 		long endTime = System.currentTimeMillis();
 		totTime = endTime - startTime;
@@ -132,15 +130,15 @@ public class HillClimbing {
 		}
 		return newSuccessors;
 	}
-	
+
 	public long getRuntime(){
 		return totTime;
 	}
-	
+
 	public int[] getNrPack(){
 		return new int[]{nrA,nrB,nrC};
 	}
-	
+
 	public int getGaps(){
 		return current.getTotalGaps();
 	}

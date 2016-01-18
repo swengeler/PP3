@@ -1,5 +1,3 @@
-package Poly3D;
-
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -23,7 +21,7 @@ public class MainFrame extends JPanel{
    public MainFrame(){
        setBounds(0,0,width,height);
    }
-   
+
    public static void main(String[]args) throws InterruptedException, AWTException {
        xyz=new JFrame();
        xyz.setLayout(null);
@@ -44,37 +42,37 @@ public class MainFrame extends JPanel{
            xyz.add(text[i]);
            xyz.add(spinner[i]);
        }
-       
+
        spinner[3].setEnabled(false);
        spinner[4].setEnabled(false);
        spinner[5].setEnabled(false);
-       
+
        text[0].setText("A");
        text[1].setText("B");
        text[2].setText("C");
        text[3].setText("L");
        text[4].setText("P");
        text[5].setText("T");
-       
+
        text[6] = new JLabel();
        text[6].setBounds(50, 150, 250, 50);
        text[6].setFont(new Font(text[6].getFont().getName(),text[6].getFont().getStyle(),15));
        text[6].setText("Packages Left: ");
        xyz.add(text[6]);
-       
+
        text[7] = new JLabel();
        text[7].setBounds(50, 175, 250, 50);
        text[7].setFont(new Font(text[6].getFont().getName(),text[6].getFont().getStyle(),15));
        text[7].setText("Time taken: ");
        xyz.add(text[7]);
-        
+
        text[8] = new JLabel();
        text[8].setBounds(50, 200, 250, 50);
        text[8].setFont(new Font(text[6].getFont().getName(),text[6].getFont().getStyle(),15));
        text[8].setText("Gaps Left: ");
        xyz.add(text[8]);
-       
-       
+
+
        disp2D = new JCheckBox();
        disp2D.setBounds(620, 290, 100, 25);
        disp2D.setText("Toggle rep");
@@ -86,7 +84,7 @@ public class MainFrame extends JPanel{
     		}
        });
        xyz.add(disp2D);
-       
+
        startButton = new JButton();
        startButton.setBounds(625, 75, 100, 50);
        startButton.setText("Greedy");
@@ -97,7 +95,7 @@ public class MainFrame extends JPanel{
     		   GreedyAlgorithm g = new GreedyAlgorithm();
     		   if((int)spinner[0].getValue() >= 0 || (int)spinner[1].getValue() >= 0 || (int) spinner[2].getValue() >= 0){
 	    		   for(int i = 0; i<spinner.length;i++){
-	    			   g.nrPack[i] = (int) spinner[i].getValue();      
+	    			   g.nrPack[i] = (int) spinner[i].getValue();
 	    			   cntr += (int) spinner[i].getValue();
 	    		   }
     		   }
@@ -111,7 +109,7 @@ public class MainFrame extends JPanel{
     		}
        });
        xyz.add(startButton);
-       
+
        hillClimbing = new JButton();
        hillClimbing.setBounds(625, 150, 100, 50);
        hillClimbing.setText("HillClimbing");
@@ -127,7 +125,7 @@ public class MainFrame extends JPanel{
 			}
        });
        xyz.add(hillClimbing);
-       
+
        genetic = new JButton();
        genetic.setBounds(625, 225, 100, 50);
        genetic.setText("Genetic");
@@ -143,13 +141,13 @@ public class MainFrame extends JPanel{
 			}
        });
        xyz.add(genetic);
-       
-       
+
+
        cubes = new Cube[3];
        cubes[0] = new Cube(new Package("A"),100,300,100);
        cubes[1] = new Cube(new Package("B"),300,300,100);
        cubes[2] = new Cube(new Package("C"),500,300,100);
-    
+
        t = new Timer(10, new ActionListener(){
     	   public void actionPerformed(ActionEvent e) {
 			for(int i = 0; i<cubes.length; i++){
@@ -158,16 +156,16 @@ public class MainFrame extends JPanel{
 				//cubes[i].RotateZ(3);
 				xyz.repaint();
 			}
-    	   }  
+    	   }
        });
-       
+
        t.start();
-       
+
        m = new MainFrame();
        xyz.setVisible(true);
        xyz.add(m);
        xyz.repaint();
-          
+
    }
 
    @Override
@@ -191,11 +189,11 @@ public class MainFrame extends JPanel{
 					if(l == 1)g.setColor(new Color(0,0,200));
 					if(l == 2)g.setColor(new Color(0,0,150));
 				}
-				
+
 				g2.fillPolygon(cubes[i].createPolygons()[l]);
 				g2.setColor(Color.BLACK);
 				g2.drawPolygon(cubes[i].createPolygons()[l]);
-				
+
 			}
 		}
    }

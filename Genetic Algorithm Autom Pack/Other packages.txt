@@ -1,0 +1,152 @@
+SMALL
+Small1: 2x2x1 (max 330), Small2: 1x2x3 (max 220), Small3: 2x2x2 (max 165)
+
+Max value: 330
+
+1)
+OVERALL RESULTS OVER 25 ITERATIONS
+VALUE - Best: 296.0
+VALUE - Average: 289.28
+VALUE - Worst: 284.0
+RUNTIME - Best: 11565
+RUNTIME - Average: 12479.16
+RUNTIME - Worst: 13539
+GAPS - Best: 50
+GAPS - Average: 70.56
+GAPS - Worst: 88
+
+PACKAGES PLACED
+Most:     Small1: 269 Small2: 31 Small3: 15
+Average:  Small1: 255.28 Small2: 21.84 Small3: 12.16
+Fewest:   Small1: 242 Small2: 14 Small3: 8
+
+PARAMETERS USED
+Population size: 85
+Selection mode: tournament
+Tournament size: 8
+Mutation probability: 0.0
+Swap probability: 0.05
+
+----------------------------------------------------------------------------
+
+BIG
+Big1: 4x6x6 (max 10), Big2: 4x5x6 (max 11), Big3: 5x5x5 (max 11)
+
+Max value: 11
+
+OVERALL RESULTS OVER 25 ITERATIONS
+VALUE - Best: 10.0
+VALUE - Average: 10.0
+VALUE - Worst: 10.0
+RUNTIME - Best: 57521
+RUNTIME - Average: 61883.96
+RUNTIME - Worst: 76590
+GAPS - Best: 123
+GAPS - Average: 149.56
+GAPS - Worst: 168
+
+PACKAGES PLACED
+Most:     Big1: 6 Big2: 8 Big3: 1
+Average:  Big1: 3.72 Big2: 6.24 Big3: 0.04
+Fewest:   Big1: 1 Big2: 4 Big3: 0
+
+PARAMETERS USED
+Population size: 85
+Selection mode: tournament
+Tournament size: 8
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+----------------------------------------------------------------------------
+
+COMPACT
+Compact1: 2x2x2 (max 165), C: 3x3x3 (max 50), Compact3: 4x4x4 (max 21)
+
+Max value: 165
+
+OVERALL RESULTS OVER 25 ITERATIONS
+VALUE - Best: 110.0
+VALUE - Average: 108.56
+VALUE - Worst: 74.0
+RUNTIME - Best: 40572
+RUNTIME - Average: 45626.04
+RUNTIME - Worst: 55110
+GAPS - Best: 468
+GAPS - Average: 715.68
+GAPS - Worst: 726
+
+PACKAGES PLACED
+Most:     Compact1: 2 C: 22 Compact3: 2
+Average:  Compact1: 0.08 C: 21.68 Compact3: 0.08
+Fewest:   Compact1: 0 C: 14 Compact3: 0
+
+PARAMETERS USED
+Population size: 85
+Selection mode: tournament
+Tournament size: 8
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+----------------------------------------------------------------------------
+
+LONG
+Long1: 5x1x1 (max 264), Long2: 6x2x2 (max 55), Long3: 8x2x1 (max 83)
+
+Max value: 264
+
+OVERALL RESULTS OVER 25 ITERATIONS
+VALUE - Best: 252.0
+VALUE - Average: 248.6
+VALUE - Worst: 240.0
+RUNTIME - Best: 16977
+RUNTIME - Average: 85670.68
+RUNTIME - Worst: 122265
+GAPS - Best: 15
+GAPS - Average: 29.72
+GAPS - Worst: 43
+
+PACKAGES PLACED
+Most:     Long1: 250 Long2: 1 Long3: 6
+Average:  Long1: 244.36 Long2: 0.08 Long3: 4.16
+Fewest:   Long1: 233 Long2: 0 Long3: 2
+
+PARAMETERS USED
+Population size: 85
+Selection mode: tournament
+Tournament size: 8
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+----------------------------------------------------------------------------
+
+FLAT
+Flat1: 4x5x1 (max 66), Flat2: 3x3x1 (147), Flat3: 6x4x2 (max 28)
+
+Max value: 146
+
+OVERALL RESULTS OVER 25 ITERATIONS
+VALUE - Best: 132.0
+VALUE - Average: 130.68
+VALUE - Worst: 125.0
+RUNTIME - Best: 71247
+RUNTIME - Average: 81555.08
+RUNTIME - Worst: 95142
+GAPS - Best: 60
+GAPS - Average: 121.44
+GAPS - Worst: 144
+
+PACKAGES PLACED
+Most:     Flat1: 9 Flat2: 132 Flat3: 0
+Average:  Flat1: 2.04 Flat2: 128.64 Flat3: 0.0
+Fewest:   Flat1: 0 Flat2: 118 Flat3: 0
+
+PARAMETERS USED
+Population size: 85
+Selection mode: tournament
+Tournament size: 8
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
