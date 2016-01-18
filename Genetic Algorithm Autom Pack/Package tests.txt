@@ -1,0 +1,142 @@
+SMALL PACKAGES (Best in 1D: 330)
+G: 2x2x1, H: 1x2x3, I: 2x2x2
+----- 1 -----
+OVERALL RESULTS OVER 25 ITERATIONS
+VALUE - Best: 296.0
+VALUE - Average: 288.44
+VALUE - Worst: 283.0
+RUNTIME - Best: 7760
+RUNTIME - Average: 7924.72
+RUNTIME - Worst: 8148
+GAPS - Best: 48
+GAPS - Average: 73.28
+GAPS - Worst: 96
+
+PACKAGES PLACED
+Most:     G: 265 H: 36 I: 16
+Average:  G: 253.52 H: 23.36 I: 11.56
+Fewest:   G: 241 H: 18 I: 7
+
+PARAMETERS USED
+Population size: 85
+Selection mode: tournament
+Tournament size: 8
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+----- 2 -----
+OVERALL RESULTS OVER 25 ITERATIONS
+VALUE - Best: 305.0
+VALUE - Average: 298.92
+VALUE - Worst: 292.0
+RUNTIME - Best: 14576
+RUNTIME - Average: 15089.0
+RUNTIME - Worst: 16004
+GAPS - Best: 24
+GAPS - Average: 53.6
+GAPS - Worst: 80
+
+PACKAGES PLACED
+Most:     G: 285 H: 24 I: 15
+Average:  G: 273.04 H: 16.4 I: 9.48
+Fewest:   G: 258 H: 9 I: 5
+
+PARAMETERS USED
+Population size: 150
+Selection mode: tournament
+Tournament size: 15
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+----- 3 ------
+OVERALL RESULTS OVER 25 ITERATIONS
+VALUE - Best: 316.0
+VALUE - Average: 307.12
+VALUE - Worst: 301.0
+RUNTIME - Best: 21685
+RUNTIME - Average: 22141.92
+RUNTIME - Worst: 23035
+GAPS - Best: 18
+GAPS - Average: 36.8
+GAPS - Worst: 56
+
+PACKAGES PLACED
+Most:     G: 303 H: 17 I: 15
+Average:  G: 288.32 H: 10.24 I: 8.56
+Fewest:   G: 278 H: 5 I: 4
+
+PARAMETERS USED
+Population size: 220
+Selection mode: tournament
+Tournament size: 22
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+COMPACT PACKAGES (Best in 1D: 243)
+M: 2x2x2, C: 3x3x3, N: 4x4x4
+----- 1 -----
+Run No. 0
+Run No. 10
+Run No. 20
+OVERALL RESULTS OVER 25 ITERATIONS
+VALUE - Best: 231.0
+VALUE - Average: 229.96
+VALUE - Worst: 228.0
+RUNTIME - Best: 4762
+RUNTIME - Average: 32001.96
+RUNTIME - Worst: 37065
+GAPS - Best: 86
+GAPS - Average: 98.48
+GAPS - Worst: 110
+
+PACKAGES PLACED
+Most:     J: 60 C: 22 L: 21
+Average:  J: 57.68 C: 22.0 L: 20.76
+Fewest:   J: 56 C: 22 L: 20
+
+PARAMETERS USED
+Population size: 85
+Selection mode: tournament
+Tournament size: 8
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+BIG PACKAGES (Best in 1D: 55)
+J: 4x6x6, K: 4x6x5, L: 5x5x5
+----- 1 -----
+OVERALL RESULTS OVER 25 ITERATIONS
+VALUE - Best: 42.0
+VALUE - Average: 41.76
+VALUE - Worst: 41.0
+RUNTIME - Best: 5917
+RUNTIME - Average: 6277.28
+RUNTIME - Worst: 6651
+GAPS - Best: 128
+GAPS - Average: 178.88
+GAPS - Worst: 272
+
+PACKAGES PLACED
+Most:     J: 1 K: 9 L: 11
+Average:  J: 0.08 K: 8.68 L: 11.0
+Fewest:   J: 0 K: 7 L: 11
+
+PARAMETERS USED
+Population size: 85
+Selection mode: tournament
+Tournament size: 8
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+LONG PACKAGES (Best in 1D: )
+O: 5x1x1, P: 6x2x2, Q: 8x2x1

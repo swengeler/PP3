@@ -1,0 +1,23 @@
+OVERALL RESULTS OVER 25 ITERATIONS
+VALUE - Best: 221.0
+VALUE - Average: 189.88
+VALUE - Worst: 184.0
+RUNTIME - Best: 75965
+RUNTIME - Average: 84618.2
+RUNTIME - Worst: 88863
+GAPS - Best: 63
+GAPS - Average: 98.12
+GAPS - Worst: 139
+
+PACKAGES PLACED
+Most:     A: 41 B: 19 C: 15 D: 21
+Average:  A: 26.2 B: 14.64 C: 7.4 D: 15.72
+Fewest:   A: 17 B: 5 C: 3 D: 0
+
+PARAMETERS USED
+Population size: 200
+Selection mode: tournament
+Tournament size: 20
+Mutation probability: 0.0
+Swap probability: 0.2
+Crossover frequency: 2

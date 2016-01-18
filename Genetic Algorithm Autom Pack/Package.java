@@ -69,7 +69,7 @@ public class Package {
             orHeight = 3;
             value = 5;
             setPackage("C");
-        } 
+        }
         else if (type.equals("L")) {
             length = 4;
             height = 1;
@@ -126,6 +126,7 @@ public class Package {
         this.length = length;
         this.orLength = length;
         this.value = value;
+
 
         String[] nnTypes = new String[newTypes.length + 1];
         System.arraycopy(newTypes, 0, nnTypes, 0, newTypes.length);

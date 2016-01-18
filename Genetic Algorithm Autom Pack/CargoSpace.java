@@ -21,8 +21,6 @@ public class CargoSpace {
     private int width;
     /** The height of the cargo space (in 0.5m).*/
     private int height;
-    /** The total value of all packages in the cargo space (calculated when the algorithm is finished).*/
-    private double totalValue;
 
     /**
     * A three-dimensional array of String objects (denoting the space taken up by certain packages)
@@ -58,7 +56,6 @@ public class CargoSpace {
         this.length = length;
         this.width = width;
         this.height = height;
-        totalValue = 0;
         cargoSpace = new String[length][width][height];
         initialiseCS();
     }
@@ -123,7 +120,6 @@ public class CargoSpace {
             newCSF[newCSF.length - 1] = p;
             csPacking = newCSF;
         }
-        totalValue += p.getValue();
     }
 
     /**
@@ -240,7 +236,9 @@ public class CargoSpace {
         int[][] coords = p.getCoords();
         boolean noOverlap = true;
         for (int i = 0; i < coords.length && noOverlap; i++) {
-            if (p.getBaseCoords()[0] + coords[i][0] >= cargoSpace.length || p.getBaseCoords()[1] + coords[i][1] >= cargoSpace[0].length || p.getBaseCoords()[2] + coords[i][2] >= cargoSpace[0][0].length || !cargoSpace[p.getBaseCoords()[0] + coords[i][0]][p.getBaseCoords()[1] + coords[i][1]][p.getBaseCoords()[2] + coords[i][2]].equals("Empty")) {
+            if (p.getBaseCoords()[0] + coords[i][0] < 0 || p.getBaseCoords()[1] + coords[i][1] < 0 || p.getBaseCoords()[2] + coords[i][2]< 0)
+                noOverlap = false;
+            if (noOverlap && (p.getBaseCoords()[0] + coords[i][0] >= cargoSpace.length || p.getBaseCoords()[1] + coords[i][1] >= cargoSpace[0].length || p.getBaseCoords()[2] + coords[i][2] >= cargoSpace[0][0].length || !cargoSpace[p.getBaseCoords()[0] + coords[i][0]][p.getBaseCoords()[1] + coords[i][1]][p.getBaseCoords()[2] + coords[i][2]].equals("Empty"))) {
                 noOverlap = false;
                 if (DEBUG) {System.out.println(p.getType() + " overlaps with " + cargoSpace[p.getBaseCoords()[0] + coords[i][0]][p.getBaseCoords()[1] + coords[i][1]][p.getBaseCoords()[2] + coords[i][2]] + " at x = " + (p.getBaseCoords()[0] + coords[i][0]) + " y = " + (p.getBaseCoords()[1] + coords[i][1]) + " z = " + (p.getBaseCoords()[2] + coords[i][2]));}
             }
@@ -293,21 +291,6 @@ public class CargoSpace {
             tV = tV + csPacking[i].getValue();
         }
         return tV;
-    }
-
-    public double getFitness() {
-        int overlapping = 0;
-        Package p;
-        for (int i = 0; i < csPacking.length; i++) {
-            p = csPacking[i];
-            for (int j = 0; j < csPacking.length; j++) {
-                if (p.overlaps(csPacking[j]))
-                    overlapping++;
-            }
-        }
-        //System.out.println("Overlapping: " + overlapping);
-        double fitness = totalValue - (nrPlaced - overlapping);
-        return fitness;
     }
 
     public void fillCargoSpace(Package[] cargo) {
