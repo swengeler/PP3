@@ -39,16 +39,11 @@ public class HillClimbing {
 	 * TO BE CHANGED FOR THE 3D REPRESENTATION
 	 **/
 	public void displaySolution(CargoSpace curCargo) {
-        JFrame f = new JFrame();
-        f.setSize(750, 770);
-        Display display = new Display(curCargo.getArray());
-        f.add(display, BorderLayout.CENTER);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setVisible(true);
+  		cargoSpace3D.represent(curCargo);
   }
 
 	public static void main(String[] args) {
-		double[][] results = new double[50][4];
+		/*double[][] results = new double[50][4];
 		for (int t=0; t<50; t++) {
 			Package[] packageTypes = new Package[2];
 			packageTypes[0] = new Package("A");
@@ -111,7 +106,7 @@ public class HillClimbing {
 		double totTimeAverage = 0;
 		double minRuntime = 0;
 
-		for (int i=0; i<50; i++) {
+		for (int i=0; i<5; i++) {
 				if (i==0) {
 					totValueMax = results[i][0];
 					totParcelsMax = results[i][2];
@@ -137,8 +132,8 @@ public class HillClimbing {
 		System.out.println("Best total value: " + totValueMax);
 		System.out.println("Best number of placed parcels " + totParcelsMax);
 		System.out.println("Runtime best: " + minRuntime);
+		*/
 
-		/*
 		Package[] packageTypes = new Package[2];
 		packageTypes[0] = new Package("A");
 		packageTypes[1] = new Package("C");
@@ -161,7 +156,7 @@ public class HillClimbing {
 				//int random = Random.randomWithRange(0, neighbours.length-1);
 				current = neighbours[0];
 			} else {
-					done = true;
+				done = true;
 			}
 		}
 		long endTime = System.currentTimeMillis();
@@ -186,7 +181,7 @@ public class HillClimbing {
 		System.out.println("Nunber of A: " + nrA + "\n Number of B: " + nrB + "\n Number of C: " + nrC);
 		System.out.println("Runtime: " + totTime + "ms");
 		localSearch.displaySolution(current);
-		*/
+
 
 	}
 
