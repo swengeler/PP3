@@ -1,8 +1,14 @@
+package Poly3D;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * A class to register userinput and rotate or  the graphical representation of the CargoSpace
+ * 
+ * @author Daniel Kaestner
+ */
 	public class KeyHandler implements KeyListener{
-
 		public void keyPressed(KeyEvent e) {
 			if(e.getKeyCode() == KeyEvent.VK_UP){
 				Display3D.rotateX(-10);
@@ -21,6 +27,9 @@ import java.awt.event.KeyListener;
 			}
 			if(e.getKeyCode() == KeyEvent.VK_C){
 				Display3D.rotateZ(10);
+			}
+			if(e.getKeyCode() == KeyEvent.VK_R){
+				Display3D.setUp();
 			}
 			Display3D.f.repaint();
 		}

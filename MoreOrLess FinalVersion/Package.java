@@ -1,3 +1,7 @@
+package Poly3D;
+
+import java.awt.Color;
+
 /**
 * A class representing packages that can be placed in a cargo space. It contains all
 * the needed information to know what part of the space a package occupies and the methods
@@ -12,6 +16,7 @@ public class Package {
     private static String[] newTypes = new String[0];
     private static int[][] newDimensions = new int[0][3];
     private static double[] newValues = new double[0];
+    private static Color color;
 
     private String type;
     private double value;
@@ -51,6 +56,7 @@ public class Package {
             orWidth = 2;
             orHeight = 2;
             value = 3;
+            color = Color.red;
             setPackage("A");
         }
         else if (type.equals("B")) {
@@ -61,6 +67,7 @@ public class Package {
             orWidth = 3;
             orHeight = 2;
             value = 4;
+            color = Color.green;
             setPackage("B");
         }
         else if (type.equals("C")) {
@@ -71,6 +78,7 @@ public class Package {
             orWidth = 3;
             orHeight = 3;
             value = 5;
+            color = Color.blue;
             setPackage("C");
         }
         else if (type.equals("L")) {
@@ -81,6 +89,7 @@ public class Package {
             orWidth = 1;
             orHeight = 2;
             value = 3;
+            color = Color.ORANGE;
             setPackage("L");
         } else if (type.equals("P")) {
             length = 3;
@@ -90,6 +99,7 @@ public class Package {
             orWidth = 1;
             orHeight = 2;
             value = 4;
+            color = Color.yellow;
             setPackage("P");
         } else if (type.equals("T")) {
             length = 3;
@@ -99,6 +109,7 @@ public class Package {
             orWidth = 1;
             orHeight = 3;
             value = 5;
+            color = Color.magenta;
             setPackage("T");
         }
         else if (type.equals("Truck")) {
@@ -109,6 +120,7 @@ public class Package {
             orWidth = 35;
             orHeight = 9;
             value = 0;
+            color = Color.black;
             setPackage("Truck");
         } else {
             boolean found = false;
@@ -141,7 +153,7 @@ public class Package {
         this.length = length;
         this.orLength = length;
         this.value = value;
-
+        color = new Color(Random.randomWithRange(0, 255), Random.randomWithRange(0, 255), Random.randomWithRange(0, 255));
 
         String[] nnTypes = new String[newTypes.length + 1];
         System.arraycopy(newTypes, 0, nnTypes, 0, newTypes.length);
@@ -406,6 +418,16 @@ public class Package {
         return type;
     }
 
+    /**
+    * A method giving information about the color of package that it is called on.
+    *
+    * @return type The color of package.
+    */
+    public Color getColor() {
+        return color;
+    }
+    
+    
     /**
     * A method that changes the coordinates of the package in such a manner that they now represent
     * the package rotated around the x-axis (length-axis) of the imaginary coordinate system.
