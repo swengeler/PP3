@@ -52,10 +52,10 @@ public class GeneticAlgorithm {
         int worstGaps = 0;
         int totalGapsForAverage = 0;
 
-        this.amountOfType = new int[3];
-        this.amountOfType[0] = 100;
-        this.amountOfType[1] = 100;
-        this.amountOfType[2] = 100;
+        this.amountOfType = new int[2];
+        this.amountOfType[0] = 83;
+        this.amountOfType[1] = 55;
+        //this.amountOfType[2] = 100;
         //this.amountOfType[0] = 225;
         //this.amountOfType[1] = 55;
         //this.amountOfType[2] = 83;
@@ -63,10 +63,10 @@ public class GeneticAlgorithm {
         this.amountForReduction = new int[this.amountOfType.length];
         System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
 
-        packageTypes = new Package[3];
+        packageTypes = new Package[2];
         packageTypes[0] = new Package("A");
         packageTypes[1] = new Package("B");
-        packageTypes[2] = new Package("C");
+        //packageTypes[2] = new Package("C");
         //packageTypes[0] = new Package("O", 5, 1, 1, 1.0);
         //packageTypes[1] = new Package("X", 6, 2, 2, 1.0);
         //packageTypes[2] = new Package("Q", 8, 2, 1, 1.0);
