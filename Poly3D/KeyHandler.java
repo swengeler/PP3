@@ -7,24 +7,27 @@ import java.awt.event.KeyListener;
 
 		public void keyPressed(KeyEvent e) {
 			if(e.getKeyCode() == KeyEvent.VK_UP){
-				cargoSpace3D.rotateX(-10);
+				Display3D.rotateX(-10);
 			}
 			if(e.getKeyCode() == KeyEvent.VK_DOWN){
-				cargoSpace3D.rotateX(10);
+				Display3D.rotateX(10);
 			}
 			if(e.getKeyCode() == KeyEvent.VK_LEFT){
-				cargoSpace3D.rotateY(10);
+				Display3D.rotateY(10);
 			}
 			if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-				cargoSpace3D.rotateY(-10);
+				Display3D.rotateY(-10);
 			}
 			if(e.getKeyCode() == KeyEvent.VK_X){
-				cargoSpace3D.rotateZ(-10);
+				Display3D.rotateZ(-10);
 			}
 			if(e.getKeyCode() == KeyEvent.VK_C){
-				cargoSpace3D.rotateZ(10);
+				Display3D.rotateZ(10);
 			}
-			cargoSpace3D.panel.repaint();
+			if(e.getKeyCode() == KeyEvent.VK_R){
+				Display3D.setUp();
+			}
+			Display3D.f.repaint();
 		}
 		public void keyReleased(KeyEvent e) {}
 		public void keyTyped(KeyEvent e) {}
