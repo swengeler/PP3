@@ -67,23 +67,24 @@ public class GeneticAlgorithm {
         int worstGaps = 0;
         int totalGapsForAverage = 0;
 
-        this.amountOfType = new int[4];
-        this.amountOfType[0] = 15;
-        this.amountOfType[1] = 15;
-        this.amountOfType[2] = 15;
-        this.amountOfType[3] = 15;
-        //this.amountOfType[4] = 15;
+        this.amountOfType = new int[3];
+        //this.amountOfType[0] = 83;
+        //this.amountOfType[1] = 55;
+        //this.amountOfType[2] = 50;
+        this.amountOfType[0] = 83;
+        this.amountOfType[1] = 55;
+        this.amountOfType[2] = 44;
 
         this.amountForReduction = new int[this.amountOfType.length];
         System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
 
-        packageTypes = new Package[4];
-        packageTypes[0] = new Package("A");
-        packageTypes[1] = new Package("B");
-        packageTypes[2] = new Package("C");
-        packageTypes[3] = new Package("Similar1", 4, 4, 1, 1.0);
-        //packageTypes[4] = new Package("Similar2", 6, 2, 2, 1.0);
-        //packageTypes[2] = new Package("Small3", 2, 2, 2, 1.0);
+        this.packageTypes = new Package[3];
+        //this.packageTypes[0] = new Package("A");
+        //this.packageTypes[1] = new Package("B");
+        //this.packageTypes[2] = new Package("C");
+        this.packageTypes[0] = new Package("Compact1", 2, 2, 2, 1.0);
+        this.packageTypes[1] = new Package("Compact2", 3, 3, 3, 1.0);
+        this.packageTypes[2] = new Package("Compact3", 4, 4, 4, 1.0);
 
         CargoSpace.packageTypes = packageTypes;
         int[] placed = new int[packageTypes.length];
@@ -188,7 +189,7 @@ public class GeneticAlgorithm {
                     noChange++;
                 else
                     noChange = 0;
-                if ((bestInd.getFitness() > 190 /*|| /*bestInd.getFitness() > (0.9 * maxValueSum)*/) && noChange > 200) {
+                if ((bestInd.getFitness() > 160 /*|| /*bestInd.getFitness() > (0.9 * maxValueSum)*/) && noChange > 200) {
                     noChange = 0;
                     change = false;
                 }
