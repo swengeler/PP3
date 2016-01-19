@@ -288,7 +288,8 @@ public class CargoSpace {
     }
 
     /**
-    * A method returning the total value of all the packages that were placed in the cargo space.
+    * A method returning the total value of all the packages that are included in an array of
+    * packages that is used as a parameter..
     *
     * @return totalValue The total value of all included packages.
     */
