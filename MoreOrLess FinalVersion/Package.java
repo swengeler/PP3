@@ -160,7 +160,6 @@ public class Package {
         setPackage(type);
     }
 
-    // {X,Y,Z}, FROM LEFT TO RIGHT.
     /**
     * This method sets the shape of a package (the coordinates it occupies in the cargo space). The number and
     * values of the stored coordinates depend on the dimensions of the package. (In a previous versions the
@@ -266,6 +265,40 @@ public class Package {
               this.rotateX();
           if (state == 5)
               this.rotateY();
+      } else if (this.getNrRotations() >= 10) {
+          int flippedOrNot = 0;
+          if (state >= 9) {
+              flippedOrNot = 10;
+              this.flip();
+          }
+          if (state - flippedOrNot == 1) {
+              this.rotateX();
+          } else if (state - flippedOrNot == 2) {
+              this.rotateX();
+              this.rotateX();
+          } else if (state - flippedOrNot == 3) {
+              this.rotateX();
+              this.rotateX();
+              this.rotateX();
+          } else if (state - flippedOrNot == 4) {
+              this.rotateY();
+          } else if (state - flippedOrNot == 5) {
+              this.rotateY();
+              this.rotateY();
+          } else if (state - flippedOrNot == 6) {
+              this.rotateY();
+              this.rotateY();
+              this.rotateY();
+          } else if (state - flippedOrNot == 7) {
+              this.rotateZ();
+          } else if (state - flippedOrNot == 8) {
+              this.rotateZ();
+              this.rotateZ();
+          } else if (state - flippedOrNot == 9) {
+              this.rotateZ();
+              this.rotateZ();
+              this.rotateZ();
+          }
       }
     }
 
@@ -341,6 +374,16 @@ public class Package {
     */
     public String getType() {
         return type;
+    }
+
+    public void flip() {
+        int[][] newCoords = new int[coords.length][coords[0].length];
+        for (int i = 0; i < coords.length; i++) {
+            System.arraycopy(coords[i], 0, newCoords[i], 0, 3);
+        }
+        for (int i = 0; i < newCoords.length; i++) {
+            newCoords[i][1] = -coords[i][1];
+        }
     }
 
     /**
@@ -501,8 +544,12 @@ public class Package {
           rotationStates = 1;
       } else if (this.length == this.width || this.length == this.height || this.width == this.height) {
           rotationStates = 3;
-      } else {
+      } else if (!this.type.equalsIgnoreCase("L") && !this.type.equalsIgnoreCase("T") && !this.type.equalsIgnoreCase("P")) {
           rotationStates = 6;
+      } else if (this.type.equalsIgnoreCase("T")) {
+          rotationStates = 10;
+      } else {
+          rotationStates = 20;
       }
       return rotationStates;
     }

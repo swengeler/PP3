@@ -150,3 +150,35 @@ Tournament size: 8
 Mutation probability: 0.0
 Swap probability: 0.05
 Crossover frequency: 2
+
+----------------------------------------------------------------------------
+
+MORE PACKAGES
+
+4 packages (+ D)
+Maximum value: 230
+
+OVERALL RESULTS OVER 25 ITERATIONS
+VALUE - Best: 232.0
+VALUE - Average: 219.0
+VALUE - Worst: 191.0
+RUNTIME - Best: 41567
+RUNTIME - Average: 45034.76
+RUNTIME - Worst: 50141
+GAPS - Best: 28
+GAPS - Average: 81.12
+GAPS - Worst: 128
+
+PACKAGES PLACED
+Most:     A: 20 B: 20 C: 20 Similar1: 18
+Average:  A: 18.56 B: 17.4 C: 18.4 Similar1: 1.72
+Fewest:   A: 16 B: 15 C: 8 Similar1: 0
+
+PARAMETERS USED
+Population size: 85
+Selection mode: tournament
+Tournament size: 8
+Mutation probability: 0.0
+Swap probability: 0.05
+Crossover frequency: 2
+
