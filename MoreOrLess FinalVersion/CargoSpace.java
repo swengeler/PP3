@@ -255,12 +255,12 @@ public class CargoSpace {
     }
 
     /**
-     * A method that checks whether there is any overlap between packages already put in the cargo space
-     * and the package to be put there at its current position.
-     *
-     * @param p The package for which the overlap is to be checked.
-     * @return boolean Returns true if there is no overlap anywhere and false if there is some overlap.
-     */
+    * A method that checks whether there is any overlap between packages already put in the cargo space
+    * and the package to be put there at its current position.
+    *
+    * @param p The package for which the overlap is to be checked.
+    * @return boolean Returns true if there is no overlap anywhere and false if there is some overlap.
+    */
     public boolean overlap(Package p) {
         int[][] coords = p.getCoords();
         boolean noOverlap = true;

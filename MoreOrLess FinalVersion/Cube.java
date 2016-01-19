@@ -1,11 +1,9 @@
-package Poly3D;
-
 import java.awt.Point;
 import java.awt.Polygon;
 
-/* 
+/*
  * 	The Middle of the cube is at (0,0,0)
- * 
+ *
  *     Y	   5X---------X6
  *     |	   /|        /|
  *     |	  / |       / |
@@ -13,25 +11,25 @@ import java.awt.Polygon;
  *     |	 |  |	   |  |
  *     |	 | 4X------|--X7
  *     |	 | /       | /
- *     |	 |/		   |/	
+ *     |	 |/		   |/
  *     |	0X---------X3
  *     |
- *     |-----------------------------X 
+ *     |-----------------------------X
  *	  /
  *   /
  *  /
  * Z
- * 
+ *
 */
 
 /**
  * A class to create 3D looking Boxes consisting of Polygons
- * 
+ *
  * @author Daniel Kaestner
  * @author Raffaele Piccini
  */
 public class Cube {
-	
+
 	private Package type;
 	private boolean mainFrame;
 	private double  xpos = 200, ypos = 200, zpos = 200, width, height, length;
@@ -39,10 +37,10 @@ public class Cube {
 	private Point3D[] allPoints;
 	private double[] fx = new double[8], fy = new double[8], fz = new double[8];
 	private static int Scale = 10, Xpos = 33*Scale*2+500, Ypos = 5*Scale*2+500, Zpos = 8*Scale*2+500;
-	
+
 	/**
-	 * A constructor to create a new cube 
-	 * 
+	 * A constructor to create a new cube
+	 *
 	 * @param Package type of the package
 	 */
 	public Cube(Package type){
@@ -54,15 +52,15 @@ public class Cube {
 			fy[i] = allPoints[i].getY();
 			fz[i] = allPoints[i].getZ();
 		}
-		
+
 			xpos = (200+(type.getBaseCoords()[0])*Scale*2+width/2);
 			ypos = (200+(type.getBaseCoords()[1])*Scale*2+height/2);
 			zpos = (200+(type.getBaseCoords()[2])*Scale*2+length/2);
-		
-	//	System.out.println(type.getBaseCoords()[0] + " " + type.getBaseCoords()[1] + " " + type.getBaseCoords()[2] + " " + type.getType() + "  " + xpos+ "  " + ypos+ "  " + zpos + 
-	//			" " + width + " " + height + " " + length);		
+
+	//	System.out.println(type.getBaseCoords()[0] + " " + type.getBaseCoords()[1] + " " + type.getBaseCoords()[2] + " " + type.getType() + "  " + xpos+ "  " + ypos+ "  " + zpos +
+	//			" " + width + " " + height + " " + length);
 	}
-	
+
 	public Cube(Package type, int xPos, int yPos, int zPos){
 		mainFrame = true;
 		this.type = type;
@@ -72,16 +70,16 @@ public class Cube {
 			fy[i] = allPoints[i].getY();
 			fz[i] = allPoints[i].getZ();
 		}
-		xpos = xPos;ypos = yPos;zpos = zPos;	
+		xpos = xPos;ypos = yPos;zpos = zPos;
 	}
-	
+
 	/**
-	 * A method which creates the cube, according to the package type consisting of 6 polygons 
+	 * A method which creates the cube, according to the package type consisting of 6 polygons
 	 *
-	 * @param xpos x-position of the cube 
+	 * @param xpos x-position of the cube
 	 * @param ypos y-position of the cube
-	 * @param zpos z-position of the cube 
-	 * 
+	 * @param zpos z-position of the cube
+	 *
 	 * @return returns the 3 Polygons visible on the surface
 	 */
 	public Polygon[] createPolygons(){
@@ -89,32 +87,32 @@ public class Cube {
 		int[][] places=new int[6][4];
 		int[] surfacePolygons = new int[3];
 		int temp = 0, maxZ=maxZ();
-		
+
 		//Front
 		polygon[0] = new Polygon(new int[]{(int)(allPoints[0].getX() + xpos), (int)(allPoints[1].getX() + xpos), (int)(allPoints[2].getX() + xpos), (int)(allPoints[3].getX() + xpos)},
 					 		     new int[]{(int)(allPoints[0].getY() + ypos), (int)(allPoints[1].getY() + ypos), (int)(allPoints[2].getY() + ypos), (int)(allPoints[3].getY() + ypos)},
-					 		     4);       
-		//Back                             
+					 		     4);
+		//Back
 		polygon[1] = new Polygon(new int[]{(int)(allPoints[4].getX() + xpos), (int)(allPoints[5].getX() + xpos), (int)(allPoints[6].getX() + xpos), (int)(allPoints[7].getX() + xpos)},
 	 		     	 			 new int[]{(int)(allPoints[4].getY() + ypos), (int)(allPoints[5].getY() + ypos), (int)(allPoints[6].getY() + ypos), (int)(allPoints[7].getY() + ypos)},
-	 		     	 			 4);       
-		//Left                             
+	 		     	 			 4);
+		//Left
 		polygon[2] = new Polygon(new int[]{(int)(allPoints[0].getX() + xpos), (int)(allPoints[1].getX() + xpos), (int)(allPoints[5].getX() + xpos), (int)(allPoints[4].getX() + xpos)},
 								 new int[]{(int)(allPoints[0].getY() + ypos), (int)(allPoints[1].getY() + ypos), (int)(allPoints[5].getY() + ypos), (int)(allPoints[4].getY() + ypos)},
-								 4);       
-		//Right                            
+								 4);
+		//Right
 		polygon[3] = new Polygon(new int[]{(int)(allPoints[3].getX() + xpos), (int)(allPoints[2].getX() + xpos), (int)(allPoints[6].getX() + xpos), (int)(allPoints[7].getX() + xpos)},
 				 				 new int[]{(int)(allPoints[3].getY() + ypos), (int)(allPoints[2].getY() + ypos), (int)(allPoints[6].getY() + ypos), (int)(allPoints[7].getY() + ypos)},
-				 				 4);       
-		//Top                              
+				 				 4);
+		//Top
 		polygon[4] = new Polygon(new int[]{(int)(allPoints[1].getX() + xpos), (int)(allPoints[5].getX() + xpos), (int)(allPoints[6].getX() + xpos), (int)(allPoints[2].getX() + xpos)},
 				 				 new int[]{(int)(allPoints[1].getY() + ypos), (int)(allPoints[5].getY() + ypos), (int)(allPoints[6].getY() + ypos), (int)(allPoints[2].getY() + ypos)},
-				 				 4);       
-		//Bottom                           
+				 				 4);
+		//Bottom
 		polygon[5] = new Polygon(new int[]{(int)(allPoints[0].getX() + xpos), (int)(allPoints[4].getX() + xpos), (int)(allPoints[7].getX() + xpos), (int)(allPoints[3].getX() + xpos)},
 				 				 new int[]{(int)(allPoints[0].getY() + ypos), (int)(allPoints[4].getY() + ypos), (int)(allPoints[7].getY() + ypos), (int)(allPoints[3].getY() + ypos)},
 				 				 4);
-		
+
 	    places[0][0]=0;places[0][1]=1;places[0][2]=2;places[0][3]=3;
 	    places[1][0]=4;places[1][1]=5;places[1][2]=6;places[1][3]=7;
 	    places[2][0]=0;places[2][1]=1;places[2][2]=5;places[2][3]=4;
@@ -136,7 +134,7 @@ public class Cube {
 		}
 		return surface;
 	}
-	
+
 	/**
 	 *A method which calculates the maximum z-value to get the surface Polygons
 	 *
@@ -158,13 +156,13 @@ public class Cube {
     * A Method to rotate a Cube around the x-axis
     * @param a Degree of rotation
     */
-   public void RotateX(int a) {	   
+   public void RotateX(int a) {
 	   double tempy = allPoints[3].getY(), tempz = allPoints[3].getZ();
        for (int i = 0; i < allPoints.length; i++) {
     	   double newfy = Math.cos(Math.toRadians(a)) * fy[i] + -1*Math.sin(Math.toRadians(a)) *fz[i];
            double newfz = Math.sin(Math.toRadians(a)) * fy[i] + Math.cos(Math.toRadians(a)) * fz[i];
            fy[i]=newfy;
-           fz[i]=newfz;    
+           fz[i]=newfz;
            allPoints[i].setY(fy[i]);
            allPoints[i].setZ(fz[i]);
        }
@@ -185,7 +183,7 @@ public class Cube {
 	       ypos += (Ypos/2);zpos += (Zpos/2);
   		}
    }
-   
+
    /**
     * A Method to rotate a Cube around the y-axis
     * @param a Degree of rotation
@@ -215,7 +213,7 @@ public class Cube {
 	    	   xpos = (newx-20);
 	    	   zpos = (newz-20);
 	       }
-	       xpos +=(Xpos)/2;zpos += (Zpos)/2;	       
+	       xpos +=(Xpos)/2;zpos += (Zpos)/2;
 	   }
    }
 
@@ -226,13 +224,13 @@ public class Cube {
    public void RotateZ(int a) {
 	   int tempx = allPoints[3].getX(), tempy = allPoints[3].getY();
 	   for (int i = 0; i < allPoints.length; i++) {
-		   double newfx =Math.cos(Math.toRadians(a)) * fx[i] + -1*Math.sin(Math.toRadians(a)) *fy[i];    
+		   double newfx =Math.cos(Math.toRadians(a)) * fx[i] + -1*Math.sin(Math.toRadians(a)) *fy[i];
 	       double newfy =Math.sin(Math.toRadians(a)) * fx[i] + Math.cos(Math.toRadians(a)) *fy[i];
-	       
+
 	       fx[i]=newfx;
 	       fy[i]=newfy;
 	       allPoints[i].setX(fx[i]);
-	       allPoints[i].setY(fy[i]); 
+	       allPoints[i].setY(fy[i]);
 	   }
        tempx -= allPoints[3].getX(); tempy -= allPoints[3].getY();
        //xpos += tempx; ypos += tempy;
@@ -254,23 +252,23 @@ public class Cube {
 
    public Cube[] sort(Cube[] cubes){
 	   int[] zCoords = new int[cubes.length];
-	   
+
 	   for(int i = 0; i < zCoords.length; i++){
 		   zCoords[i] = (int) cubes[i].zpos;
 	   }
-	   
+
 	   for (int i = zCoords.length-1; i >= 0; i--) {
            for (int j = 0; j < (zCoords.length - 1); j++) {
                if (zCoords[j] < zCoords[(j+1)]) {
                    int temp;
-                   Cube tempCube; 
-                   
+                   Cube tempCube;
+
                    temp = zCoords[j];
                    tempCube = cubes[j];
-                   
+
                    zCoords[j] = zCoords[(j+1)];
                    zCoords[(j+1)] = temp;
-                   
+
                    cubes[j] = cubes[(j+1)];
                    cubes[(j+1)] = tempCube;
               }
@@ -278,17 +276,17 @@ public class Cube {
        }
 	   return cubes;
    }
-   
+
    /**
     * A method to set the points of the corner of the cube
-    * 
-    * @param baseCoords coordinates of the upper right corner from the cube according to the package type 
+    *
+    * @param baseCoords coordinates of the upper right corner from the cube according to the package type
     * @return an array holding 8 Points with x, y and z coordinate
     */
    private Point3D[] createPoints(){
-	   /* 
+	   /*
 	    * 	The Middle of the cube is at (0,0,0)
-	    * 
+	    *
 	    *     Y	   5X---------X6
 	    *     |	   /|        /|
 	    *     |	  / |       / |
@@ -296,15 +294,15 @@ public class Cube {
 	    *     |	 |  |	   |  |
 	    *     |	 | 4X------|--X7
 	    *     |	 | /       | /
-	    *     |	 |/		   |/	
+	    *     |	 |/		   |/
 	    *     |	0X---------X3
 	    *     |
-	    *     |-----------------------------X 
+	    *     |-----------------------------X
 	    *	 /
 	    *   /
 	    *  /
 	    * Z
-	    * 
+	    *
 	   */
 		allPoints = new Point3D[8];
 		//						   X 									      ,Y											,Z
@@ -316,31 +314,31 @@ public class Cube {
 		allPoints[5] = new Point3D(-(type.getLength() * Scale) ,  (type.getHeight() * Scale) , -(type.getWidth() * Scale));
 		allPoints[6] = new Point3D( (type.getLength() * Scale) ,  (type.getHeight() * Scale) , -(type.getWidth() * Scale));
 		allPoints[7] = new Point3D( (type.getLength() * Scale) , -(type.getHeight() * Scale) , -(type.getWidth() * Scale));
-		
+
 		/*
 		 * Width Height Length
 		 * Width Length Height
 		 * Height Width Length
 		 * Height Length Width
-		 * Length Height Width 
-		 * Length Width Height		 * 
+		 * Length Height Width
+		 * Length Width Height		 *
 		 */
-		
+
 		if(allPoints[0].getX()-allPoints[3].getX()<0)
 		     width = -(allPoints[0].getX()-allPoints[3].getX());
 	    else width =  (allPoints[0].getX()-allPoints[3].getX());
-		
+
 		if(allPoints[0].getY()-allPoints[1].getY()<0)
 		     height = -(allPoints[0].getY()-allPoints[1].getY());
   	    else height =  (allPoints[0].getY()-allPoints[1].getY());
-		
+
 		if(allPoints[0].getZ()-allPoints[4].getZ()<0)
 		     length = -(allPoints[0].getZ()-allPoints[4].getZ());
 	    else length =  (allPoints[0].getZ()-allPoints[4].getZ());
-		
+
 		return allPoints;
    }
-   
+
    public String getPackage(){
 	   return type.getType();
    }
