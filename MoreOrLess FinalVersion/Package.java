@@ -1,5 +1,3 @@
-package Poly3D;
-
 import java.awt.Color;
 
 /**
@@ -275,56 +273,13 @@ public class Package {
     }
 
     /**
-    * A method that rotates the packages a certain number of times around each axis.
+    * A method that changes the array holding the coordinates which the package occupies (mainly
+    * used for rotations).
     *
-    * @param x The number of rotations around the x-axis.
-    * @param y The number of rotations around the y-axis.
-    * @param z The number of rotations around the z-axis.
+    * @param newCoords The new coordinates occupied by the package.
     */
-    public void setRotations(int x, int y, int z) {
-        for (int i = 0; i < x; i++)
-            this.rotateX();
-        for (int i = 0; i < y; i++)
-            this.rotateY();
-        for (int i = 0; i < z; i++)
-            this.rotateZ();
-    }
-
-    /**
-    * A different method of rotating a package. It uses the fact that there are a certain number
-    * of states in which a package can be rotated. The index of that state determines how the
-    * package will be rotated.
-    *
-    * @param state The index designating a certain rotation state of the package.
-    */
-    public void setRotations(int state) {
-      if (this.getNrRotations() == 3 && this.length == this.width) {
-          if (state >= 1)
-              this.rotateY();
-          if (state == 2)
-              this.rotateZ();
-      } else if (this.getNrRotations() == 3 && this.length == this.height) {
-          if (state >= 1)
-              this.rotateX();
-          if (state == 2)
-              this.rotateY();
-      } else if (this.getNrRotations() == 3 && this.width == this.height) {
-          if (state >= 1)
-              this.rotateY();
-          if (state == 2)
-              this.rotateX();
-      } else if (this.getNrRotations() == 6) {
-          if (state >= 1)
-              this.rotateX();
-          if (state >= 2)
-              this.rotateY();
-          if (state >= 3)
-              this.rotateZ();
-          if (state >= 4)
-              this.rotateX();
-          if (state == 5)
-              this.rotateY();
-      }
+    public void setCoords(int[][] newCoords) {
+      this.coords = newCoords;
     }
 
     /**
@@ -333,18 +288,9 @@ public class Package {
     * @return coords The array holding the coordinates of the 8 outer corners of the package.
     */
     public int[][] getCoords() {
-        return coords;
+      return coords;
     }
 
-    /**
-    * A method that changes the array holding the coordinates which the package occupies (mainly
-    * used for rotations).
-    *
-    * @param newCoords The new coordinates occupied by the package.
-    */
-    public void setCoords(int[][] newCoords) {
-        this.coords = newCoords;
-    }
 
     /**
     * A method giving information about the dimensions of the package (length).
@@ -426,8 +372,77 @@ public class Package {
     public Color getColor() {
         return color;
     }
-    
-    
+
+    /**
+    * A method that rotates the packages a certain number of times around each axis.
+    *
+    * @param x The number of rotations around the x-axis.
+    * @param y The number of rotations around the y-axis.
+    * @param z The number of rotations around the z-axis.
+    */
+    public void setRotations(int x, int y, int z) {
+      for (int i = 0; i < x; i++)
+      this.rotateX();
+      for (int i = 0; i < y; i++)
+      this.rotateY();
+      for (int i = 0; i < z; i++)
+      this.rotateZ();
+    }
+
+    /**
+    * A different method of rotating a package. It uses the fact that there are a certain number
+    * of states in which a package can be rotated. The index of that state determines how the
+    * package will be rotated.
+    *
+    * @param state The index designating a certain rotation state of the package.
+    */
+    public void setRotations(int state) {
+      if (this.getNrRotations() == 3 && this.length == this.width) {
+        if (state >= 1)
+        this.rotateY();
+        if (state == 2)
+        this.rotateZ();
+      } else if (this.getNrRotations() == 3 && this.length == this.height) {
+        if (state >= 1)
+        this.rotateX();
+        if (state == 2)
+        this.rotateY();
+      } else if (this.getNrRotations() == 3 && this.width == this.height) {
+        if (state >= 1)
+        this.rotateY();
+        if (state == 2)
+        this.rotateX();
+      } else if (this.getNrRotations() == 6) {
+        if (state >= 1)
+        this.rotateX();
+        if (state >= 2)
+        this.rotateY();
+        if (state >= 3)
+        this.rotateZ();
+        if (state >= 4)
+        this.rotateX();
+        if (state == 5)
+        this.rotateY();
+      }
+    }
+
+    /**
+    * A method giving information about the number of rotation states that a package can have.
+    *
+    * @return rotationStates The number of different rotation states that the package has.
+    */
+    public int getNrRotations() {
+      int rotationStates = 0;
+      if (this.length == this.width && this.length == this.height) {
+        rotationStates = 1;
+      } else if (this.length == this.width || this.length == this.height || this.width == this.height) {
+        rotationStates = 3;
+      } else {
+        rotationStates = 6;
+      }
+      return rotationStates;
+    }
+
     /**
     * A method that changes the coordinates of the package in such a manner that they now represent
     * the package rotated around the x-axis (length-axis) of the imaginary coordinate system.
@@ -543,22 +558,6 @@ public class Package {
         return false;
     }
 
-    /**
-    * A method giving information about the number of rotation states that a package can have.
-    *
-    * @return rotationStates The number of different rotation states that the package has.
-    */
-    public int getNrRotations() {
-      int rotationStates = 0;
-      if (this.length == this.width && this.length == this.height) {
-          rotationStates = 1;
-      } else if (this.length == this.width || this.length == this.height || this.width == this.height) {
-          rotationStates = 3;
-      } else {
-          rotationStates = 6;
-      }
-      return rotationStates;
-    }
 
     /**
     * A method that clones a package (actually creating a new instance of the class).

@@ -13,6 +13,8 @@ import java.awt.BorderLayout;
 * packing solution for a certain number of type A, B and C packages that are supposed
 * to fit into a cargo area of 16.5m x 2.5m x 4m.
 *
+* @author Adam Eljasiak
+* @author Henri Viigimäe
 * @author Simon Wengeler
 */
 public class GreedyAlgorithm {

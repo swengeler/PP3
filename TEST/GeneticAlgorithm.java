@@ -67,23 +67,24 @@ public class GeneticAlgorithm {
         int worstGaps = 0;
         int totalGapsForAverage = 0;
 
-        this.amountOfType = new int[4];
-        this.amountOfType[0] = 15;
-        this.amountOfType[1] = 15;
-        this.amountOfType[2] = 15;
-        this.amountOfType[3] = 15;
-        //this.amountOfType[4] = 15;
+        this.amountOfType = new int[6];
+        this.amountOfType[0] = 83;
+        this.amountOfType[1] = 55;
+        this.amountOfType[2] = 50;
+        this.amountOfType[3] = 83;
+        this.amountOfType[4] = 55;
+        this.amountOfType[5] = ;
 
         this.amountForReduction = new int[this.amountOfType.length];
         System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
 
-        packageTypes = new Package[4];
+        packageTypes = new Package[6];
         packageTypes[0] = new Package("A");
         packageTypes[1] = new Package("B");
         packageTypes[2] = new Package("C");
         packageTypes[3] = new Package("Similar1", 4, 4, 1, 1.0);
-        //packageTypes[4] = new Package("Similar2", 6, 2, 2, 1.0);
-        //packageTypes[2] = new Package("Small3", 2, 2, 2, 1.0);
+        packageTypes[4] = new Package("Similar2", 6, 2, 2, 1.0);
+        packageTypes[5] = new Package("Similar3", 5, 2, 3, 1.0);
 
         CargoSpace.packageTypes = packageTypes;
         int[] placed = new int[packageTypes.length];
