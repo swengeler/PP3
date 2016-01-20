@@ -1,5 +1,3 @@
-package Poly3D;
-
 /**
 * A class that is used in a genetic algorithm to comprise all of the important information about
 * an individual that is part of the population used in the genetic algorithm.

@@ -14,10 +14,11 @@ public class Package {
     private static String[] newTypes = new String[0];
     private static int[][] newDimensions = new int[0][3];
     private static double[] newValues = new double[0];
-    private static Color color;
+    private static Color[] newColors = new Color[0];
 
     private String type;
     private double value;
+    private Color color;
 
     private int height;
     private int width;
@@ -132,6 +133,7 @@ public class Package {
                     orWidth = newDimensions[i][1];
                     orHeight = newDimensions[i][2];
                     value = newValues[i];
+                    color = newColors[i];
                     setPackage(newTypes[i]);
                 }
             }
@@ -151,8 +153,8 @@ public class Package {
         this.length = length;
         this.orLength = length;
         this.value = value;
-        color = new Color(Random.randomWithRange(0, 255), Random.randomWithRange(0, 255), Random.randomWithRange(0, 255));
-
+        this.color = new Color(Random.randomWithRange(0, 255),Random.randomWithRange(0, 255),Random.randomWithRange(0, 255));
+        System.out.println(color.toString());
         String[] nnTypes = new String[newTypes.length + 1];
         System.arraycopy(newTypes, 0, nnTypes, 0, newTypes.length);
         nnTypes[nnTypes.length - 1] = type;
@@ -171,6 +173,11 @@ public class Package {
         System.arraycopy(newValues, 0, nnValues, 0, newValues.length);
         nnValues[nnValues.length - 1] = value;
         newValues = nnValues;
+        
+        Color[] nnColors = new Color[newColors.length + 1];
+        System.arraycopy(newColors, 0, nnColors, 0, newColors.length);
+        nnColors[nnColors.length - 1] = color;
+        newColors = nnColors;
 
         setPackage(type);
     }
@@ -370,7 +377,7 @@ public class Package {
     * @return type The color of package.
     */
     public Color getColor() {
-        return color;
+    	return color;
     }
 
     /**

@@ -1,6 +1,3 @@
-package Poly3D;
-
-import java.awt.Point;
 import java.awt.Polygon;
 
 /*

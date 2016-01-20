@@ -1,5 +1,3 @@
-package Poly3D;
-
 import java.util.Scanner;
 import java.util.*;
 import javax.swing.JFrame;
