@@ -82,23 +82,16 @@ public class HillClimbing {
         return nextNeighbourhood;
     }
 
-    public static void main(String args[]) {
+    public void run(Package[] packageTypes, int[] packageTNumber) {
 
-        Package[] packageTypes = new Package[3];
-        packageTypes[0] = new Package("A");
-        packageTypes[1] = new Package("B");
-        packageTypes[2] = new Package("C");
-        
         boolean done = false;
         boolean allowRotations = false;
         int mutationRate = 1;
-        int nrNeighbours = 500;
+        int nrNeighbours = 250;
 
         HillClimbing localSearch = new HillClimbing();
         CargoSpace current = new CargoSpace(33,5,8);
         CargoSpace[] neighbours;
-
-        int[] packageTNumber = {33,111,12};
 
         current = localSearch.genArbitrarySolution(current, packageTypes, packageTNumber,allowRotations);
         System.out.println("Starting tot. value: " + current.getTotalValue());
@@ -127,13 +120,7 @@ public class HillClimbing {
                 nrC++;
         }
 
-        System.out.println("Local max: " + current.getTotalValue(current.getPacking()));
-        System.out.println("Gaps left: " + current.getTotalGaps());
-        System.out.println("N of packages: " + current.getPacking().length);
-        System.out.println("Nunber of A: " + nrA + "\nNumber of B: " + nrB + "\nNumber of C: " + nrC);
-        System.out.println("Runtime: " + totTime + "ms");
-        System.out.println("Runtime: " + (double) totTime + "ms");
-        System.out.println("=========================================");
+        Display3D.represent(current);
 
     }
 
