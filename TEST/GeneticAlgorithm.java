@@ -54,7 +54,7 @@ public class GeneticAlgorithm {
     *                     packages that can be placed of the corresponding package type.
     */
     public void run(Package[] types, int[] amountOfType) {
-        int NR_RUNS = 25;
+        int NR_RUNS = 1;
         double overallBest = 0;
         double overallWorst = Double.MAX_VALUE;
         double totalValue = 0;
@@ -67,24 +67,24 @@ public class GeneticAlgorithm {
         int worstGaps = 0;
         int totalGapsForAverage = 0;
 
-        this.amountOfType = new int[6];
-        this.amountOfType[0] = 83;
-        this.amountOfType[1] = 55;
-        this.amountOfType[2] = 50;
-        this.amountOfType[3] = 83;
-        this.amountOfType[4] = 55;
-        this.amountOfType[5] = ;
+        this.amountOfType = new int[1];
+        this.amountOfType[0] = 1;
+        //this.amountOfType[1] = 55;
+        //this.amountOfType[2] = 50;
+        //this.amountOfType[3] = 83;
+        //this.amountOfType[4] = 55;
+        //this.amountOfType[5] = ;
 
         this.amountForReduction = new int[this.amountOfType.length];
         System.arraycopy(this.amountOfType, 0, this.amountForReduction, 0, this.amountOfType.length);
 
-        packageTypes = new Package[6];
-        packageTypes[0] = new Package("A");
-        packageTypes[1] = new Package("B");
-        packageTypes[2] = new Package("C");
-        packageTypes[3] = new Package("Similar1", 4, 4, 1, 1.0);
-        packageTypes[4] = new Package("Similar2", 6, 2, 2, 1.0);
-        packageTypes[5] = new Package("Similar3", 5, 2, 3, 1.0);
+        packageTypes = new Package[1];
+        packageTypes[0] = new Package("Similar3", 5, 2, 3, 1.0);
+        //packageTypes[1] = new Package("B");
+        //packageTypes[2] = new Package("C");
+        //packageTypes[3] = new Package("Similar1", 4, 4, 1, 1.0);
+        //packageTypes[4] = new Package("Similar2", 6, 2, 2, 1.0);
+        //packageTypes[5] = new Package("Similar3", 5, 2, 3, 1.0);
 
         CargoSpace.packageTypes = packageTypes;
         int[] placed = new int[packageTypes.length];
@@ -171,6 +171,7 @@ public class GeneticAlgorithm {
             long startTime = System.currentTimeMillis();
 
             while (generation < 1500 && change) {
+                System.out.println(population[0]);
                 if (generation % 50 == 0 && population.length != 1) {
                     if (LOG2 || LOG1) System.out.println("Generation " + generation);
                     if (LOG2 || LOG1) System.out.println("Maximum fitness value = " + population[0].getFitness());
@@ -189,7 +190,7 @@ public class GeneticAlgorithm {
                     noChange++;
                 else
                     noChange = 0;
-                if ((bestInd.getFitness() > 190 /*|| /*bestInd.getFitness() > (0.9 * maxValueSum)*/) && noChange > 200) {
+                if ((bestInd.getFitness() > 190 || bestInd.getFitness() > (0.9 * maxValueSum)) && noChange > 200) {
                     noChange = 0;
                     change = false;
                 }
