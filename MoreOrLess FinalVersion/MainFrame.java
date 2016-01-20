@@ -1,25 +1,28 @@
-package Poly3D;
-
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+/**
+ * A class to represent the user gui
+ * 
+ * @author Daniel Kaestner
+ */
 public class MainFrame extends JPanel{
+   private static boolean added = true;
    private static String packages="";
-   private static int[] allPacks = new int[3];
-   private static Package[] allPackages = new Package[3];
-   private static int packCntr;
+   private static int[] allPacks = new int[0];
+   private static Package[] allPackages = new Package[0];
    private static MainFrame m;
    private static JFrame xyz;
+   private JMenuBar selectionMethod;
    private static JLabel[] text;
    private static JSpinner[] spinner;
    private static JTextArea[] newPackage;
    private static JButton startButton, hillClimbing, genetic, addPackage;
    private static Cube[] cubes;
-   private static JCheckBox disp2D, disp3D;
+   private static JCheckBox disp2D, editGenes;
    private static Timer t;
 
    public MainFrame(){
@@ -27,6 +30,7 @@ public class MainFrame extends JPanel{
    }
 
    public static void main(String[]args) throws InterruptedException, AWTException {
+	   GeneticAlgorithm g = new GeneticAlgorithm();
        xyz=new JFrame();
        xyz.setLayout(null);
        xyz.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -63,7 +67,7 @@ public class MainFrame extends JPanel{
        }
 
        text[3].setBounds(50, 150, 250, 50);
-       text[3].setText("Packages Left: ");
+       text[3].setText("Packages used: ");
        
        text[4].setBounds(50, 175, 250, 50);
        text[4].setText("Time taken: ");
@@ -116,40 +120,128 @@ public class MainFrame extends JPanel{
        });
        xyz.add(disp2D);
 
+       editGenes = new JCheckBox();
+       editGenes.setBounds(620, 315, 100, 25);
+       editGenes.setText("Edit genes");
+       editGenes.setVisible(true);
+       editGenes.addActionListener(new ActionListener() {
+    	   public void actionPerformed(ActionEvent e) {
+    		   if(editGenes.isSelected()){
+    			   text[ 6].setBounds(350,  60, 170, 20);
+    			   text[ 7].setBounds(350,  80, 170, 20);
+    			   text[ 8].setBounds(350, 100, 170, 20);
+    			   text[ 9].setBounds(350, 120, 170, 20);
+    			   text[10].setBounds(350, 140, 170, 20);
+    			   text[11].setBounds(350, 160, 170, 20);
+    			   
+    			   text[ 6].setText("Tounament size           :");
+    		       text[ 7].setText("Elitest top percentage: ");
+    		       text[ 8].setText("Population size            :");
+    		       text[ 9].setText("Crossover frequency 	 :");
+    		       text[10].setText("Swap probability          :");
+    		       text[11].setText("Mutation probability    :"); 
+    		       
+    		       newPackage[0].setBounds(520, 65 , 40, 15);
+    		       newPackage[1].setBounds(520, 85 , 40, 15);
+    		       newPackage[2].setBounds(520, 105, 40, 15);
+    		       newPackage[3].setBounds(520, 125, 40, 15);
+    		       newPackage[4].setBounds(520, 145, 40, 15);
+    		       newPackage[5].setBounds(520, 165, 40, 15);
+    		       System.out.println(g.getTournamentSize());
+    		       newPackage[0].setText("" + g.getTournamentSize());
+    		       newPackage[1].setText("" + g.getElitestTop());
+    		       newPackage[2].setText("" + g.getPopulationSize());
+    		       newPackage[3].setText("" + g.getCrossover());
+    		       newPackage[4].setText("" + g.getSwapProbability());
+    		       newPackage[5].setText("" + g.getMutationProbability());
+    		       
+
+    		       addPackage.setBounds(350, 185, 210, 20);
+    		       addPackage.setText("Confirm");
+    		       
+    		       text[12].setVisible(false);
+    		       text[13].setVisible(false);
+    		   }
+    		   else{
+    			   text[ 6].setBounds(350,  60, 80, 20);
+    			   text[ 7].setBounds(350,  80, 80, 20);
+    			   text[ 8].setBounds(350, 100, 80, 20);
+    			   text[ 9].setBounds(350, 120, 80, 20);
+    			   text[10].setBounds(350, 140, 80, 20);
+    			   text[11].setBounds(350, 160, 80, 20);
+    			   
+    		       text[6].setText("Name   : ");
+    		       text[7].setText("Amount: ");
+    		       text[8].setText("Value   : ");
+    		       text[9].setText("Width   : ");
+    		       text[10].setText("Height : ");
+    		       text[11].setText("Length: ");   
+    		       
+    		       newPackage[0].setBounds(430, 65 , 40, 15);
+    		       newPackage[1].setBounds(430, 85 , 40, 15);
+    		       newPackage[2].setBounds(430, 105, 40, 15);
+    		       newPackage[3].setBounds(430, 125, 40, 15);
+    		       newPackage[4].setBounds(430, 145, 40, 15);
+    		       newPackage[5].setBounds(430, 165, 40, 15);
+    		       
+    		       addPackage.setBounds(350, 185, 120, 20);
+    		       addPackage.setText("Add Package");
+    		       
+    		       for(int i = 0; i<newPackage.length;i++)newPackage[i].setText("");
+
+    		       text[12].setVisible(true);
+    		       text[13].setVisible(true);
+    		   }
+    		    xyz.repaint();
+    		}
+       });
+       xyz.add(editGenes);
+       
        addPackage = new JButton();
        addPackage.setBounds(350, 185, 120, 20);
        addPackage.setText("Add Package");
        addPackage.setVisible(true);
        addPackage.addActionListener(new ActionListener() {
-    	   public void actionPerformed(ActionEvent e) {
-    		   
-    		   for(int i = 0; i< spinner.length; i++){
-    			   allPacks[i] = (int) spinner[i].getValue();
-    			   allPackages[i] = new Package(text[i].getText());
-    		   }
-    		   
-    		   if(packages == ""){
-    			   packages += (""+newPackage[0].getText());
-    			   text[12].setText(packages);
+    	   public void actionPerformed(ActionEvent e) {    		   
+    		   if(!editGenes.isSelected()){
+    			   if(packages == ""){
+	    		   
+	    			   packages += (""+newPackage[0].getText());
+	    			   text[12].setText(packages);
+	    		   }
+	    		   else{
+	    			   packages += (", "+newPackage[0].getText());
+	    			   text[12].setText(packages);
+	    		   }
+	    		   
+	    		   int[] newAllPacks = new int[allPacks.length+1];
+	    		   System.arraycopy(allPacks, 0, newAllPacks, 0, allPacks.length);
+	    		   newAllPacks[allPacks.length] = (int)Double.parseDouble(newPackage[1].getText());
+	    		   allPacks = newAllPacks;    		   
+	    		   
+	    		   Package[] newAllPackages = new Package[allPackages.length+1];
+	    		   System.arraycopy(allPackages, 0, newAllPackages, 0, allPackages.length);
+	    		   newAllPackages[allPackages.length] =  new Package(newPackage[0].getText(),  (int)(2*Double.parseDouble(newPackage[3].getText())),
+	    				   								 									   (int)(2*Double.parseDouble(newPackage[4].getText())),
+	    				   								 									   (int)(2*Double.parseDouble(newPackage[5].getText())),
+	    				   								 									   		   Double.parseDouble(newPackage[2].getText()));
+	    		   allPackages = newAllPackages;
+	    		   
+	    		   for(int i = 0; i<newPackage.length; i++)newPackage[i].setText("");
     		   }
     		   else{
-    			   packages += (", "+newPackage[0].getText());
-    			   text[12].setText(packages);
+    			   
+    			   text[ 9].setText("Crossover frequency 	 :");
+    		       text[10].setText("Swap probability          :");
+    		       text[11].setText("Mutation probability    :"); 
+    		       
+    			   g.setTournamentSize(Double.parseDouble(newPackage[0].getText()));
+    			   g.setElitestTop(Double.parseDouble(newPackage[1].getText()));
+    			   g.setPopulationSize(Integer.parseInt(newPackage[2].getText()));
+    			   g.setCrossover(Integer.parseInt(newPackage[3].getText()));
+    			   g.setSwapProbability(Double.parseDouble(newPackage[4].getText()));
+    			   g.setMutationProbability(Double.parseDouble(newPackage[5].getText()));
     		   }
-    		   
-    		   int[] newAllPacks = new int[allPacks.length];
-    		   System.arraycopy(allPacks, 0, newAllPacks, 0, allPacks.length);
-    		   newAllPacks[allPacks.length-1] = Integer.parseInt(newPackage[1].getText());
-    		   allPacks = newAllPacks;    		   
-    		   
-    		   Package[] newAllPackages = new Package[allPackages.length];
-    		   System.arraycopy(allPackages, 0, newAllPackages, 0, allPackages.length);
-    		   newAllPackages[allPackages.length-1] =  new Package(newPackage[12].getText(), (int)(2*Double.parseDouble(newPackage[11].getText())),
-    				   								 									   (int)(2*Double.parseDouble(newPackage[ 9].getText())),
-    				   								 									   (int)(2*Double.parseDouble(newPackage[10].getText())),
-    				   								 									   		   Double.parseDouble(newPackage[8].getText()));
-    		   allPackages = newAllPackages;
-    		   
     		   xyz.repaint();
     		}
        });
@@ -171,9 +263,9 @@ public class MainFrame extends JPanel{
     		   }
     		   if(cntr > 0){
     			   GreedyAlgorithm.main(args);
-    			   text[6].setText("Packages Left: " + g.getLeftPackages());
-    			   text[7].setText("Time taken: " + g.getRuntime() + "ms");
-    			   text[8].setText("Gaps left: " + g.getGaps());
+    			   text[3].setText("Packages left: " + g.getLeftPackages());
+    			   text[4].setText("Time taken: " + g.getRuntime() + "ms");
+    			   text[5].setText("Gaps left: " + g.getGaps());
     			   disp2D.setEnabled(true);
     		   }
     		}
@@ -187,10 +279,11 @@ public class MainFrame extends JPanel{
        hillClimbing.addActionListener(new ActionListener() {
     	   public void actionPerformed(ActionEvent e) {
     		   HillClimbing h = new HillClimbing();
-    		   h.main(args);
-    		   text[6].setText("Packages used. A:" + h.getNrPack()[0] + " B:" + h.getNrPack()[1] + " C:" + h.getNrPack()[2]);
-			   text[7].setText("Time taken: " + (h.getRuntime()/1000) + "s");
-			   text[8].setText("Gaps left: " + h.getGaps());
+    		   addStandard();
+    		   h.run(allPackages, allPacks);
+    		   text[3].setText("Packages used: " + h.getNrPack());
+			   text[4].setText("Time taken: " + (h.getRuntime()/1000) + "s");
+			   text[5].setText("Gaps left: " + h.getGaps());
 			   disp2D.setEnabled(true);
 			}
        });
@@ -202,15 +295,13 @@ public class MainFrame extends JPanel{
        genetic.setVisible(true);
        genetic.addActionListener(new ActionListener() {
     	   public void actionPerformed(ActionEvent e) {
-    		   for(int i = 0; i< spinner.length; i++){
-    			   allPacks[i] = (int) spinner[i].getValue();
-    			   allPackages[i] = new Package(text[i].getText());
-    		   }
-    		   GeneticAlgorithm g = new GeneticAlgorithm();
+    		   String packagesUsed = "Packages used: ";
+    		   addStandard();
     		   g.run(allPackages, allPacks);
-    		   text[6].setText("Packages Used. A:" + g.getNrPack()[0] + " B:" + g.getNrPack()[1] + " C:" + g.getNrPack()[2]);
-			   text[7].setText("Time taken: " + (g.getRuntime()/1000) + "s");
-			   text[8].setText("Gaps Left: " + g.getGaps());
+    		   for(int i = 0; i<g.getNrPack().length;i++)packagesUsed += (" " + allPackages[i].getType() + ":" + g.getNrPack()[i] + " ");
+    		   text[3].setText(packagesUsed);
+			   text[4].setText("Time taken: " + (g.getRuntime()/1000) + "s");
+			   text[5].setText("Gaps left: " + g.getGaps());
 			   disp2D.setEnabled(true);
 			}
        });
@@ -248,27 +339,31 @@ public class MainFrame extends JPanel{
 		Graphics2D g2 = (Graphics2D) g;
 		for(int i = 0; i<cubes.length; i++){
 			for(int l = 0; l<3; l++){
-				if(cubes[i].getPackage() == "A"){
-					if(l == 0)g.setColor(new Color(250,0,0));
-					if(l == 1)g.setColor(new Color(200,0,0));
-					if(l == 2)g.setColor(new Color(150,0,0));
-				}
-				if(cubes[i].getPackage() == "B"){
-					if(l == 0)g.setColor(new Color(0,250,0));
-					if(l == 1)g.setColor(new Color(0,200,0));
-					if(l == 2)g.setColor(new Color(0,150,0));
-				}
-				if(cubes[i].getPackage() == "C"){
-					if(l == 0)g.setColor(new Color(0,0,250));
-					if(l == 1)g.setColor(new Color(0,0,200));
-					if(l == 2)g.setColor(new Color(0,0,150));
-				}
-
+				g2.setColor(cubes[i].getType().getColor());
 				g2.fillPolygon(cubes[i].createPolygons()[l]);
 				g2.setColor(Color.BLACK);
 				g2.drawPolygon(cubes[i].createPolygons()[l]);
 
 			}
 		}
+   }
+   
+   public static void addStandard(){
+	   if(added){
+		   added = false;
+		   for(int i = 0; i<spinner.length; i++){
+			   if((int)spinner[i].getValue() > 0){
+				   int[] newAllPacks = new int[allPacks.length+1];
+				   System.arraycopy(allPacks, 0, newAllPacks, 0, allPacks.length);
+				   newAllPacks[allPacks.length] = (int)spinner[i].getValue();
+				   allPacks = newAllPacks;    		   
+				   
+				   Package[] newAllPackages = new Package[allPackages.length+1];
+				   System.arraycopy(allPackages, 0, newAllPackages, 0, allPackages.length);
+				   newAllPackages[allPackages.length] =  new Package(text[i].getText());
+				   allPackages = newAllPackages;
+			   }
+		   }
+	   }
    }
 }

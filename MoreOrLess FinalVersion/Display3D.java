@@ -1,5 +1,3 @@
-package Poly3D;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -126,6 +124,7 @@ public class Display3D extends JPanel{
 		for(int i = 0; i<cubes.length; i++){
 			for(int l = 0; l<3; l++){
 				g2.setColor(cubes[i].getType().getColor());
+			//	System.out.println(cubes[i].getType().getColor());
 				if(cubes[i].getPackage() != "Truck"){
 					g2.fillPolygon(cubes[i].createPolygons()[l]);
 					g2.setColor(Color.BLACK);

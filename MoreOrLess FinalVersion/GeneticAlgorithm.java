@@ -1,5 +1,3 @@
-package Poly3D;
-
 public class GeneticAlgorithm {
 
     private int POPULATION_SIZE = 85; // default = 85
@@ -9,7 +7,7 @@ public class GeneticAlgorithm {
     private int CROSSOVER_FREQ = 2; // default = 2
     private String SELECTION_MODE = "TOURNAMENT"; // default = "TOURNAMENT"
     private double ELITIST_TOP_PERCENT = 0.1; // default = 0.1
-    private int TOURNAMENT_SIZE = (int) (0.1 * POPULATION_SIZE); // default = (int) (0.1 * POPULATION_SIZE)
+    private double TOURNAMENT_SIZE = 0.1; // default = (int) (0.1 * POPULATION_SIZE)
     private long totTime;
 
     private Individual[] population;
@@ -78,7 +76,8 @@ public class GeneticAlgorithm {
         cargoSpace = new CargoSpace(33, 5, 8);
         Individual.setCargoSpace(cargoSpace);
         Individual.setStatesArray(statesArray);
-
+       
+        
         // initialising the population
         int[] chromosome = new int[amountSum];
         population = new Individual[POPULATION_SIZE];
@@ -112,7 +111,7 @@ public class GeneticAlgorithm {
         Individual bestInd = new Individual(population[0].getChromosome());
 
         long startTime = System.currentTimeMillis();
-
+        
         while (generation < 1500 && change) {
             population = reproduce(population);
             population = fitnessAndSort(population);
@@ -123,18 +122,22 @@ public class GeneticAlgorithm {
                 noChange++;
             else
                 noChange = 0;
-            if ((bestInd.getFitness() > 190 /*|| /*bestInd.getFitness() > (0.9 * maxValueSum)*/) && noChange > 200) {
+            if ((bestInd.getFitness() > 190 || bestInd.getFitness() > (0.9 * maxValueSum)) && noChange > 200) {
                 noChange = 0;
                 change = false;
             }
             generation++;
         }
-
+   
         long endTime = System.currentTimeMillis();
         totTime = endTime - startTime;
-
+        
         cargoSpace = new CargoSpace(33, 5, 8);
         cargoSpace = bestInd.toCargoSpace();
+
+        endCargoSpace = cargoSpace;
+        Display3D.represent(endCargoSpace);
+    
     }
 
     /**
@@ -377,8 +380,8 @@ public class GeneticAlgorithm {
     */
     private Individual tournamentSelection(Individual[] population) {
         if (TOURNAMENT_SIZE > 0) {
-            Individual[] tournament = new Individual[TOURNAMENT_SIZE];
-            int[] randomList = Random.randomListWithRange(0, population.length - 1, TOURNAMENT_SIZE);
+            Individual[] tournament = new Individual[(int) (TOURNAMENT_SIZE*POPULATION_SIZE)];
+            int[] randomList = Random.randomListWithRange(0, population.length - 1, (int) (TOURNAMENT_SIZE*POPULATION_SIZE));
             for (int i = 0; i < randomList.length; i++) {
                 tournament[i] = population[randomList[i]];
             }
@@ -414,17 +417,53 @@ public class GeneticAlgorithm {
      */
 	public int getGaps(){
 		return endCargoSpace.getTotalGaps();
+	} 
+	
+	public void setTournamentSize(double tournamentSize){
+		TOURNAMENT_SIZE = (0.01*tournamentSize);
+	}
+	
+	public double getTournamentSize(){
+		return 100*TOURNAMENT_SIZE;
 	}
 
-    /**
-    * The main class for the genetic algorithm for the knapsack problem.
-    *
-    * @param args Not used.
-    */
-    public static void main(String[] args) {
-        GeneticAlgorithm gA = new GeneticAlgorithm();
-        endCargoSpace = gA.cargoSpace;
-        Display3D.represent(endCargoSpace);
-    }
+	public void setElitestTop(double elitistTopPercentage){
+		ELITIST_TOP_PERCENT = (int) 0.01*elitistTopPercentage;
+	}
+	
+	public double getElitestTop(){
+		return 100*ELITIST_TOP_PERCENT;
+	}
+	
+	public void setPopulationSize(int populationSize){
+		POPULATION_SIZE = populationSize;
+	}
+	
+	public int getPopulationSize(){
+		return POPULATION_SIZE;
+	}
+	
+	public void setCrossover(int crossoverFreq){
+		CROSSOVER_FREQ = crossoverFreq;
+	}
+	
+	public int getCrossover(){
+		return CROSSOVER_FREQ;
+	}
+	 
+	public void setSwapProbability(double swapProb){
+		SWAP_PROB = 0.01*swapProb;
+	}
+	
+	public double getSwapProbability(){
+		return SWAP_PROB*100;
+	}
 
+	public void setMutationProbability(double mutation){
+		MUTATION_PROB = mutation;
+	}
+	
+	public double getMutationProbability(){
+		return MUTATION_PROB;
+	}	
 }

@@ -195,7 +195,6 @@ public class GeneticAlgorithm {
                 }
                 generation++;
             }
-for(int i = 0; i< bestInd.toCargoSpace().getPacking().length; i++)        System.out.println(bestInd.toCargoSpace().getPacking()[i].getBaseCoords()[0]);
 
             long endTime = System.currentTimeMillis();
             totTime = endTime - startTime;

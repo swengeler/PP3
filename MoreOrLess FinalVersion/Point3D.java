@@ -1,5 +1,3 @@
-package Poly3D;
-
 /**
  * A Class, creating new Points, holding x, y and z positions
  *
