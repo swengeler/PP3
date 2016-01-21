@@ -1,3 +1,5 @@
+//package Poly3D;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -13,14 +15,18 @@ public class MainFrame extends JPanel{
    private static boolean added = true;
    private static String packages="";
    private static int[] allPacks = new int[0];
+   private static int[] newPack = new int[0];
+   private static Package[] newallPack = new Package[0];
    private static Package[] allPackages = new Package[0];
    private static MainFrame m;
    private static JFrame xyz;
-   private JMenuBar selectionMethod;
+   private static JComboBox selectionMethod;
+   private static JMenu[] selections;
    private static JLabel[] text;
+   private static JLabel value;
    private static JSpinner[] spinner;
    private static JTextArea[] newPackage;
-   private static JButton startButton, hillClimbing, genetic, addPackage;
+   private static JButton startButton, hillClimbing, genetic, addPackage, reset;
    private static Cube[] cubes;
    private static JCheckBox disp2D, editGenes;
    private static Timer t;
@@ -39,6 +45,7 @@ public class MainFrame extends JPanel{
        newPackage = new JTextArea[6];
        text=new JLabel[14];
        spinner = new JSpinner[3];
+       selections = new JMenu[3];
 
        for(int i=0;i<3;i++) {
     	   spinner[i] = new JSpinner();
@@ -75,6 +82,12 @@ public class MainFrame extends JPanel{
        text[5].setBounds(50, 200, 250, 50);
        text[5].setText("Gaps Left: ");
        
+       value = new JLabel();
+       value.setFont(new Font(text[0].getFont().getName(), text[0].getFont().getStyle(),15));
+       value.setBounds(50 ,225, 250, 50);
+       value.setText("Value: ");
+       xyz.add(value);
+       
        text[6].setBounds(350, 60, 80, 20);
        text[6].setText("Name   : ");
        
@@ -107,7 +120,6 @@ public class MainFrame extends JPanel{
        newPackage[4].setBounds(430, 145, 40, 15);
        newPackage[5].setBounds(430, 165, 40, 15);
        
-       
        disp2D = new JCheckBox();
        disp2D.setBounds(620, 290, 100, 25);
        disp2D.setText("Toggle rep");
@@ -127,6 +139,7 @@ public class MainFrame extends JPanel{
        editGenes.addActionListener(new ActionListener() {
     	   public void actionPerformed(ActionEvent e) {
     		   if(editGenes.isSelected()){
+    			   selectionMethod.setVisible(true);
     			   text[ 6].setBounds(350,  60, 170, 20);
     			   text[ 7].setBounds(350,  80, 170, 20);
     			   text[ 8].setBounds(350, 100, 170, 20);
@@ -147,7 +160,6 @@ public class MainFrame extends JPanel{
     		       newPackage[3].setBounds(520, 125, 40, 15);
     		       newPackage[4].setBounds(520, 145, 40, 15);
     		       newPackage[5].setBounds(520, 165, 40, 15);
-    		       System.out.println(g.getTournamentSize());
     		       newPackage[0].setText("" + g.getTournamentSize());
     		       newPackage[1].setText("" + g.getElitestTop());
     		       newPackage[2].setText("" + g.getPopulationSize());
@@ -163,6 +175,7 @@ public class MainFrame extends JPanel{
     		       text[13].setVisible(false);
     		   }
     		   else{
+    			   selectionMethod.setVisible(false);
     			   text[ 6].setBounds(350,  60, 80, 20);
     			   text[ 7].setBounds(350,  80, 80, 20);
     			   text[ 8].setBounds(350, 100, 80, 20);
@@ -197,6 +210,26 @@ public class MainFrame extends JPanel{
        });
        xyz.add(editGenes);
        
+       selectionMethod = new JComboBox(new String[]{"Tournament","Elitist","Roulette"});
+       selectionMethod.setBounds(350, 40, 210, 20);
+       selectionMethod.setVisible(editGenes.isSelected());
+       selectionMethod.addActionListener(new ActionListener() {
+    	   public void actionPerformed(ActionEvent e) {    		   
+    		   if(selectionMethod.getSelectedItem() == "Tournament"){
+    			   g.setSelectionMethod("TOURNAMENT");
+    		   }
+    		   if(selectionMethod.getSelectedItem() == "Elitist"){
+    			   g.setSelectionMethod("ELITIST");
+    		   }
+    		   if(selectionMethod.getSelectedItem() == "Roulette"){
+    			   g.setSelectionMethod("ROULETTE");
+    		   }
+    		   xyz.repaint();
+    		}
+       });
+       xyz.add(selectionMethod);
+       
+       
        addPackage = new JButton();
        addPackage.setBounds(350, 185, 120, 20);
        addPackage.setText("Add Package");
@@ -205,7 +238,6 @@ public class MainFrame extends JPanel{
     	   public void actionPerformed(ActionEvent e) {    		   
     		   if(!editGenes.isSelected()){
     			   if(packages == ""){
-	    		   
 	    			   packages += (""+newPackage[0].getText());
 	    			   text[12].setText(packages);
 	    		   }
@@ -214,18 +246,18 @@ public class MainFrame extends JPanel{
 	    			   text[12].setText(packages);
 	    		   }
 	    		   
-	    		   int[] newAllPacks = new int[allPacks.length+1];
-	    		   System.arraycopy(allPacks, 0, newAllPacks, 0, allPacks.length);
-	    		   newAllPacks[allPacks.length] = (int)Double.parseDouble(newPackage[1].getText());
-	    		   allPacks = newAllPacks;    		   
+	    		   int[] newAllPacks = new int[newPack.length+1];
+	    		   System.arraycopy(newPack, 0, newAllPacks, 0, newPack.length);
+	    		   newAllPacks[newPack.length] = (int)Double.parseDouble(newPackage[1].getText());
+	    		   newPack = newAllPacks;    		   
 	    		   
-	    		   Package[] newAllPackages = new Package[allPackages.length+1];
-	    		   System.arraycopy(allPackages, 0, newAllPackages, 0, allPackages.length);
-	    		   newAllPackages[allPackages.length] =  new Package(newPackage[0].getText(),  (int)(2*Double.parseDouble(newPackage[3].getText())),
+	    		   Package[] newAllPackages = new Package[newallPack.length+1];
+	    		   System.arraycopy(newallPack, 0, newAllPackages, 0, newallPack.length);
+	    		   newAllPackages[newallPack.length] =  new Package(newPackage[0].getText(),  (int)(2*Double.parseDouble(newPackage[3].getText())),
 	    				   								 									   (int)(2*Double.parseDouble(newPackage[4].getText())),
 	    				   								 									   (int)(2*Double.parseDouble(newPackage[5].getText())),
 	    				   								 									   		   Double.parseDouble(newPackage[2].getText()));
-	    		   allPackages = newAllPackages;
+	    		   newallPack = newAllPackages;
 	    		   
 	    		   for(int i = 0; i<newPackage.length; i++)newPackage[i].setText("");
     		   }
@@ -247,8 +279,44 @@ public class MainFrame extends JPanel{
        });
        xyz.add(addPackage);
        
+       reset = new JButton();
+       reset.setBounds(625, 10, 100, 50);
+       reset.setText("Reset");
+       reset.setVisible(true);
+       reset.addActionListener(new ActionListener() {
+    	   public void actionPerformed(ActionEvent e) {	
+    		   selectionMethod.setSelectedIndex(0);
+    		   g.setCrossover(2);
+    		   g.setElitestTop(10);
+    		   g.setMutationProbability(5);
+    		   g.setPopulationSize(85);
+    		   g.setSwapProbability(0);
+    		   g.setTournamentSize(10);
+    		   text[3].setText("Packages left: ");
+    		   text[4].setText("Time taken: ");
+    		   text[5].setText("Gaps left: ");
+    		   value.setText("Value: ");
+    		   for(int i = 0; i < spinner.length; i++)spinner[i].setValue(0);
+    		   newPack = new int[0];
+    		   newallPack = new Package[0];
+			   packages = ("");
+			   text[12].setText(packages);
+			   if(!editGenes.isSelected())for(int i = 0; i< newPackage.length;i++)newPackage[i].setText("");
+			   else{
+				   newPackage[0].setText(""+g.getTournamentSize());
+				   newPackage[1].setText(""+g.getElitestTop());
+				   newPackage[2].setText(""+g.getPopulationSize());
+				   newPackage[3].setText(""+g.getCrossover());
+				   newPackage[4].setText(""+g.getSwapProbability());
+				   newPackage[5].setText(""+g.getMutationProbability());
+			   }
+			  xyz.repaint(); 
+    		}
+       });
+       xyz.add(reset);
+       
        startButton = new JButton();
-       startButton.setBounds(625, 75, 100, 50);
+       startButton.setBounds(625, 85, 100, 50);
        startButton.setText("Greedy");
        startButton.setVisible(true);
        startButton.addActionListener(new ActionListener() {
@@ -266,6 +334,7 @@ public class MainFrame extends JPanel{
     			   text[3].setText("Packages left: " + g.getLeftPackages());
     			   text[4].setText("Time taken: " + g.getRuntime() + "ms");
     			   text[5].setText("Gaps left: " + g.getGaps());
+    			   value.setText("Value: " + g.getValue());
     			   disp2D.setEnabled(true);
     		   }
     		}
@@ -273,37 +342,43 @@ public class MainFrame extends JPanel{
        xyz.add(startButton);
 
        hillClimbing = new JButton();
-       hillClimbing.setBounds(625, 150, 100, 50);
+       hillClimbing.setBounds(625, 160, 100, 50);
        hillClimbing.setText("HillClimbing");
        hillClimbing.setVisible(true);
        hillClimbing.addActionListener(new ActionListener() {
     	   public void actionPerformed(ActionEvent e) {
-    		   HillClimbing h = new HillClimbing();
     		   addStandard();
-    		   h.run(allPackages, allPacks);
-    		   text[3].setText("Packages used: " + h.getNrPack());
-			   text[4].setText("Time taken: " + (h.getRuntime()/1000) + "s");
-			   text[5].setText("Gaps left: " + h.getGaps());
-			   disp2D.setEnabled(true);
-			}
+    		   if(allPacks.length>0){
+	    		   HillClimbing h = new HillClimbing();
+	    		   h.run(allPackages, allPacks);
+	    		   text[3].setText("Packages used: " + h.getNrPack());
+				   text[4].setText("Time taken: " + (h.getRuntime()/1000) + "s");
+				   text[5].setText("Gaps left: " + h.getGaps());
+	  			   value.setText("Value: " + h.getValue());
+				   disp2D.setEnabled(true);
+			   }
+    	   }
        });
        xyz.add(hillClimbing);
 
        genetic = new JButton();
-       genetic.setBounds(625, 225, 100, 50);
+       genetic.setBounds(625, 235, 100, 50);
        genetic.setText("Genetic");
        genetic.setVisible(true);
        genetic.addActionListener(new ActionListener() {
     	   public void actionPerformed(ActionEvent e) {
-    		   String packagesUsed = "Packages used: ";
     		   addStandard();
-    		   g.run(allPackages, allPacks);
-    		   for(int i = 0; i<g.getNrPack().length;i++)packagesUsed += (" " + allPackages[i].getType() + ":" + g.getNrPack()[i] + " ");
-    		   text[3].setText(packagesUsed);
-			   text[4].setText("Time taken: " + (g.getRuntime()/1000) + "s");
-			   text[5].setText("Gaps left: " + g.getGaps());
-			   disp2D.setEnabled(true);
-			}
+    		   if(allPacks.length>0){
+	    		   String packagesUsed = "Packages used: ";
+	    		   g.run(allPackages, allPacks);
+	    		   for(int i = 0; i<g.getNrPack().length;i++)packagesUsed += (" " + allPackages[i].getType() + ":" + g.getNrPack()[i] + " ");
+	    		   text[3].setText(packagesUsed);
+				   text[4].setText("Time taken: " + (g.getRuntime()/1000) + "s");
+				   text[5].setText("Gaps left: " + g.getGaps());
+	  			   value.setText("Value: " + g.getValue());
+				   disp2D.setEnabled(true);
+    		   }
+    	   }
        });
        xyz.add(genetic);
 
@@ -349,9 +424,7 @@ public class MainFrame extends JPanel{
    }
    
    public static void addStandard(){
-	   if(added){
-		   added = false;
-		   for(int i = 0; i<spinner.length; i++){
+	     for(int i = 0; i<spinner.length; i++){
 			   if((int)spinner[i].getValue() > 0){
 				   int[] newAllPacks = new int[allPacks.length+1];
 				   System.arraycopy(allPacks, 0, newAllPacks, 0, allPacks.length);
@@ -363,7 +436,17 @@ public class MainFrame extends JPanel{
 				   newAllPackages[allPackages.length] =  new Package(text[i].getText());
 				   allPackages = newAllPackages;
 			   }
-		   }
-	   }
+		 }
+	     for(int i = 0; i<newallPack.length; i++){
+			   int[] newAllPacks = new int[allPacks.length+1];
+			   System.arraycopy(allPacks, 0, newAllPacks, 0, allPacks.length);
+			   newAllPacks[allPacks.length] = newPack[i];
+			   allPacks = newAllPacks;    		   
+			   
+			   Package[] newAllPackages = new Package[allPackages.length+1];
+			   System.arraycopy(allPackages, 0, newAllPackages, 0, allPackages.length);
+			   newAllPackages[allPackages.length] =  newallPack[i];
+			   allPackages = newAllPackages;
+	     }   
    }
 }

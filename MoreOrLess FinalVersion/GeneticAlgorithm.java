@@ -1,3 +1,5 @@
+//package Poly3D;
+
 public class GeneticAlgorithm {
 
     private int POPULATION_SIZE = 85; // default = 85
@@ -391,6 +393,9 @@ public class GeneticAlgorithm {
             return population[Random.randomWithRange(0, population.length - 1)];
     }
 
+    public void setSelectionMethod(String method){
+    	SELECTION_MODE = method;
+    }
 
     /**
      * A Method to get the runtime of the genetic algorithm
@@ -418,6 +423,10 @@ public class GeneticAlgorithm {
 	public int getGaps(){
 		return endCargoSpace.getTotalGaps();
 	} 
+	
+	public double getValue(){
+		return endCargoSpace.getTotalValue();
+	}
 	
 	public void setTournamentSize(double tournamentSize){
 		TOURNAMENT_SIZE = (0.01*tournamentSize);

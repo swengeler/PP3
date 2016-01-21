@@ -1,3 +1,5 @@
+//package Poly3D;
+
 /**
  * Created by nicolagheza on 18/01/16.
  */
@@ -33,6 +35,10 @@ public class HillClimbing {
 		return current.getTotalGaps();
 	} 
 
+	public double getValue(){
+		return current.getTotalValue();
+	}
+	
     /**
      * Infinite supply
      * Return an arbitrary solution for the Algorithm

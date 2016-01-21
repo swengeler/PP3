@@ -1,3 +1,5 @@
+//package Poly3D;
+
 import java.util.Scanner;
 import java.util.*;
 import javax.swing.JFrame;
@@ -124,4 +126,7 @@ public class GreedyAlgorithm {
     public int getLeftPackages(){
     	return packagesLeft.size();
     }
+    public double getValue(){
+		return bestCS.getTotalValue();
+	}
 }

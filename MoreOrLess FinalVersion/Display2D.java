@@ -1,3 +1,5 @@
+//package Poly3D;
+
 import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
@@ -168,25 +170,10 @@ public class Display2D extends JPanel {
     */
     private void drawSquare(Graphics2D g2, int x, int y, String type) {
 
-        Color[] colors = {new Color(250, 0, 0), new Color(0, 250, 0), new Color(0, 0, 250), new Color(255, 227, 40), new Color(170, 40, 255), new Color(50, 50, 50)};
 
-        if (type == null || type.equals("Empty"))
-        	g2.setColor(Color.LIGHT_GRAY);
-        else if (type.equals("A"))
-            g2.setColor(colors[0]);
-        else if (type.equals("B"))
-            g2.setColor(colors[1]);
-        else if (type.equals("C"))
-            g2.setColor(colors[2]);
-        else if (type.equals("L"))
-            g2.setColor(colors[3]);
-        else if (type.equals("P"))
-            g2.setColor(colors[4]);
-        else if (type.equals("T"))
-            g2.setColor(colors[5]);
-        else
-            g2.setColor(new Color((int) (Math.random() * 256), (int) (Math.random() * 256), (int) (Math.random() * 256)));
-
+        Package tempP = new Package(type);
+        g2.setColor(tempP.getColor());
+        if(type == "Empty") g2.setColor(Color.LIGHT_GRAY);
         g2.fill(new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE));
         g2.setColor(Color.black);
         g2.draw(new Rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE));
